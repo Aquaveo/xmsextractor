@@ -49,7 +49,6 @@ private:
 
 protected:
   XmUGrid2dDataExtractor();
-
 };
 
 //----- Function prototypes ----------------------------------------------------

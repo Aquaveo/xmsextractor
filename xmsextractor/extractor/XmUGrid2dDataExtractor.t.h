@@ -28,5 +28,4 @@ public:
   void testGenerateEarcutTriangles();
 }; // XmUGrid2dDataExtractorUnitTests
 
-
 #endif

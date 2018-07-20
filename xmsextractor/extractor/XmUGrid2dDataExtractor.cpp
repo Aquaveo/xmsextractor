@@ -59,8 +59,8 @@ private:
   BSHP<VecInt> m_triangles;       ///< Triangles for the UGrid
 };
 
-namespace {
-
+namespace
+{
 //------------------------------------------------------------------------------
 /// \brief Calculate the length of a cell edge.
 /// \param[in] a_ugrid: the ugrid
@@ -81,7 +81,7 @@ double iGetEdgeLength(XmUGrid& a_ugrid, int a_idx1, int a_idx2)
 //------------------------------------------------------------------------------
 double iMagnitude(const Pt3d& a_vec)
 {
-  double magnitude = sqrt(a_vec.x*a_vec.x + a_vec.y*a_vec.y + a_vec.z*a_vec.z);
+  double magnitude = sqrt(a_vec.x * a_vec.x + a_vec.y * a_vec.y + a_vec.z * a_vec.z);
   return magnitude;
 } // iMagnitude
 //------------------------------------------------------------------------------
@@ -154,7 +154,7 @@ bool iValidTriangle(XmUGrid& a_ugrid, const VecInt a_polygon, int a_idx1, int a_
   return true;
 } // iValidTriangle
 
-} // namespace {
+} // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dDataExtractor
@@ -359,7 +359,7 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles()
   VecPt3d triPointsOut = extractor->GetTrianglePoints();
   VecPt3d triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {0.5, 0.5, 0}};
   TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
-  
+
   VecInt trianglesOut = extractor->GetTriangles();
   VecInt trianglesExpected = {0, 1, 4, 1, 2, 4, 2, 3, 4, 3, 0, 4};
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
@@ -459,9 +459,7 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateEarcutTriangles()
   TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
 
   VecInt trianglesOut = extractor->GetTriangles();
-  // clang-format off
   VecInt trianglesExpected = {0, 1, 2, 0, 2, 3};
-  // clang-format on
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
 } // XmUGrid2dDataExtractorUnitTests::testGenerateEarcutTriangles
 
