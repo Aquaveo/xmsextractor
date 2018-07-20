@@ -59,6 +59,103 @@ private:
   BSHP<VecInt> m_triangles;       ///< Triangles for the UGrid
 };
 
+namespace {
+
+//------------------------------------------------------------------------------
+/// \brief Calculate the length of a cell edge.
+/// \param[in] a_ugrid: the ugrid
+/// \param[in] a_idx1: the first edge point index
+/// \param[in] a_idx2: the second edge point index
+/// \return the length of the edge
+//------------------------------------------------------------------------------
+double iGetEdgeLength(XmUGrid& a_ugrid, int a_idx1, int a_idx2)
+{
+  const Pt3d& pt1 = a_ugrid.GetPoint(a_idx1);
+  const Pt3d& pt2 = a_ugrid.GetPoint(a_idx2);
+  double length = gmXyDistance(pt1, pt2);
+  return length;
+} // iGetEdgeLength
+//------------------------------------------------------------------------------
+/// \brief Calculate the magnitude of a vector.
+/// \param[in] a_vec: the vector
+//------------------------------------------------------------------------------
+double iMagnitude(const Pt3d& a_vec)
+{
+  double magnitude = sqrt(a_vec.x*a_vec.x + a_vec.y*a_vec.y + a_vec.z*a_vec.z);
+  return magnitude;
+} // iMagnitude
+//------------------------------------------------------------------------------
+/// \brief Calculate a quality ratio to use to determine which triangles to cut
+///        using earcut triangulation. Better triangles have a lower ratio.
+/// \param[in] a_ugrid: the ugrid
+/// \param[in] a_idx1: first point of first edge
+/// \param[in] a_idx2: second point of first edge, first point of second edge
+/// \param[in] a_idx2: second point of second edge
+/// \return The ratio, -1.0 for an inverted triangle, or -2.0 for a zero area
+///         triangle
+//------------------------------------------------------------------------------
+double iGetEarcutTriangleRatio(XmUGrid& a_ugrid, int a_idx1, int a_idx2, int a_idx3)
+{
+  Pt3d pt1 = a_ugrid.GetPoint(a_idx1);
+  Pt3d pt2 = a_ugrid.GetPoint(a_idx2);
+  Pt3d pt3 = a_ugrid.GetPoint(a_idx3);
+  Pt3d v1 = pt1 - pt2;
+  Pt3d v2 = pt3 - pt2;
+  Pt3d v3 = pt3 - pt1;
+
+  // get 2*area
+  Pt3d cross;
+  gmCross3D(v2, v1, &cross);
+  double ratio;
+  if (cross.z <= 0.0)
+  {
+    // inverted
+    ratio = -1.0;
+  }
+  else
+  {
+    double area2 = iMagnitude(cross);
+    if (area2 == 0.0)
+    {
+      // degenerate triangle
+      ratio = -2.0;
+    }
+    else
+    {
+      double perimeter = iMagnitude(v1) + iMagnitude(v2) + iMagnitude(v3);
+      ratio = perimeter * perimeter / area2;
+    }
+  }
+
+  return ratio;
+} // iGetEarcutTriangleRatio
+//------------------------------------------------------------------------------
+/// \brief
+//------------------------------------------------------------------------------
+bool iValidTriangle(XmUGrid& a_ugrid, const VecInt a_polygon, int a_idx1, int a_idx2, int a_idx3)
+{
+  const Pt3d& pt1 = a_ugrid.GetPoint(a_idx1);
+  const Pt3d& pt2 = a_ugrid.GetPoint(a_idx2);
+  const Pt3d& pt3 = a_ugrid.GetPoint(a_idx3);
+  for (size_t pointIdx = 0; pointIdx < a_polygon.size(); ++pointIdx)
+  {
+    int idx = a_polygon[pointIdx];
+    if (idx != a_idx1 && idx != a_idx2 && idx != a_idx3)
+    {
+      const Pt3d& pt = a_ugrid.GetPoint(idx);
+      if (gmTurn(pt1, pt2, pt, 0.0) == TURN_LEFT && gmTurn(pt2, pt3, pt) == TURN_LEFT &&
+          gmTurn(pt3, pt1, pt, 0.0) == TURN_LEFT)
+      {
+        return false;
+      }
+    }
+  }
+
+  return true;
+} // iValidTriangle
+
+} // namespace {
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dDataExtractor
 /// \brief Implementation for XmUGrid2dDataExtractor which provides ability
@@ -106,14 +203,6 @@ void XmUGrid2dDataExtractorImpl::GenerateTriangles()
   }
 } // XmUGrid2dDataExtractorImpl::GenerateTriangles
 //------------------------------------------------------------------------------
-/// \brief
-//------------------------------------------------------------------------------
-bool iValidTriangle(const Pt3d& a_pt1, const Pt3d& a_pt2, const Pt3d& a_pt3)
-{
-  bool valid = gmTurn(a_pt1, a_pt2, a_pt3, 0.0) == TURN_LEFT;
-  return valid;
-} // iValidTriangle
-//------------------------------------------------------------------------------
 /// \brief Attempt to generate triangles for a cell by adding a point at the
 ///        centroid.
 //------------------------------------------------------------------------------
@@ -131,7 +220,7 @@ bool XmUGrid2dDataExtractorImpl::GenerateCentroidTriangles(const int a_cellIdx,
     const Pt3d& pt2 = polygon[(pointIdx + 1) % numPoints];
 
     // centroid should be to the left of each edge
-    if (!iValidTriangle(pt1, pt2, centroid))
+    if (gmTurn(pt1, pt2, centroid, 0.0) != TURN_LEFT)
       return false;
   }
 
@@ -153,33 +242,6 @@ bool XmUGrid2dDataExtractorImpl::GenerateCentroidTriangles(const int a_cellIdx,
 
   return true;
 } // XmUGrid2dDataExtractorImpl::GenerateCentroidTriangles
-
-//------------------------------------------------------------------------------
-/// \brief
-//------------------------------------------------------------------------------
-double iGetEdgeLength(XmUGrid& a_ugrid, int a_idx1, int a_idx2)
-{
-  const Pt3d& pt1 = a_ugrid.GetPoint(a_idx1);
-  const Pt3d& pt2 = a_ugrid.GetPoint(a_idx2);
-  double length = gmXyDistance(pt1, pt2);
-  return length;
-} // iGetEdgeLength
-//------------------------------------------------------------------------------
-/// \brief
-//------------------------------------------------------------------------------
-double iGetTriangleRatio(XmUGrid& a_ugrid, int a_idx1, int a_idx2, int a_idx3)
-{
-  double length1 = iGetEdgeLength(a_ugrid, a_idx1, a_idx2);
-  double length2 = iGetEdgeLength(a_ugrid, a_idx2, a_idx3);
-  double length3 = iGetEdgeLength(a_ugrid, a_idx3, a_idx1);
-  double lmin = std::min(length1, std::min(length2, length3));
-  double lmax = std::max(length1, std::max(length2, length3));
-  if (lmax == 0)
-    return 1.0;
-
-  double ratio = lmin/lmax;
-  return ratio;
-} // iGetTriangleRatio
 //------------------------------------------------------------------------------
 /// \brief
 //------------------------------------------------------------------------------
@@ -193,7 +255,7 @@ void XmUGrid2dDataExtractorImpl::GenerateEarcutTriangles(const int a_cellIdx,
   while (polygon.size() >= 4)
   {
     int numPoints = (int)polygon.size();
-    double bestRatio = 0.0;
+    double bestRatio = std::numeric_limits<double>::max();
     int bestIdx = -1;
     bool foundInverted = false;
     for (int pointIdx = 0; pointIdx < numPoints; ++pointIdx)
@@ -202,18 +264,14 @@ void XmUGrid2dDataExtractorImpl::GenerateEarcutTriangles(const int a_cellIdx,
       int idx2 = polygon[pointIdx];
       int idx3 = polygon[(pointIdx + 1) % numPoints];
 
-      // make sure not inverted
-      if (iValidTriangle(m_ugrid->GetPoint(idx1), m_ugrid->GetPoint(idx2), m_ugrid->GetPoint(idx3)))
+      // make sure triangle is valid (not inverted and doesn't have other points in it)
+      double ratio = iGetEarcutTriangleRatio(*m_ugrid, idx1, idx2, idx3);
+      if (ratio > 0.0 && iValidTriangle(*m_ugrid, polygon, idx1, idx2, idx3) && ratio < bestRatio)
       {
-        // look for triangle with best min/max length ratio
-        double ratio = iGetTriangleRatio(*m_ugrid, idx1, idx2, idx3);
-        if (ratio > bestRatio)
-        {
-          bestRatio = ratio;
-          bestIdx = pointIdx;
-        }
+        bestRatio = ratio;
+        bestIdx = pointIdx;
       }
-      else
+      else if (ratio < 0.0)
       {
         foundInverted = true;
       }
@@ -397,16 +455,12 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateEarcutTriangles()
   BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
   VecPt3d triPointsOut = extractor->GetTrianglePoints();
-  // clang-format off
-  VecPt3d triPointsExpected = {
-  };
-  // clang-format on
+  VecPt3d triPointsExpected = points;
   TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
 
   VecInt trianglesOut = extractor->GetTriangles();
   // clang-format off
-  VecInt trianglesExpected = {
-  };
+  VecInt trianglesExpected = {0, 1, 2, 0, 2, 3};
   // clang-format on
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
 } // XmUGrid2dDataExtractorUnitTests::testGenerateEarcutTriangles
