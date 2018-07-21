@@ -39,6 +39,31 @@ namespace xms
 //----- Internal functions -----------------------------------------------------
 
 //----- Class / Function definitions -------------------------------------------
+
+////////////////////////////////////////////////////////////////////////////////
+class XmUGridTriangles
+{
+public:
+  XmUGridTriangles(const VecPt3d& a_points);
+
+  void GenerateTriangles(const XmUGrid& a_ugrid);
+
+  const VecPt3d& GetTrianglePoints();
+  const VecInt& GetTriangles();
+  int AddCellCentroid(int a_cellIdx, const Pt3d& a_point);
+  void AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, int a_idx3);
+
+private:
+  bool GenerateCentroidTriangles(const int a_cellIdx, const VecInt& a_cellPolygon);
+  void GenerateEarcutTriangles(const int a_cellIdx, const VecInt& a_cellPolygon);
+
+  BSHP<VecPt3d> m_trianglePoints; ///< Triangle points for the UGrid
+  BSHP<VecInt> m_triangles;       ///< Triangles for the UGrid
+  int m_firstCellPoint;           ///< Index of first point that is a centroid
+  VecInt m_pointCell;             ///< The cell index for each centroid
+  VecInt m_triangleCell;          ///< The cell index for each triangle
+};
+
 ////////////////////////////////////////////////////////////////////////////////
 /// Implementation for XmUGrid2dDataExtractor
 class XmUGrid2dDataExtractorImpl : public XmUGrid2dDataExtractor
@@ -51,30 +76,13 @@ public:
 
 private:
   void GenerateTriangles();
-  bool GenerateCentroidTriangles(const int a_cellIdx, const VecInt& a_cellPolygon);
-  void GenerateEarcutTriangles(const int a_cellIdx, const VecInt& a_cellPolygon);
 
-  BSHP<XmUGrid> m_ugrid;          ///< UGrid for dataset
-  BSHP<VecPt3d> m_trianglePoints; ///< Triangle points for the UGrid
-  BSHP<VecInt> m_triangles;       ///< Triangles for the UGrid
+  BSHP<XmUGrid> m_ugrid; ///< UGrid for dataset
+  BSHP<XmUGridTriangles> m_triangles;
 };
 
 namespace
 {
-//------------------------------------------------------------------------------
-/// \brief Calculate the length of a cell edge.
-/// \param[in] a_ugrid: the ugrid
-/// \param[in] a_idx1: the first edge point index
-/// \param[in] a_idx2: the second edge point index
-/// \return the length of the edge
-//------------------------------------------------------------------------------
-double iGetEdgeLength(XmUGrid& a_ugrid, int a_idx1, int a_idx2)
-{
-  const Pt3d& pt1 = a_ugrid.GetPoint(a_idx1);
-  const Pt3d& pt2 = a_ugrid.GetPoint(a_idx2);
-  double length = gmXyDistance(pt1, pt2);
-  return length;
-} // iGetEdgeLength
 //------------------------------------------------------------------------------
 /// \brief Calculate the magnitude of a vector.
 /// \param[in] a_vec: the vector
@@ -87,18 +95,18 @@ double iMagnitude(const Pt3d& a_vec)
 //------------------------------------------------------------------------------
 /// \brief Calculate a quality ratio to use to determine which triangles to cut
 ///        using earcut triangulation. Better triangles have a lower ratio.
-/// \param[in] a_ugrid: the ugrid
+/// \param[in] a_points: the array the points come from
 /// \param[in] a_idx1: first point of first edge
 /// \param[in] a_idx2: second point of first edge, first point of second edge
 /// \param[in] a_idx2: second point of second edge
 /// \return The ratio, -1.0 for an inverted triangle, or -2.0 for a zero area
 ///         triangle
 //------------------------------------------------------------------------------
-double iGetEarcutTriangleRatio(XmUGrid& a_ugrid, int a_idx1, int a_idx2, int a_idx3)
+double iGetEarcutTriangleRatio(const VecPt3d& a_points, int a_idx1, int a_idx2, int a_idx3)
 {
-  Pt3d pt1 = a_ugrid.GetPoint(a_idx1);
-  Pt3d pt2 = a_ugrid.GetPoint(a_idx2);
-  Pt3d pt3 = a_ugrid.GetPoint(a_idx3);
+  Pt3d pt1 = a_points[a_idx1];
+  Pt3d pt2 = a_points[a_idx2];
+  Pt3d pt3 = a_points[a_idx3];
   Pt3d v1 = pt1 - pt2;
   Pt3d v2 = pt3 - pt2;
   Pt3d v3 = pt3 - pt1;
@@ -132,17 +140,21 @@ double iGetEarcutTriangleRatio(XmUGrid& a_ugrid, int a_idx1, int a_idx2, int a_i
 //------------------------------------------------------------------------------
 /// \brief
 //------------------------------------------------------------------------------
-bool iValidTriangle(XmUGrid& a_ugrid, const VecInt a_polygon, int a_idx1, int a_idx2, int a_idx3)
+bool iValidTriangle(const VecPt3d& a_points,
+                    const VecInt a_polygon,
+                    int a_idx1,
+                    int a_idx2,
+                    int a_idx3)
 {
-  const Pt3d& pt1 = a_ugrid.GetPoint(a_idx1);
-  const Pt3d& pt2 = a_ugrid.GetPoint(a_idx2);
-  const Pt3d& pt3 = a_ugrid.GetPoint(a_idx3);
+  const Pt3d& pt1 = a_points[a_idx1];
+  const Pt3d& pt2 = a_points[a_idx2];
+  const Pt3d& pt3 = a_points[a_idx3];
   for (size_t pointIdx = 0; pointIdx < a_polygon.size(); ++pointIdx)
   {
     int idx = a_polygon[pointIdx];
     if (idx != a_idx1 && idx != a_idx2 && idx != a_idx3)
     {
-      const Pt3d& pt = a_ugrid.GetPoint(idx);
+      const Pt3d& pt = a_points[idx];
       if (gmTurn(pt1, pt2, pt, 0.0) == TURN_LEFT && gmTurn(pt2, pt3, pt) == TURN_LEFT &&
           gmTurn(pt3, pt1, pt, 0.0) == TURN_LEFT)
       {
@@ -153,65 +165,22 @@ bool iValidTriangle(XmUGrid& a_ugrid, const VecInt a_polygon, int a_idx1, int a_
 
   return true;
 } // iValidTriangle
-
-} // namespace
-
-////////////////////////////////////////////////////////////////////////////////
-/// \class XmUGrid2dDataExtractor
-/// \brief Implementation for XmUGrid2dDataExtractor which provides ability
-///        to extract dataset values at points and along arcs for an
-///        unstructured grid.
-////////////////////////////////////////////////////////////////////////////////
-//------------------------------------------------------------------------------
-/// \brief
-//------------------------------------------------------------------------------
-XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
-: m_ugrid(a_ugrid)
-, m_trianglePoints(new VecPt3d)
-, m_triangles(new VecInt)
-{
-  *m_trianglePoints = m_ugrid->GetPoints();
-  GenerateTriangles();
-} // XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl
-//------------------------------------------------------------------------------
-/// \brief Get generated triangle points for testing.
-//------------------------------------------------------------------------------
-const VecPt3d& XmUGrid2dDataExtractorImpl::GetTrianglePoints()
-{
-  return *m_trianglePoints;
-} // XmUGrid2dDataExtractorImpl::GetTrianglePoints
-//------------------------------------------------------------------------------
-/// \brief Get generated triangles for testing.
-//------------------------------------------------------------------------------
-const VecInt& XmUGrid2dDataExtractorImpl::GetTriangles()
-{
-  return *m_triangles;
-} // XmUGrid2dDataExtractorImpl::GetTriangles
-//------------------------------------------------------------------------------
-/// \brief Generate triangles for the UGrid.
-//------------------------------------------------------------------------------
-void XmUGrid2dDataExtractorImpl::GenerateTriangles()
-{
-  VecInt cellPoints;
-
-  int numCells = m_ugrid->GetNumberOfCells();
-  for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
-  {
-    m_ugrid->GetPointsOfCell(cellIdx, cellPoints);
-    if (!GenerateCentroidTriangles(cellIdx, cellPoints))
-      GenerateEarcutTriangles(cellIdx, cellPoints);
-  }
-} // XmUGrid2dDataExtractorImpl::GenerateTriangles
 //------------------------------------------------------------------------------
 /// \brief Attempt to generate triangles for a cell by adding a point at the
 ///        centroid.
 //------------------------------------------------------------------------------
-bool XmUGrid2dDataExtractorImpl::GenerateCentroidTriangles(const int a_cellIdx,
-                                                           const VecInt& a_cellPoints)
+bool iGenerateCentroidTriangles(XmUGridTriangles& a_ugridTris,
+                                int a_cellIdx,
+                                const VecInt& a_polygonIdxs)
 {
-  VecPt3d polygon = m_ugrid->GetPointsFromPointIdxs(a_cellPoints);
+  const VecPt3d& points = a_ugridTris.GetTrianglePoints();
+  size_t numPoints = a_polygonIdxs.size();
+
+  VecPt3d polygon;
+  for (size_t pointIdx = 0; pointIdx < numPoints; ++pointIdx)
+    polygon.push_back(points[a_polygonIdxs[pointIdx]]);
+
   Pt3d centroid = gmComputeCentroid(polygon);
-  size_t numPoints = polygon.size();
 
   // make sure none of the triangles connected to the centroid are inverted
   for (size_t pointIdx = 0; pointIdx < polygon.size(); ++pointIdx)
@@ -225,74 +194,79 @@ bool XmUGrid2dDataExtractorImpl::GenerateCentroidTriangles(const int a_cellIdx,
   }
 
   // add centroid to list of points
-  VecPt3d& points = *m_trianglePoints;
-  int centroidIdx = (int)points.size();
-  points.push_back(centroid);
+  int centroidIdx = a_ugridTris.AddCellCentroid(a_cellIdx, centroid);
 
   // add triangles
-  VecInt& triangles = *m_triangles;
   for (size_t pointIdx = 0; pointIdx < polygon.size(); ++pointIdx)
   {
-    int idx1 = a_cellPoints[pointIdx];
-    int idx2 = a_cellPoints[(pointIdx + 1) % numPoints];
-    triangles.push_back(idx1);
-    triangles.push_back(idx2);
-    triangles.push_back(centroidIdx);
+    int idx1 = a_polygonIdxs[pointIdx];
+    int idx2 = a_polygonIdxs[(pointIdx + 1) % numPoints];
+    a_ugridTris.AddCellTriangle(a_cellIdx, idx1, idx2, centroidIdx);
   }
 
   return true;
-} // XmUGrid2dDataExtractorImpl::GenerateCentroidTriangles
+} // iGenerateCentroidTriangles
 //------------------------------------------------------------------------------
 /// \brief
 //------------------------------------------------------------------------------
-void XmUGrid2dDataExtractorImpl::GenerateEarcutTriangles(const int a_cellIdx,
-                                                         const VecInt& a_cellPoints)
+void iGenerateEarcutTriangles(XmUGridTriangles& a_ugridTris,
+                              int a_cellIdx,
+                              const VecInt& a_polygonIdxs)
 {
-  VecInt polygon = a_cellPoints;
-  VecInt& triangles = *m_triangles;
+  VecInt polygonIdxs = a_polygonIdxs;
+  const VecPt3d& points = a_ugridTris.GetTrianglePoints();
 
   // continually find best triangle on adjacent edges and cut it off polygon
-  while (polygon.size() >= 4)
+  while (polygonIdxs.size() >= 4)
   {
-    int numPoints = (int)polygon.size();
-    double bestRatio = std::numeric_limits<double>::max();
     int bestIdx = -1;
-    bool foundInverted = false;
+    int secondBestIdx = -1;
+
+    int numPoints = (int)polygonIdxs.size();
+    double bestRatio = std::numeric_limits<double>::max();
+    double secondBestRatio = std::numeric_limits<double>::max();
     for (int pointIdx = 0; pointIdx < numPoints; ++pointIdx)
     {
-      int idx1 = polygon[(pointIdx + numPoints - 1) % numPoints];
-      int idx2 = polygon[pointIdx];
-      int idx3 = polygon[(pointIdx + 1) % numPoints];
+      int idx1 = polygonIdxs[(pointIdx + numPoints - 1) % numPoints];
+      int idx2 = polygonIdxs[pointIdx];
+      int idx3 = polygonIdxs[(pointIdx + 1) % numPoints];
 
       // make sure triangle is valid (not inverted and doesn't have other points in it)
-      double ratio = iGetEarcutTriangleRatio(*m_ugrid, idx1, idx2, idx3);
-      if (ratio > 0.0 && iValidTriangle(*m_ugrid, polygon, idx1, idx2, idx3) && ratio < bestRatio)
+      double ratio = iGetEarcutTriangleRatio(points, idx1, idx2, idx3);
+      if (ratio > 0.0)
       {
-        bestRatio = ratio;
-        bestIdx = pointIdx;
+        if (iValidTriangle(points, polygonIdxs, idx1, idx2, idx3))
+        {
+          if (ratio < bestRatio)
+          {
+            secondBestRatio = bestRatio;
+            bestRatio = ratio;
+            secondBestIdx = bestIdx;
+            bestIdx = pointIdx;
+          }
+          else if (ratio < secondBestRatio)
+          {
+            secondBestRatio = ratio;
+            secondBestIdx = pointIdx;
+          }
+        }
       }
-      else if (ratio < 0.0)
-      {
-        foundInverted = true;
-      }
-    }
-
-    if (numPoints == 4 && !foundInverted)
-    {
-      // when four points take triangles that are
-      bestIdx = (bestIdx + 1) % numPoints;
     }
 
     if (bestIdx >= 0)
     {
+      if (numPoints == 4 && secondBestIdx >= 0)
+        bestIdx = secondBestIdx;
+
       // cut off the ear triangle
-      int idx1 = polygon[(bestIdx + numPoints - 1) % numPoints];
-      int idx2 = polygon[bestIdx];
-      int idx3 = polygon[(bestIdx + 1) % numPoints];
-      triangles.push_back(idx1);
-      triangles.push_back(idx2);
-      triangles.push_back(idx3);
-      polygon.erase(polygon.begin() + idx2);
+      int polygonIdx1 = (bestIdx + numPoints - 1) % numPoints;
+      int polygonIdx2 = bestIdx;
+      int polygonIdx3 = (bestIdx + 1) % numPoints;
+      int idx1 = polygonIdxs[polygonIdx1];
+      int idx2 = polygonIdxs[polygonIdx2];
+      int idx3 = polygonIdxs[polygonIdx3];
+      a_ugridTris.AddCellTriangle(a_cellIdx, idx1, idx2, idx3);
+      polygonIdxs.erase(polygonIdxs.begin() + polygonIdx2);
     }
     else
     {
@@ -304,10 +278,107 @@ void XmUGrid2dDataExtractorImpl::GenerateEarcutTriangles(const int a_cellIdx,
   }
 
   // push on remaining triangle
-  triangles.push_back(polygon[0]);
-  triangles.push_back(polygon[1]);
-  triangles.push_back(polygon[2]);
-} // XmUGrid2dDataExtractorImpl::GenerateEarcutTriangles
+  a_ugridTris.AddCellTriangle(a_cellIdx, polygonIdxs[0], polygonIdxs[1], polygonIdxs[2]);
+} // iGenerateEarcutTriangles
+
+} // namespace
+
+////////////////////////////////////////////////////////////////////////////////
+/// \class XmUGridTriangles
+/// \brief Class to store XmUGrid triangles. Tracks where midpoints and
+///        triangles came from.
+////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
+/// \brief
+//------------------------------------------------------------------------------
+XmUGridTriangles::XmUGridTriangles(const VecPt3d& a_points)
+: m_trianglePoints(new VecPt3d)
+, m_triangles(new VecInt)
+, m_firstCellPoint((int)a_points.size())
+, m_pointCell()
+, m_triangleCell()
+{
+  *m_trianglePoints = a_points;
+} // XmUGridTriangles::XmUGridTriangles
+//------------------------------------------------------------------------------
+/// \brief Generate triangles for the UGrid.
+//------------------------------------------------------------------------------
+void XmUGridTriangles::GenerateTriangles(const XmUGrid& a_ugrid)
+{
+  VecInt cellPoints;
+
+  int numCells = a_ugrid.GetNumberOfCells();
+  for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
+  {
+    a_ugrid.GetPointsOfCell(cellIdx, cellPoints);
+    if (!iGenerateCentroidTriangles(*this, cellIdx, cellPoints))
+      iGenerateEarcutTriangles(*this, cellIdx, cellPoints);
+  }
+} // XmUGridTriangles::GenerateTriangles
+//------------------------------------------------------------------------------
+/// \brief
+//------------------------------------------------------------------------------
+const VecPt3d& XmUGridTriangles::GetTrianglePoints()
+{
+  return *m_trianglePoints;
+} // XmUGridTriangles::GetTrianglePoints
+//------------------------------------------------------------------------------
+/// \brief
+//------------------------------------------------------------------------------
+const VecInt& XmUGridTriangles::GetTriangles()
+{
+  return *m_triangles;
+} // XmUGridTriangles::GetTriangles
+//------------------------------------------------------------------------------
+/// \brief
+//------------------------------------------------------------------------------
+int XmUGridTriangles::AddCellCentroid(int a_cellIdx, const Pt3d& a_point)
+{
+  int centroidIdx = m_trianglePoints->size();
+  m_trianglePoints->push_back(a_point);
+  m_pointCell.push_back(a_cellIdx);
+  return centroidIdx;
+} // XmUGridTriangles::AddCellCentroid
+//------------------------------------------------------------------------------
+/// \brief
+//------------------------------------------------------------------------------
+void XmUGridTriangles::AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, int a_idx3)
+{
+  m_triangles->push_back(a_idx1);
+  m_triangles->push_back(a_idx2);
+  m_triangles->push_back(a_idx3);
+  m_triangleCell.push_back(a_cellIdx);
+} // XmUGridTriangles::AddCellTriangle
+
+////////////////////////////////////////////////////////////////////////////////
+/// \class XmUGrid2dDataExtractor
+/// \brief Implementation for XmUGrid2dDataExtractor which provides ability
+///        to extract dataset values at points and along arcs for an
+///        unstructured grid.
+////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
+/// \brief
+//------------------------------------------------------------------------------
+XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
+: m_ugrid(a_ugrid)
+, m_triangles(new XmUGridTriangles(a_ugrid->GetPoints()))
+{
+  m_triangles->GenerateTriangles(*a_ugrid);
+} // XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl
+//------------------------------------------------------------------------------
+/// \brief Get generated triangle points for testing.
+//------------------------------------------------------------------------------
+const VecPt3d& XmUGrid2dDataExtractorImpl::GetTrianglePoints()
+{
+  return m_triangles->GetTrianglePoints();
+} // XmUGrid2dDataExtractorImpl::GetTrianglePoints
+//------------------------------------------------------------------------------
+/// \brief Get generated triangles for testing.
+//------------------------------------------------------------------------------
+const VecInt& XmUGrid2dDataExtractorImpl::GetTriangles()
+{
+  return m_triangles->GetTriangles();
+} // XmUGrid2dDataExtractorImpl::GetTriangles
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dDataExtractor
@@ -416,10 +487,10 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles2dCellTypes()
     {40.0, 20.0, 0.0},
 
     // added centroids
-    {5.0, 5.0, 0.0},
-    {15.0, 5.0, 0.0},
-    {23.333333333333332, 3.3333333333333335, 0.0},
-    {33.333333333333336, 10.0, 0.0}
+    {5.0, 5.0, 0.0},                               // 14 - quad centroid
+    {15.0, 5.0, 0.0},                              // 15 - pixel centroid
+    {23.333333333333332, 3.3333333333333335, 0.0}, // 16 - triangle centroid
+    {33.333333333333336, 10.0, 0.0}                // 17 - polygon centroid
   };
   // clang-format on
   TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
@@ -439,28 +510,60 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles2dCellTypes()
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorUnitTests::testGenerateEarcutTriangles()
 {
-  // clang-format off
-  VecPt3d points = {
-    {0, 0, 0},   // 0
-    {10, 0, 0},  // 1
-    {1, 1, 0},   // 2
-    {0, 10, 0},  // 3
-  };
+  {
+    // clang-format off
+    VecPt3d points = {
+      {0, 0, 0},   // 0
+      {10, 0, 0},  // 1
+      {1, 1, 0},   // 2
+      {0, 10, 0},  // 3
+    };
 
-  // Cell type (5), number of points (3), point numbers, counterclockwise
-  std::vector<int> cells = {(int)XMU_QUAD, 4, 0, 1, 2, 3};
-  // clang-format on
+    // Cell type (5), number of points (3), point numbers, counterclockwise
+    std::vector<int> cells = {(int)XMU_QUAD, 4, 0, 1, 2, 3};
+    // clang-format on
 
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
-  TS_ASSERT(extractor);
-  VecPt3d triPointsOut = extractor->GetTrianglePoints();
-  VecPt3d triPointsExpected = points;
-  TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
+    BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+    XmUGridTriangles ugridTris(ugrid->GetPoints());
+    VecInt polygon;
+    ugrid->GetPointsOfCell(0, polygon);
+    iGenerateEarcutTriangles(ugridTris, 0, polygon);
+    VecPt3d triPointsOut = ugridTris.GetTrianglePoints();
+    VecPt3d triPointsExpected = points;
+    TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
 
-  VecInt trianglesOut = extractor->GetTriangles();
-  VecInt trianglesExpected = {0, 1, 2, 0, 2, 3};
-  TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
+    VecInt trianglesOut = ugridTris.GetTriangles();
+    VecInt trianglesExpected = {2, 3, 0, 0, 1, 2};
+    TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
+  }
+
+  {
+    // clang-format off
+    VecPt3d points = {
+      {0, 0, 0},   // 0
+      {10, 0, 0},  // 1
+      {10, 10, 0}, // 2
+      {5, 11, 0},  // 3
+      {0, 10, 0},  // 4
+    };
+
+    // Cell type (5), number of points (3), point numbers, counterclockwise
+    std::vector<int> cells = {(int)XMU_POLYGON, 5, 0, 1, 2, 3, 4};
+    // clang-format on
+
+    BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+    XmUGridTriangles ugridTris(ugrid->GetPoints());
+    VecInt polygon;
+    ugrid->GetPointsOfCell(0, polygon);
+    iGenerateEarcutTriangles(ugridTris, 0, polygon);
+    VecPt3d triPointsOut = ugridTris.GetTrianglePoints();
+    VecPt3d triPointsExpected = points;
+    TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
+
+    VecInt trianglesOut = ugridTris.GetTriangles();
+    VecInt trianglesExpected = {4, 0, 1, 1, 2, 3, 1, 3, 4};
+    TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
+  }
 } // XmUGrid2dDataExtractorUnitTests::testGenerateEarcutTriangles
 
 #endif
