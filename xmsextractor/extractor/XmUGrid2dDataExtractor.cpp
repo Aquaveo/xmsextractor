@@ -17,6 +17,7 @@
 // 4. External library headers
 
 // 5. Shared code headers
+#include <xmscore/misc/XmError.h>
 #include <xmscore/misc/XmLog.h>
 #include <xmsinterp/geometry/geoms.h>
 #include <xmsgrid/ugrid/XmUGrid.h>
@@ -70,6 +71,7 @@ class XmUGrid2dDataExtractorImpl : public XmUGrid2dDataExtractor
 {
 public:
   XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid);
+  XmUGrid2dDataExtractorImpl(BSHP<XmUGrid2dDataExtractorImpl> a_extractor);
 
   virtual const VecPt3d& GetTrianglePoints() override;
   virtual const VecInt& GetTriangles() override;
@@ -334,7 +336,7 @@ const VecInt& XmUGridTriangles::GetTriangles()
 //------------------------------------------------------------------------------
 int XmUGridTriangles::AddCellCentroid(int a_cellIdx, const Pt3d& a_point)
 {
-  int centroidIdx = m_trianglePoints->size();
+  int centroidIdx = (int)m_trianglePoints->size();
   m_trianglePoints->push_back(a_point);
   m_pointCell.push_back(a_cellIdx);
   return centroidIdx;
@@ -366,6 +368,17 @@ XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
   m_triangles->GenerateTriangles(*a_ugrid);
 } // XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl
 //------------------------------------------------------------------------------
+/// \brief Create a new XmUGrid2dDataExtractorImpl using shallow copy from
+///        existing extractor.
+/// \param[in] a_extractor The extractor to shallow copy
+/// \return the new XmUGrid2dDataExtractorImpl.
+//------------------------------------------------------------------------------
+XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid2dDataExtractorImpl> a_extractor)
+: m_ugrid(a_extractor->m_ugrid)
+, m_triangles(a_extractor->m_triangles)
+{
+} // XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl
+//------------------------------------------------------------------------------
 /// \brief Get generated triangle points for testing.
 //------------------------------------------------------------------------------
 const VecPt3d& XmUGrid2dDataExtractorImpl::GetTrianglePoints()
@@ -393,6 +406,24 @@ BSHP<XmUGrid2dDataExtractor> XmUGrid2dDataExtractor::New(BSHP<XmUGrid> a_ugrid)
 {
   BSHP<XmUGrid2dDataExtractor> extractor(new XmUGrid2dDataExtractorImpl(a_ugrid));
   return extractor;
+} // XmUGrid2dDataExtractor::New
+//------------------------------------------------------------------------------
+/// \brief Create a new XmUGrid2dDataExtractor using shallow copy from existing
+///        extractor.
+/// \param[in] a_extractor The extractor to shallow copy
+/// \return the new XmUGrid2dDataExtractor.
+//------------------------------------------------------------------------------
+BSHP<XmUGrid2dDataExtractor> XmUGrid2dDataExtractor::New(BSHP<XmUGrid2dDataExtractor> a_extractor)
+{
+  BSHP<XmUGrid2dDataExtractorImpl> copied = BDPC<XmUGrid2dDataExtractorImpl>(a_extractor);
+  if (copied)
+  {
+    BSHP<XmUGrid2dDataExtractor> extractor(new XmUGrid2dDataExtractorImpl(copied));
+    return extractor;
+  }
+
+  XM_ASSERT(0);
+  return nullptr;
 } // XmUGrid2dDataExtractor::New
 //------------------------------------------------------------------------------
 /// \brief Constructor

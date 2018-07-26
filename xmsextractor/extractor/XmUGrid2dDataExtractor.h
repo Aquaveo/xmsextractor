@@ -38,6 +38,7 @@ class XmUGrid2dDataExtractor
 {
 public:
   static BSHP<XmUGrid2dDataExtractor> New(BSHP<XmUGrid> a_ugrid);
+  static BSHP<XmUGrid2dDataExtractor> New(BSHP<XmUGrid2dDataExtractor> a_extractor);
   virtual ~XmUGrid2dDataExtractor();
 
   virtual const VecPt3d& GetTrianglePoints() = 0;

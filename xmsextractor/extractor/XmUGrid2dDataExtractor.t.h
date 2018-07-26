@@ -23,6 +23,7 @@
 class XmUGrid2dDataExtractorUnitTests : public CxxTest::TestSuite
 {
 public:
+  void testCopiedExtractor();
   void testGenerateCentroidTriangles();
   void testGenerateCentroidTriangles2dCellTypes();
   void testGenerateEarcutTriangles();
