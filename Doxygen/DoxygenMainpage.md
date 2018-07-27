@@ -27,9 +27,6 @@ Features {#XmsextractorFeatures}
 The library supports unstructured grids with 0D, 1D, 2D and 3D elements.
 
 The following tutorials are available:
-* [2D UGrid Tutorial](TwoD_Tutorial.md)
-* [3D UGrid Tutorial](ThreeD_Tutorial.md)
-* [UGrid File IO Tutorial](FileIO_Tutorial.md)
 
 Testing {#XmsextractorTesting}
 -------

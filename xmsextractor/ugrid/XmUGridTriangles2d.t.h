@@ -20,10 +20,12 @@
 // 6. Non-shared Headers
 
 ////////////////////////////////////////////////////////////////////////////////
-class XmUGrid2dDataExtractorUnitTests : public CxxTest::TestSuite
+class XmUGridTriangles2dUnitTests : public CxxTest::TestSuite
 {
 public:
-  void testCopiedExtractor();
-}; // XmUGrid2dDataExtractorUnitTests
+  void testGenerateCentroidTriangles();
+  void testGenerateCentroidTriangles2dCellTypes();
+  void testGenerateEarcutTriangles();
+}; // XmUGridTriangles2d
 
 #endif

@@ -43,10 +43,12 @@ link_directories(${EXT_LIB_DIRS})
 # Static library sources
 set(xmsextractor_sources
   xmsextractor/extractor/XmUGrid2dDataExtractor.cpp
+  xmsextractor/ugrid/XmUGridTriangles2d.cpp
 )
 
 set(xmsextractor_headers
   xmsextractor/extractor/XmUGrid2dDataExtractor.h
+  xmsextractor/ugrid/XmUGridTriangles2d.h
 )
 
 # Pybind11 sources
@@ -59,6 +61,7 @@ if (BUILD_TESTING)
 
  list(APPEND xmsextractor_sources
    xmsextractor/extractor/XmUGrid2dDataExtractor.t.h
+   xmsextractor/ugrid/XmUGridTriangles2d.t.h
  )
 
  find_package(CxxTest)
