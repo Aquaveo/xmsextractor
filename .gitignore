@@ -46,3 +46,8 @@ test_package/build/
 *.exe
 *.out
 *.app
+
+# Doxygen files
+Doxygen/doxy_warn.log
+Doxygen/html/
+Doxygen/xmsextractor.tag

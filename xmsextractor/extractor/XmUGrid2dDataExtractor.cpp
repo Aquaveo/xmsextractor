@@ -45,8 +45,9 @@ namespace xms
 class XmUGridTriangles
 {
 public:
-  XmUGridTriangles(const VecPt3d& a_points);
+  XmUGridTriangles();
 
+  void Initialize(const XmUGrid& a_ugrid);
   void GenerateTriangles(const XmUGrid& a_ugrid);
 
   const VecPt3d& GetTrianglePoints();
@@ -55,9 +56,6 @@ public:
   void AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, int a_idx3);
 
 private:
-  bool GenerateCentroidTriangles(const int a_cellIdx, const VecInt& a_cellPolygon);
-  void GenerateEarcutTriangles(const int a_cellIdx, const VecInt& a_cellPolygon);
-
   BSHP<VecPt3d> m_trianglePoints; ///< Triangle points for the UGrid
   BSHP<VecInt> m_triangles;       ///< Triangles for the UGrid
   int m_firstCellPoint;           ///< Index of first point that is a centroid
@@ -73,14 +71,21 @@ public:
   XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid);
   XmUGrid2dDataExtractorImpl(BSHP<XmUGrid2dDataExtractorImpl> a_extractor);
 
-  virtual const VecPt3d& GetTrianglePoints() override;
-  virtual const VecInt& GetTriangles() override;
+  virtual void SetExtractLocations(const VecPt3d& a_locations) override;
+
+  virtual void SetGridPointScalars(const VecFlt& a_pointScalars) override;
+
+  virtual const VecPt3d& GetTrianglePoints();
+  virtual const VecInt& GetTriangles();
 
 private:
-  void GenerateTriangles();
+  //void PushPointDataToTriangles();
+  //void PushCellDataToTriangles();
 
-  BSHP<XmUGrid> m_ugrid; ///< UGrid for dataset
-  BSHP<XmUGridTriangles> m_triangles;
+  BSHP<XmUGrid> m_ugrid;              ///< UGrid for dataset
+  BSHP<XmUGridTriangles> m_triangles; ///< manages triangles
+  VecPt3d m_extractLocations;         ///< output locations for interpolated values
+  VecFlt m_scalars;                   ///< scalars to interpolate from
 };
 
 namespace
@@ -170,6 +175,10 @@ bool iValidTriangle(const VecPt3d& a_points,
 //------------------------------------------------------------------------------
 /// \brief Attempt to generate triangles for a cell by adding a point at the
 ///        centroid.
+/// \param[in] a_ugridTris The triangles to add to.
+/// \param[in] a_cellIdx The cell index.
+/// \param[in] a_polygonIdxs The indices for the cell polygon.
+/// \return true on success (can fail for concave cell)
 //------------------------------------------------------------------------------
 bool iGenerateCentroidTriangles(XmUGridTriangles& a_ugridTris,
                                 int a_cellIdx,
@@ -209,7 +218,10 @@ bool iGenerateCentroidTriangles(XmUGridTriangles& a_ugridTris,
   return true;
 } // iGenerateCentroidTriangles
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Generate triangles using ear cut algorithm for plan view 2D cells.
+/// \param[in] a_ugridTris The triangles to add to.
+/// \param[in] a_cellIdx The cell index.
+/// \param[in] a_polygonIdxs The indices for the cell polygon.
 //------------------------------------------------------------------------------
 void iGenerateEarcutTriangles(XmUGridTriangles& a_ugridTris,
                               int a_cellIdx,
@@ -291,23 +303,34 @@ void iGenerateEarcutTriangles(XmUGridTriangles& a_ugridTris,
 ///        triangles came from.
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Constructor
 //------------------------------------------------------------------------------
-XmUGridTriangles::XmUGridTriangles(const VecPt3d& a_points)
+XmUGridTriangles::XmUGridTriangles()
 : m_trianglePoints(new VecPt3d)
 , m_triangles(new VecInt)
-, m_firstCellPoint((int)a_points.size())
+, m_firstCellPoint(0)
 , m_pointCell()
 , m_triangleCell()
 {
-  *m_trianglePoints = a_points;
 } // XmUGridTriangles::XmUGridTriangles
 //------------------------------------------------------------------------------
+/// \brief Initialize triangulation for a UGrid.
+/// \param[in] a_ugrid The UGrid to generate triangles for.
+//------------------------------------------------------------------------------
+void XmUGridTriangles::Initialize(const XmUGrid& a_ugrid)
+{
+  *m_trianglePoints = a_ugrid.GetPoints();
+  m_firstCellPoint = (int)m_trianglePoints->size();
+} // XmUGridTriangles::Initialize
+//------------------------------------------------------------------------------
 /// \brief Generate triangles for the UGrid.
+/// \param[in] a_ugrid The UGrid to generate triangles for.
 //------------------------------------------------------------------------------
 void XmUGridTriangles::GenerateTriangles(const XmUGrid& a_ugrid)
 {
   VecInt cellPoints;
+  *m_trianglePoints = a_ugrid.GetPoints();
+  m_firstCellPoint = (int)m_trianglePoints->size();
 
   int numCells = a_ugrid.GetNumberOfCells();
   for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
@@ -318,21 +341,26 @@ void XmUGridTriangles::GenerateTriangles(const XmUGrid& a_ugrid)
   }
 } // XmUGridTriangles::GenerateTriangles
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Get the generated triangle points.
+/// \return The triangle points
 //------------------------------------------------------------------------------
 const VecPt3d& XmUGridTriangles::GetTrianglePoints()
 {
   return *m_trianglePoints;
 } // XmUGridTriangles::GetTrianglePoints
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Get the generated triangles.
+/// \return a vector of indices for the triangles.
 //------------------------------------------------------------------------------
 const VecInt& XmUGridTriangles::GetTriangles()
 {
   return *m_triangles;
 } // XmUGridTriangles::GetTriangles
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Add a cell centroid point.
+/// \param a_cellIdx The cell index for the centroid point
+/// \param a_point The centroid point
+/// \return The index of the added point
 //------------------------------------------------------------------------------
 int XmUGridTriangles::AddCellCentroid(int a_cellIdx, const Pt3d& a_point)
 {
@@ -342,7 +370,11 @@ int XmUGridTriangles::AddCellCentroid(int a_cellIdx, const Pt3d& a_point)
   return centroidIdx;
 } // XmUGridTriangles::AddCellCentroid
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Add a triangle cell.
+/// \param[in] a_cellIdx The cell index the triangle is from
+/// \param[in] a_idx1 The first triangle point index (counter clockwise)
+/// \param[in] a_idx2 The second triangle point index (counter clockwise)
+/// \param[in] a_idx3 The third triangle point index (counter clockwise)
 //------------------------------------------------------------------------------
 void XmUGridTriangles::AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, int a_idx3)
 {
@@ -353,17 +385,17 @@ void XmUGridTriangles::AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, in
 } // XmUGridTriangles::AddCellTriangle
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \class XmUGrid2dDataExtractor
+/// \class XmUGrid2dDataExtractorImpl
 /// \brief Implementation for XmUGrid2dDataExtractor which provides ability
 ///        to extract dataset values at points and along arcs for an
 ///        unstructured grid.
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Construct from a UGrid.
 //------------------------------------------------------------------------------
 XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
 : m_ugrid(a_ugrid)
-, m_triangles(new XmUGridTriangles(a_ugrid->GetPoints()))
+, m_triangles(new XmUGridTriangles())
 {
   m_triangles->GenerateTriangles(*a_ugrid);
 } // XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl
@@ -378,6 +410,22 @@ XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid2dDataExtract
 , m_triangles(a_extractor->m_triangles)
 {
 } // XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl
+//------------------------------------------------------------------------------
+/// \brief Sets locations of points to extract interpolated scalar data from.
+/// \param[in] a_locations The locations.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorImpl::SetExtractLocations(const VecPt3d& a_locations)
+{
+  m_extractLocations = a_locations;
+} // XmUGrid2dDataExtractorImpl::SetExtractLocations
+//------------------------------------------------------------------------------
+/// \brief Setup point scalars to be used to extract interpolated data.
+/// \param[in] a_pointScalars The point scalars.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalars)
+{
+  m_scalars = a_pointScalars;
+} // XmUGrid2dDataExtractorImpl::SetGridPointScalars
 //------------------------------------------------------------------------------
 /// \brief Get generated triangle points for testing.
 //------------------------------------------------------------------------------
@@ -400,7 +448,8 @@ const VecInt& XmUGrid2dDataExtractorImpl::GetTriangles()
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
 /// \brief Create a new XmUGrid2dDataExtractor.
-/// \return the new XmUGrid2dDataExtractor.
+/// \param[in] a_ugrid The UGrid geometry to use to extract values from
+/// \return the new XmUGrid2dDataExtractor
 //------------------------------------------------------------------------------
 BSHP<XmUGrid2dDataExtractor> XmUGrid2dDataExtractor::New(BSHP<XmUGrid> a_ugrid)
 {
@@ -448,26 +497,56 @@ using namespace xms;
 #include <xmsextractor/extractor/XmUGrid2dDataExtractor.t.h>
 #include <xmsgrid/ugrid/XmUGrid.t.h>
 
+#include <xmscore/testing/TestTools.h>
+
+////////////////////////////////////////////////////////////////////////////////
+/// \class XmUGrid2dDataExtractorUnitTests
+/// \brief Class to to test XmUGrid2dDataExtractor
+////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor built by copying triangles.
 //------------------------------------------------------------------------------
-void XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles()
+void XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()
 {
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
   BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
-  VecPt3d triPointsOut = extractor->GetTrianglePoints();
+  //VecPt3d triPointsOut = extractor->GetTrianglePoints();
+  //VecPt3d triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {0.5, 0.5, 0}};
+  //TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
+
+  //VecInt trianglesOut = extractor->GetTriangles();
+  //VecInt trianglesExpected = {0, 1, 4, 1, 2, 4, 2, 3, 4, 3, 0, 4};
+  //TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
+
+  BSHP<XmUGrid2dDataExtractor> extractor2 = XmUGrid2dDataExtractor::New(extractor);
+  //TS_ASSERT_EQUALS(triPointsExpected, extractor2->GetTrianglePoints());
+  //TS_ASSERT_EQUALS(trianglesExpected, extractor2->GetTriangles());
+  TS_FAIL("Should test extracted values.");
+} // XmUGrid2dDataExtractorUnitTests::testCopiedExtractor
+//------------------------------------------------------------------------------
+/// \brief Test creating triangles using cell centroid.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
+  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  TS_REQUIRE_NOT_NULL(ugrid);
+  XmUGridTriangles triangles;
+  triangles.GenerateTriangles(*ugrid);
+  VecPt3d triPointsOut = triangles.GetTrianglePoints();
   VecPt3d triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {0.5, 0.5, 0}};
   TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
 
-  VecInt trianglesOut = extractor->GetTriangles();
+  VecInt trianglesOut = triangles.GetTriangles();
   VecInt trianglesExpected = {0, 1, 4, 1, 2, 4, 2, 3, 4, 3, 0, 4};
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
 } // XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test creating triangles using cell centroid for linear 2D cell types.
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles2dCellTypes()
 {
@@ -497,9 +576,11 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles2dCellTypes()
   // clang-format on
 
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
-  TS_ASSERT(extractor);
-  VecPt3d triPointsOut = extractor->GetTrianglePoints();
+  TS_REQUIRE_NOT_NULL(ugrid);
+  XmUGridTriangles triangles;
+  triangles.GenerateTriangles(*ugrid);
+
+  VecPt3d triPointsOut = triangles.GetTrianglePoints();
   // clang-format off
   VecPt3d triPointsExpected = {
     {0.0, 0.0, 0.0},
@@ -526,7 +607,7 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles2dCellTypes()
   // clang-format on
   TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
 
-  VecInt trianglesOut = extractor->GetTriangles();
+  VecInt trianglesOut = triangles.GetTriangles();
   // clang-format off
   VecInt trianglesExpected = {
     0, 1, 14, 1, 6, 14, 6, 5, 14, 5, 0, 14, // quad
@@ -537,7 +618,7 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles2dCellTypes()
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
 } // XmUGrid2dDataExtractorUnitTests::testGenerateCentroidTriangles2dCellTypes
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test creating plan view 2D triangles using ear cut algorithm.
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorUnitTests::testGenerateEarcutTriangles()
 {
@@ -555,7 +636,8 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateEarcutTriangles()
     // clang-format on
 
     BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-    XmUGridTriangles ugridTris(ugrid->GetPoints());
+    XmUGridTriangles ugridTris;
+    ugridTris.Initialize(*ugrid);
     VecInt polygon;
     ugrid->GetPointsOfCell(0, polygon);
     iGenerateEarcutTriangles(ugridTris, 0, polygon);
@@ -583,7 +665,8 @@ void XmUGrid2dDataExtractorUnitTests::testGenerateEarcutTriangles()
     // clang-format on
 
     BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-    XmUGridTriangles ugridTris(ugrid->GetPoints());
+    XmUGridTriangles ugridTris;
+    ugridTris.Initialize(*ugrid);
     VecInt polygon;
     ugrid->GetPointsOfCell(0, polygon);
     iGenerateEarcutTriangles(ugridTris, 0, polygon);

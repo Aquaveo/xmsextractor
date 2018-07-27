@@ -41,8 +41,20 @@ public:
   static BSHP<XmUGrid2dDataExtractor> New(BSHP<XmUGrid2dDataExtractor> a_extractor);
   virtual ~XmUGrid2dDataExtractor();
 
-  virtual const VecPt3d& GetTrianglePoints() = 0;
-  virtual const VecInt& GetTriangles() = 0;
+  /// \cond
+  virtual void SetExtractLocations(const VecPt3d& a_locations) = 0;
+
+  virtual void SetGridPointScalars(const VecFlt& a_pointScalars) = 0;
+  //virtual void SetGridCellScalars(const VecFlt& a_cellScalars) = 0;
+  //virtual void SetGridPointActivity(const DynBitset& a_activity) = 0;
+  //virtual void SetGridCellActivity(const DynBitset& a_activity) = 0;
+
+  //virtual void ExtractData(VecFlt& outData) = 0;
+
+  //virtual void ExtractFromCellData(const VecFlt& a_cellScalars, const DynBitset& a_activity,
+  //                                 VecFlt& outData);
+  //virtual void ExtractFromPointData(const VecFlt& a_pointScalars, const DynBitset& a_activity,
+  //                                  VecFlt& outData);
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGrid2dDataExtractor)
