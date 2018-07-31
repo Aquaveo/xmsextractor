@@ -19,8 +19,10 @@
 // 5. Shared code headers
 #include <xmscore/misc/XmError.h>
 #include <xmscore/misc/XmLog.h>
+#include <xmscore/misc/xmstype.h>
 #include <xmsextractor/ugrid/XmUGridTriangles2d.h>
 #include <xmsinterp/geometry/geoms.h>
+#include <xmsinterp/geometry/GmTriSearch.h>
 #include <xmsgrid/ugrid/XmUGrid.h>
 
 // 6. Non-shared code headers
@@ -47,6 +49,8 @@ namespace xms
 class XmUGrid2dDataExtractorImpl : public XmUGrid2dDataExtractor
 {
 public:
+  enum TriangleTypeEnum { NO_TRIANGLES, POINT_TRIANGLES, CELL_TRIANGLES };
+
   XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid);
   XmUGrid2dDataExtractorImpl(BSHP<XmUGrid2dDataExtractorImpl> a_extractor);
 
@@ -54,17 +58,17 @@ public:
 
   virtual void SetGridPointScalars(const VecFlt& a_pointScalars) override;
 
-  virtual const VecPt3d& GetTrianglePoints();
-  virtual const VecInt& GetTriangles();
+  virtual void ExtractData(VecFlt& a_outData) override;
 
 private:
-  //void PushPointDataToTriangles();
+  void PushPointDataToCentroids();
   //void PushCellDataToTriangles();
 
   BSHP<XmUGrid> m_ugrid;              ///< UGrid for dataset
+  TriangleTypeEnum m_triangleType;    ///< keeps track of type of generated triangles
   BSHP<XmUGridTriangles> m_triangles; ///< manages triangles
   VecPt3d m_extractLocations;         ///< output locations for interpolated values
-  VecFlt m_scalars;                   ///< scalars to interpolate from
+  VecFlt m_pointScalars;              ///< scalars to interpolate from
 };
 
 
@@ -79,9 +83,11 @@ private:
 //------------------------------------------------------------------------------
 XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
 : m_ugrid(a_ugrid)
+, m_triangleType(NO_TRIANGLES)
 , m_triangles(new XmUGridTriangles())
+, m_extractLocations()
+, m_pointScalars()
 {
-  m_triangles->GenerateTriangles(*a_ugrid);
 } // XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl
 //------------------------------------------------------------------------------
 /// \brief Create a new XmUGrid2dDataExtractorImpl using shallow copy from
@@ -91,7 +97,10 @@ XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
 //------------------------------------------------------------------------------
 XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid2dDataExtractorImpl> a_extractor)
 : m_ugrid(a_extractor->m_ugrid)
+, m_triangleType(a_extractor->m_triangleType)
 , m_triangles(a_extractor->m_triangles)
+, m_extractLocations()
+, m_pointScalars()
 {
 } // XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl
 //------------------------------------------------------------------------------
@@ -108,22 +117,65 @@ void XmUGrid2dDataExtractorImpl::SetExtractLocations(const VecPt3d& a_locations)
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalars)
 {
-  m_scalars = a_pointScalars;
+  m_triangles->BuildTriangles(*m_ugrid, false);
+  m_pointScalars = a_pointScalars;
+  PushPointDataToCentroids();
 } // XmUGrid2dDataExtractorImpl::SetGridPointScalars
 //------------------------------------------------------------------------------
-/// \brief Get generated triangle points for testing.
+/// \brief Extract interpolated data for the previously set locations.
+/// \param[in] a_pointScalars The point scalars.
 //------------------------------------------------------------------------------
-const VecPt3d& XmUGrid2dDataExtractorImpl::GetTrianglePoints()
+void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
 {
-  return m_triangles->GetTrianglePoints();
-} // XmUGrid2dDataExtractorImpl::GetTrianglePoints
+  a_outData.clear();
+
+  BSHP<GmTriSearch> triSearch = GmTriSearch::New();
+  triSearch->TrisToSearch(m_triangles->GetPointsPtr(), m_triangles->GetTrianglesPtr());
+
+  a_outData.reserve(m_extractLocations.size());
+  VecInt interpIdxs;
+  VecDbl interpWeights;
+  for (const auto& pt: m_extractLocations)
+  {
+    if (triSearch->InterpWeights(pt, interpIdxs, interpWeights))
+    {
+      double interpValue = 0.0;
+      for (size_t i = 0; i < interpIdxs.size(); ++i)
+      {
+        int ptIdx = interpIdxs[i];
+        double weight = interpWeights[i];
+        interpValue += m_pointScalars[ptIdx]*weight;
+      }
+      a_outData.push_back(static_cast<float>(interpValue));
+    }
+    else
+    {
+      a_outData.push_back(XM_NODATA);
+    }
+  }
+} // XmUGrid2dDataExtractorImpl::ExtractData
 //------------------------------------------------------------------------------
-/// \brief Get generated triangles for testing.
+/// \brief Push point scalar data to cell centroids using average.
 //------------------------------------------------------------------------------
-const VecInt& XmUGrid2dDataExtractorImpl::GetTriangles()
+void XmUGrid2dDataExtractorImpl::PushPointDataToCentroids()
 {
-  return m_triangles->GetTriangles();
-} // XmUGrid2dDataExtractorImpl::GetTriangles
+  m_pointScalars.resize(m_triangles->GetPoints().size());
+  VecInt cellPoints;
+  int numCells = m_ugrid->GetNumberOfCells();
+  for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
+  {
+    int centroidIdx = m_triangles->GetCellCentroid(cellIdx);
+    if (centroidIdx >= 0)
+    {
+      m_ugrid->GetPointsOfCell(cellIdx, cellPoints);
+      double sum = 0.0;
+      for (auto ptIdx: cellPoints)
+        sum += m_pointScalars[ptIdx];
+      double average = sum/cellPoints.size();
+      m_pointScalars[centroidIdx] = static_cast<float>(average);
+    }
+  }
+} // XmUGrid2dDataExtractorImpl::SetGridPointScalars
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dDataExtractor
@@ -197,18 +249,19 @@ void XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
   BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
-  //VecPt3d triPointsOut = extractor->GetTrianglePoints();
-  //VecPt3d triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {0.5, 0.5, 0}};
-  //TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
 
-  //VecInt trianglesOut = extractor->GetTriangles();
-  //VecInt trianglesExpected = {0, 1, 4, 1, 2, 4, 2, 3, 4, 3, 0, 4};
-  //TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
+  extractor->SetGridPointScalars({1, 2, 3, 4});
+  extractor->SetExtractLocations({Pt3d(0.5, 0.5, 0.0)});
+  VecFlt interpValues;
+  extractor->ExtractData(interpValues);
+  VecFlt expected = { static_cast<float>((1.0 + 2.0 + 3.0 + 4.0)/4) };
+  TS_ASSERT_EQUALS(expected, interpValues);
 
   BSHP<XmUGrid2dDataExtractor> extractor2 = XmUGrid2dDataExtractor::New(extractor);
-  //TS_ASSERT_EQUALS(triPointsExpected, extractor2->GetTrianglePoints());
-  //TS_ASSERT_EQUALS(trianglesExpected, extractor2->GetTriangles());
-  TS_FAIL("Should test with different extracted values.");
+  extractor2->SetGridPointScalars({1, 2, 3, 4});
+  extractor2->SetExtractLocations({Pt3d(0.5, 0.5, 0.0)});
+  extractor2->ExtractData(interpValues);
+  TS_ASSERT_EQUALS(expected, interpValues);
 } // XmUGrid2dDataExtractorUnitTests::testCopiedExtractor
 
 #endif

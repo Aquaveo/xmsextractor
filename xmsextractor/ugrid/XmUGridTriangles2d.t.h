@@ -23,9 +23,9 @@
 class XmUGridTriangles2dUnitTests : public CxxTest::TestSuite
 {
 public:
-  void testGenerateCentroidTriangles();
-  void testGenerateCentroidTriangles2dCellTypes();
-  void testGenerateEarcutTriangles();
+  void testBuildCentroidTriangles();
+  void testBuildCentroidTriangles2dCellTypes();
+  void testBuildEarcutTriangles();
 }; // XmUGridTriangles2d
 
 #endif

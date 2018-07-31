@@ -49,7 +49,7 @@ public:
   //virtual void SetGridPointActivity(const DynBitset& a_activity) = 0;
   //virtual void SetGridCellActivity(const DynBitset& a_activity) = 0;
 
-  //virtual void ExtractData(VecFlt& outData) = 0;
+  virtual void ExtractData(VecFlt& outData) = 0;
 
   //virtual void ExtractFromCellData(const VecFlt& a_cellScalars, const DynBitset& a_activity,
   //                                 VecFlt& outData);

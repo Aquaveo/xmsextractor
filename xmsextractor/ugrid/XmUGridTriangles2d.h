@@ -39,20 +39,27 @@ class XmUGridTriangles
 public:
   XmUGridTriangles();
 
-  void Initialize(const XmUGrid& a_ugrid);
-  void GenerateTriangles(const XmUGrid& a_ugrid, bool a_earcutTriangles = false);
+  void BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters);
+  void BuildEarcutTriangles(const XmUGrid& a_ugrid);
 
-  const VecPt3d& GetTrianglePoints();
-  const VecInt& GetTriangles();
+  const VecPt3d& GetPoints() const;
+  const VecInt& GetTriangles() const;
+  BSHP<VecPt3d> GetPointsPtr();
+  BSHP<VecInt> GetTrianglesPtr();
+
   int AddCellCentroid(int a_cellIdx, const Pt3d& a_point);
   void AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, int a_idx3);
 
+  int GetCellCentroid(int a_cellIdx) const;
+  const VecInt& GetCellCentroids() const;
+
 private:
-  BSHP<VecPt3d> m_trianglePoints; ///< Triangle points for the UGrid
-  BSHP<VecInt> m_triangles;       ///< Triangles for the UGrid
-  int m_firstCellPoint;           ///< Index of first point that is a centroid
-  VecInt m_pointCell;             ///< The cell index for each centroid
-  VecInt m_triangleCell;          ///< The cell index for each triangle
+  void Initialize(const XmUGrid& a_ugrid);
+
+  BSHP<VecPt3d> m_points;      ///< Triangle points for the UGrid
+  BSHP<VecInt> m_triangles;    ///< Triangles for the UGrid
+  VecInt m_centroidIdxs;       ///< Index of each cell centroid or -1 if none
+  VecInt m_triangleToCellIdx;  ///< The cell index for each triangle
 };
 
 //----- Function prototypes ----------------------------------------------------
