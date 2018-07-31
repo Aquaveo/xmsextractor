@@ -278,8 +278,7 @@ void XmUGridTriangles::Initialize(const XmUGrid& a_ugrid)
 //------------------------------------------------------------------------------
 /// \brief Generate triangles for the UGrid.
 /// \param[in] a_ugrid The UGrid for which triangles are generated.
-/// \param[in] a_earcutTriangles Whether or not to use the earcut algorithm
-///            to generate triangles.
+/// \param[in] a_addTriangleCenters Whether or not triangle cells get a centroid added.
 //------------------------------------------------------------------------------
 void XmUGridTriangles::BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters)
 {

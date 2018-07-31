@@ -49,6 +49,7 @@ namespace xms
 class XmUGrid2dDataExtractorImpl : public XmUGrid2dDataExtractor
 {
 public:
+  /// Type of triangles generated
   enum TriangleTypeEnum { NO_TRIANGLES, POINT_TRIANGLES, CELL_TRIANGLES };
 
   XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid);
@@ -123,7 +124,7 @@ void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalar
 } // XmUGrid2dDataExtractorImpl::SetGridPointScalars
 //------------------------------------------------------------------------------
 /// \brief Extract interpolated data for the previously set locations.
-/// \param[in] a_pointScalars The point scalars.
+/// \param[in] a_outData The interpolated scalars.
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
 {
