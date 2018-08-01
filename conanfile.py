@@ -74,7 +74,7 @@ class XmsextractorConan(ConanFile):
 
         # Use the dev version of XMSCore, XMSInterp, and XMSGrid
         self.requires("xmscore/[>1.0.25]@aquaveo/stable")
-        self.requires("xmsinterp/[>=1.0.11]@aquaveo/stable")
+        self.requires("xmsinterp/[>=1.0.12]@aquaveo/stable")
         self.requires("xmsgrid/[>=1.0.1]@aquaveo/stable")
 
     def build(self):

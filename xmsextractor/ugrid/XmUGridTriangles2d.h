@@ -27,6 +27,7 @@
 namespace xms
 {
 //----- Forward declarations ---------------------------------------------------
+class GmTriSearch;
 class XmUGrid;
 
 //----- Constants / Enumerations -----------------------------------------------
@@ -51,7 +52,9 @@ public:
   void AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, int a_idx3);
 
   int GetCellCentroid(int a_cellIdx) const;
-  const VecInt& GetCellCentroids() const;
+
+  BSHP<GmTriSearch> GetTriSearch();
+  int GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights);
 
 private:
   void Initialize(const XmUGrid& a_ugrid);
@@ -60,6 +63,7 @@ private:
   BSHP<VecInt> m_triangles;    ///< Triangles for the UGrid
   VecInt m_centroidIdxs;       ///< Index of each cell centroid or -1 if none
   VecInt m_triangleToCellIdx;  ///< The cell index for each triangle
+  mutable BSHP<GmTriSearch> m_triSearch; ///< Triangle searcher for triangles
 };
 
 //----- Function prototypes ----------------------------------------------------

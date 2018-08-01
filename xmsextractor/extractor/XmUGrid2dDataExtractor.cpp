@@ -58,6 +58,9 @@ public:
   virtual void SetExtractLocations(const VecPt3d& a_locations) override;
 
   virtual void SetGridPointScalars(const VecFlt& a_pointScalars) override;
+  //virtual void SetGridCellScalars(const VecFlt& a_cellScalars) override;
+  //virtual void SetGridPointActivity(const DynBitset& a_activity) override;
+  virtual void SetGridCellActivity(const DynBitset& a_activity) override;
 
   virtual void ExtractData(VecFlt& a_outData) override;
 
@@ -70,6 +73,7 @@ private:
   BSHP<XmUGridTriangles> m_triangles; ///< manages triangles
   VecPt3d m_extractLocations;         ///< output locations for interpolated values
   VecFlt m_pointScalars;              ///< scalars to interpolate from
+  DynBitset m_cellActivity;
 };
 
 
@@ -118,10 +122,21 @@ void XmUGrid2dDataExtractorImpl::SetExtractLocations(const VecPt3d& a_locations)
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalars)
 {
-  m_triangles->BuildTriangles(*m_ugrid, false);
+  if (m_triangleType != POINT_TRIANGLES)
+  {
+    m_triangles->BuildTriangles(*m_ugrid, false);
+    m_triangleType = POINT_TRIANGLES;
+  }
   m_pointScalars = a_pointScalars;
   PushPointDataToCentroids();
 } // XmUGrid2dDataExtractorImpl::SetGridPointScalars
+//------------------------------------------------------------------------------
+/// \brief Set activity on cells
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorImpl::SetGridCellActivity(const DynBitset& a_cellActivity)
+{
+  m_cellActivity = a_cellActivity;
+} // XmUGrid2dDataExtractorImpl::SetGridCellActivity
 //------------------------------------------------------------------------------
 /// \brief Extract interpolated data for the previously set locations.
 /// \param[in] a_outData The interpolated scalars.
@@ -130,15 +145,13 @@ void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
 {
   a_outData.clear();
 
-  BSHP<GmTriSearch> triSearch = GmTriSearch::New();
-  triSearch->TrisToSearch(m_triangles->GetPointsPtr(), m_triangles->GetTrianglesPtr());
-
   a_outData.reserve(m_extractLocations.size());
   VecInt interpIdxs;
   VecDbl interpWeights;
   for (const auto& pt: m_extractLocations)
   {
-    if (triSearch->InterpWeights(pt, interpIdxs, interpWeights))
+    int cellIdx = m_triangles->GetIntersectedCell(pt, interpIdxs, interpWeights);
+    if (cellIdx >= 0 && (m_cellActivity.empty() || m_cellActivity[cellIdx]))
     {
       double interpValue = 0.0;
       for (size_t i = 0; i < interpIdxs.size(); ++i)
@@ -240,6 +253,56 @@ using namespace xms;
 /// \class XmUGrid2dDataExtractorUnitTests
 /// \brief Class to to test XmUGrid2dDataExtractor
 ////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
+/// \brief Test extractor built by copying triangles.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testPointScalarsOnly()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  TS_ASSERT(extractor);
+
+  extractor->SetGridPointScalars({1, 2, 3, 2});
+  extractor->SetExtractLocations({
+    Pt3d(0.0, 0.0, 0.0),
+    Pt3d(0.25, 0.75, 100.0),
+    Pt3d(0.5, 0.5, 0.0),
+    Pt3d(0.75, 0.25, -100.0),
+    Pt3d(-1.0, -1.0, 0.0)});
+
+  VecFlt interpValues;
+  extractor->ExtractData(interpValues);
+  VecFlt expected = { 1.0, 2.0, 2.0, 2.0, XM_NODATA };
+  TS_ASSERT_EQUALS(expected, interpValues);
+} // XmUGrid2dDataExtractorUnitTests::testScalarsOnly
+//------------------------------------------------------------------------------
+/// \brief Test extractor built by copying triangles.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testPointScalarCellActivity()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  TS_ASSERT(extractor);
+
+  extractor->SetGridPointScalars({1, 2, 3, 2});
+  extractor->SetExtractLocations({
+    Pt3d(0.25, 0.75, 100.0),
+    Pt3d(0.75, 0.25, -100.0),
+    Pt3d(-1.0, -1.0, 0.0)});
+  DynBitset cellActivity;
+  cellActivity.push_back(true);
+  cellActivity.push_back(false);
+  extractor->SetGridCellActivity(cellActivity);
+
+  VecFlt interpValues;
+  extractor->ExtractData(interpValues);
+  VecFlt expected = { XM_NODATA, 2.0, XM_NODATA };
+  TS_ASSERT_EQUALS(expected, interpValues);
+} // XmUGrid2dDataExtractorUnitTests::testPointScalarCellActivity
 //------------------------------------------------------------------------------
 /// \brief Test extractor built by copying triangles.
 //------------------------------------------------------------------------------

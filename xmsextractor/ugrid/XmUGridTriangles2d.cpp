@@ -20,6 +20,7 @@
 #include <xmscore/misc/XmError.h>
 #include <xmscore/misc/XmLog.h>
 #include <xmsinterp/geometry/geoms.h>
+#include <xmsinterp/geometry/GmTriSearch.h>
 #include <xmsgrid/ugrid/XmUGrid.h>
 
 // 6. Non-shared code headers
@@ -263,6 +264,7 @@ XmUGridTriangles::XmUGridTriangles()
 , m_triangles(new VecInt)
 , m_centroidIdxs()
 , m_triangleToCellIdx()
+, m_triSearch()
 {
 } // XmUGridTriangles::XmUGridTriangles
 //------------------------------------------------------------------------------
@@ -274,6 +276,7 @@ void XmUGridTriangles::Initialize(const XmUGrid& a_ugrid)
   *m_points = a_ugrid.GetPoints();
   m_triangles->clear();
   m_centroidIdxs.assign(a_ugrid.GetNumberOfCells(), -1);
+  m_triSearch.reset();
 } // XmUGridTriangles::Initialize
 //------------------------------------------------------------------------------
 /// \brief Generate triangles for the UGrid.
@@ -288,10 +291,13 @@ void XmUGridTriangles::BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangle
   VecInt cellPoints;
   for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
   {
-    bool triangulate = a_ugrid.GetCellType(cellIdx) != XMU_TRIANGLE || a_addTriangleCenters;
-    if (triangulate)
+    a_ugrid.GetPointsOfCell(cellIdx, cellPoints);
+    if (a_ugrid.GetCellType(cellIdx) == XMU_TRIANGLE && !a_addTriangleCenters)
     {
-      a_ugrid.GetPointsOfCell(cellIdx, cellPoints);
+      AddCellTriangle(cellIdx, cellPoints[0], cellPoints[1], cellPoints[2]);
+    }
+    else
+    {
       if (!iGenerateCentroidTriangles(*this, cellIdx, cellPoints))
         iBuildEarcutTriangles(*this, cellIdx, cellPoints);
     }
@@ -385,13 +391,33 @@ int XmUGridTriangles::GetCellCentroid(int a_cellIdx) const
   return pointIdx;
 } // XmUGridTriangles::GetCellCentroid
 //------------------------------------------------------------------------------
-/// \brief Get vector of cell centroid point indeces.
-/// \return The vector of cell centroid point indeces.
+/// \brief 
 //------------------------------------------------------------------------------
-const VecInt& XmUGridTriangles::GetCellCentroids() const
+BSHP<GmTriSearch> XmUGridTriangles::GetTriSearch()
 {
-  return m_centroidIdxs;
-} // XmUGridTriangles::GetCellCentroids
+  if (!m_triSearch)
+  {
+    m_triSearch = GmTriSearch::New();
+    m_triSearch->TrisToSearch(m_points, m_triangles);
+  }
+  return m_triSearch;
+} // XmUGridTriangles::GetTriSearch
+//------------------------------------------------------------------------------
+/// \brief 
+//------------------------------------------------------------------------------
+int XmUGridTriangles::GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights)
+{
+  if (!m_triSearch)
+    GetTriSearch();
+  int cellIdx = -1;
+  int triangleLocation;
+  if (m_triSearch->InterpWeightsTriangleIdx(a_point, triangleLocation, a_idxs, a_weights))
+  {
+    int triangleIdx = triangleLocation / 3;
+    cellIdx = m_triangleToCellIdx[triangleIdx];
+  }
+  return cellIdx;
+} // XmUGridTriangles::GetIntersectedCell
 
 } // namespace xms
 
@@ -429,9 +455,6 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTriangles()
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
 
   TS_ASSERT_EQUALS(4, triangles.GetCellCentroid(0));
-  VecInt cellCentroids = triangles.GetCellCentroids();
-  VecInt expectedCellCentroids = { 4 };
-  TS_ASSERT_EQUALS(expectedCellCentroids, cellCentroids);
 } // XmUGridTriangles2dUnitTests::testBuildCentroidTriangles
 //------------------------------------------------------------------------------
 /// \brief Test creating triangles using cell centroid for linear 2D cell types.
