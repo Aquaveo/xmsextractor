@@ -47,7 +47,7 @@ public:
 
   virtual void SetGridPointScalars(const VecFlt& a_pointScalars) = 0;
   //virtual void SetGridCellScalars(const VecFlt& a_cellScalars) = 0;
-  //virtual void SetGridPointActivity(const DynBitset& a_activity) = 0;
+  virtual void SetGridPointActivity(const DynBitset& a_activity) = 0;
   virtual void SetGridCellActivity(const DynBitset& a_activity) = 0;
 
   virtual void ExtractData(VecFlt& outData) = 0;

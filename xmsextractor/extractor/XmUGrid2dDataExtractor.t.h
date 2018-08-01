@@ -25,6 +25,7 @@ class XmUGrid2dDataExtractorUnitTests : public CxxTest::TestSuite
 public:
   void testPointScalarsOnly();
   void testPointScalarCellActivity();
+  void testPointScalarPointActivity();
   void testCopiedExtractor();
 }; // XmUGrid2dDataExtractorUnitTests
 
