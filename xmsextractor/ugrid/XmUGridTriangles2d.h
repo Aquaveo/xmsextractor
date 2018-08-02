@@ -38,32 +38,26 @@ class XmUGrid;
 class XmUGridTriangles
 {
 public:
+  static BSHP<XmUGridTriangles> New();
+  virtual ~XmUGridTriangles();
+
+  virtual void BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters) = 0;
+  virtual void BuildEarcutTriangles(const XmUGrid& a_ugrid) = 0;
+
+  virtual const VecPt3d& GetPoints() const = 0;
+  virtual const VecInt& GetTriangles() const = 0;
+  virtual BSHP<VecPt3d> GetPointsPtr() = 0;
+  virtual BSHP<VecInt> GetTrianglesPtr() = 0;
+
+  virtual int GetCellCentroid(int a_cellIdx) const = 0;
+  virtual int GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights) = 0;
+
+protected:
   XmUGridTriangles();
 
-  void BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters);
-  void BuildEarcutTriangles(const XmUGrid& a_ugrid);
-
-  const VecPt3d& GetPoints() const;
-  const VecInt& GetTriangles() const;
-  BSHP<VecPt3d> GetPointsPtr();
-  BSHP<VecInt> GetTrianglesPtr();
-
-  int AddCellCentroid(int a_cellIdx, const Pt3d& a_point);
-  void AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, int a_idx3);
-
-  int GetCellCentroid(int a_cellIdx) const;
-
-  BSHP<GmTriSearch> GetTriSearch();
-  int GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights);
-
 private:
-  void Initialize(const XmUGrid& a_ugrid);
+  XM_DISALLOW_COPY_AND_ASSIGN(XmUGridTriangles)
 
-  BSHP<VecPt3d> m_points;      ///< Triangle points for the UGrid
-  BSHP<VecInt> m_triangles;    ///< Triangles for the UGrid
-  VecInt m_centroidIdxs;       ///< Index of each cell centroid or -1 if none
-  VecInt m_triangleToCellIdx;  ///< The cell index for each triangle
-  mutable BSHP<GmTriSearch> m_triSearch; ///< Triangle searcher for triangles
 };
 
 //----- Function prototypes ----------------------------------------------------

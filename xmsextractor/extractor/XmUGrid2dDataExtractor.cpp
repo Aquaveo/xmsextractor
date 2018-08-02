@@ -89,7 +89,7 @@ private:
 XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
 : m_ugrid(a_ugrid)
 , m_triangleType(NO_TRIANGLES)
-, m_triangles(new XmUGridTriangles())
+, m_triangles(XmUGridTriangles::New())
 , m_extractLocations()
 , m_pointScalars()
 {
@@ -122,6 +122,8 @@ void XmUGrid2dDataExtractorImpl::SetExtractLocations(const VecPt3d& a_locations)
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalars)
 {
+  if (a_pointScalars.size() != m_ugrid->GetNumberOfPoints())
+    XM_LOG(xmlog::debug, "Invalid scalar size in 2D data extractor.");
   if (m_triangleType != POINT_TRIANGLES)
   {
     m_triangles->BuildTriangles(*m_ugrid, false);
@@ -135,6 +137,8 @@ void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalar
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::SetGridCellActivity(const DynBitset& a_cellActivity)
 {
+  if (a_cellActivity.size() != m_ugrid->GetNumberOfPoints() && !a_cellActivity.empty())
+    XM_LOG(xmlog::debug, "Invalid cell activity size in 2D data extractor.");
   m_cellActivity = a_cellActivity;
 } // XmUGrid2dDataExtractorImpl::SetGridCellActivity
 //------------------------------------------------------------------------------
@@ -144,6 +148,8 @@ void XmUGrid2dDataExtractorImpl::SetGridCellActivity(const DynBitset& a_cellActi
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::SetGridPointActivity(const DynBitset& a_pointActivity)
 {
+  if (a_pointActivity.size() != m_ugrid->GetNumberOfPoints() && !a_pointActivity.empty())
+    XM_LOG(xmlog::debug, "Invalid point activity size in 2D data extractor.");
   m_cellActivity.clear();
   m_cellActivity.resize(m_ugrid->GetNumberOfCells(), true);
   VecInt attachedCells;
@@ -152,7 +158,7 @@ void XmUGrid2dDataExtractorImpl::SetGridPointActivity(const DynBitset& a_pointAc
   {
     if (!a_pointActivity[pointIdx])
     {
-      attachedCells = m_ugrid->GetPointCells(pointIdx);
+      m_ugrid->GetPointCells(pointIdx, attachedCells);
       for (auto cellIdx: attachedCells)
       {
         m_cellActivity[cellIdx] = false;
