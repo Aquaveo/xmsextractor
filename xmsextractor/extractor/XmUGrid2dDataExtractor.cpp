@@ -58,7 +58,7 @@ public:
   virtual void SetExtractLocations(const VecPt3d& a_locations) override;
 
   virtual void SetGridPointScalars(const VecFlt& a_pointScalars) override;
-  //virtual void SetGridCellScalars(const VecFlt& a_cellScalars) override;
+  virtual void SetGridCellScalars(const VecFlt& a_cellScalars) override;
   virtual void SetGridPointActivity(const DynBitset& a_activity) override;
   virtual void SetGridCellActivity(const DynBitset& a_activity) override;
 
@@ -66,14 +66,13 @@ public:
 
 private:
   void PushPointDataToCentroids();
-  //void PushCellDataToTriangles();
+  void PushCellDataToTrianglePoints(const VecFlt& a_cellScalars);
 
   BSHP<XmUGrid> m_ugrid;              ///< UGrid for dataset
   TriangleTypeEnum m_triangleType;    ///< keeps track of type of generated triangles
   BSHP<XmUGridTriangles> m_triangles; ///< manages triangles
   VecPt3d m_extractLocations;         ///< output locations for interpolated values
   VecFlt m_pointScalars;              ///< scalars to interpolate from
-  DynBitset m_cellActivity;
 };
 
 
@@ -123,7 +122,9 @@ void XmUGrid2dDataExtractorImpl::SetExtractLocations(const VecPt3d& a_locations)
 void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalars)
 {
   if (a_pointScalars.size() != m_ugrid->GetNumberOfPoints())
+  {
     XM_LOG(xmlog::debug, "Invalid scalar size in 2D data extractor.");
+  }
   if (m_triangleType != POINT_TRIANGLES)
   {
     m_triangles->BuildTriangles(*m_ugrid, false);
@@ -133,13 +134,32 @@ void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalar
   PushPointDataToCentroids();
 } // XmUGrid2dDataExtractorImpl::SetGridPointScalars
 //------------------------------------------------------------------------------
+/// \brief Setup cell scalars to be used to extract interpolated data.
+/// \param[in] a_cellScalars The point scalars.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorImpl::SetGridCellScalars(const VecFlt& a_cellScalars)
+{
+  if ((int)a_cellScalars.size() != m_ugrid->GetNumberOfCells())
+  {
+    XM_LOG(xmlog::debug, "Invalid scalar size in 2D data extractor.");
+  }
+  if (m_triangleType != CELL_TRIANGLES)
+  {
+    m_triangles->BuildTriangles(*m_ugrid, true);
+    m_triangleType = CELL_TRIANGLES;
+  }
+  PushCellDataToTrianglePoints(a_cellScalars);
+} // XmUGrid2dDataExtractorImpl::SetGridCellScalars
+//------------------------------------------------------------------------------
 /// \brief Set activity on cells
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::SetGridCellActivity(const DynBitset& a_cellActivity)
 {
-  if (a_cellActivity.size() != m_ugrid->GetNumberOfPoints() && !a_cellActivity.empty())
+  if (a_cellActivity.size() != m_ugrid->GetNumberOfCells() && !a_cellActivity.empty())
+  {
     XM_LOG(xmlog::debug, "Invalid cell activity size in 2D data extractor.");
-  m_cellActivity = a_cellActivity;
+  }
+  m_triangles->SetCellActivity(a_cellActivity);
 } // XmUGrid2dDataExtractorImpl::SetGridCellActivity
 //------------------------------------------------------------------------------
 /// \brief Set point activity. Turns off each cell attached to an inactive
@@ -149,9 +169,11 @@ void XmUGrid2dDataExtractorImpl::SetGridCellActivity(const DynBitset& a_cellActi
 void XmUGrid2dDataExtractorImpl::SetGridPointActivity(const DynBitset& a_pointActivity)
 {
   if (a_pointActivity.size() != m_ugrid->GetNumberOfPoints() && !a_pointActivity.empty())
+  {
     XM_LOG(xmlog::debug, "Invalid point activity size in 2D data extractor.");
-  m_cellActivity.clear();
-  m_cellActivity.resize(m_ugrid->GetNumberOfCells(), true);
+  }
+  DynBitset cellActivity;
+  cellActivity.resize(m_ugrid->GetNumberOfCells(), true);
   VecInt attachedCells;
   int numPoints = m_ugrid->GetNumberOfPoints();
   for (int pointIdx = 0; pointIdx < numPoints; ++pointIdx)
@@ -161,10 +183,11 @@ void XmUGrid2dDataExtractorImpl::SetGridPointActivity(const DynBitset& a_pointAc
       m_ugrid->GetPointCells(pointIdx, attachedCells);
       for (auto cellIdx: attachedCells)
       {
-        m_cellActivity[cellIdx] = false;
+        cellActivity[cellIdx] = false;
       }
     }
   }
+  m_triangles->SetCellActivity(cellActivity);
 } // XmUGrid2dDataExtractorImpl::SetGridPointActivity
 //------------------------------------------------------------------------------
 /// \brief Extract interpolated data for the previously set locations.
@@ -180,7 +203,7 @@ void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
   for (const auto& pt: m_extractLocations)
   {
     int cellIdx = m_triangles->GetIntersectedCell(pt, interpIdxs, interpWeights);
-    if (cellIdx >= 0 && (m_cellActivity.empty() || m_cellActivity[cellIdx]))
+    if (cellIdx >= 0)
     {
       double interpValue = 0.0;
       for (size_t i = 0; i < interpIdxs.size(); ++i)
@@ -218,7 +241,34 @@ void XmUGrid2dDataExtractorImpl::PushPointDataToCentroids()
       m_pointScalars[centroidIdx] = static_cast<float>(average);
     }
   }
-} // XmUGrid2dDataExtractorImpl::SetGridPointScalars
+} // XmUGrid2dDataExtractorImpl::PushPointDataToCentroids
+//------------------------------------------------------------------------------
+/// \brief Push cell scalar data to triangle points using cells connected to
+///        a point with average or IDW.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorImpl::PushCellDataToTrianglePoints(const VecFlt& a_cellScalars)
+{
+  m_pointScalars.resize(m_triangles->GetPoints().size());
+  VecInt cellIdxs;
+  int numPoints = m_ugrid->GetNumberOfPoints();
+  for (int pointIdx = 0; pointIdx < numPoints; ++pointIdx)
+  {
+    m_ugrid->GetPointCells(pointIdx, cellIdxs);
+    double sum = 0.0;
+    for (auto cellIdx: cellIdxs)
+      sum += a_cellScalars[cellIdx];
+    double average = sum/cellIdxs.size();
+    m_pointScalars[pointIdx] = static_cast<float>(average);
+  }
+
+  int numCells = m_ugrid->GetNumberOfCells();
+  for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
+  {
+    int pointIdx = m_triangles->GetCellCentroid(cellIdx);
+    if (pointIdx >= 0)
+      m_pointScalars[pointIdx] = a_cellScalars[cellIdx];
+  }
+} // XmUGrid2dDataExtractorImpl::PushCellDataToTrianglePoints
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dDataExtractor
@@ -283,7 +333,7 @@ using namespace xms;
 /// \brief Class to to test XmUGrid2dDataExtractor
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
-/// \brief Test extractor built by copying triangles.
+/// \brief Test extractor with point scalars only.
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorUnitTests::testPointScalarsOnly()
 {
@@ -373,19 +423,19 @@ void XmUGrid2dDataExtractorUnitTests::testPointScalarPointActivity()
   // extract value for each cell
   VecPt3d extractLocations = {
     {0.25, 0.25, 0}, // cell 0
-    {1.00, 0.50, 0}, // cell 1
-    {1.50, 0.50, 0}, // cell 2
+    {1.00, 0.25, 0}, // cell 1
+    {1.50, 0.25, 0}, // cell 2
     {1.75, 0.75, 0}, // cell 3
-    {0.25, 1.25, 0}, // cell 4
+    {0.25, 1.75, 0}, // cell 4
     {1.00, 1.25, 0}, // cell 5
-    {1.50, 1.50, 0}, // cell 6
+    {1.50, 1.75, 0}, // cell 6
     {1.75, 1.25, 0}  // cell 7
   };
 
   // expected results with point 4 inactive
   VecFlt expectedPerCell = {
     0.25, XM_NODATA, XM_NODATA, XM_NODATA,
-    1.25, XM_NODATA, XM_NODATA, XM_NODATA };
+    1.75, XM_NODATA, XM_NODATA, XM_NODATA };
   // clang-format on
 
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
@@ -408,6 +458,137 @@ void XmUGrid2dDataExtractorUnitTests::testPointScalarPointActivity()
   extractor->ExtractData(interpValues);
   TS_ASSERT_EQUALS(expectedPerCell, interpValues);
 } // XmUGrid2dDataExtractorUnitTests::testPointScalarPointActivity
+//------------------------------------------------------------------------------
+/// \brief Test extractor with cell scalars only.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testCellScalarsOnly()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  TS_ASSERT(extractor);
+
+  extractor->SetGridCellScalars({1, 2});
+  extractor->SetExtractLocations({
+    Pt3d(0.0, 0.0, 0.0),
+    Pt3d(0.25, 0.75, 100.0),
+    Pt3d(0.5, 0.5, 0.0),
+    Pt3d(0.75, 0.25, -100.0),
+    Pt3d(-1.0, -1.0, 0.0)});
+
+  VecFlt interpValues;
+  extractor->ExtractData(interpValues);
+  VecFlt expected = { 1.5, 2.0, 1.5, 1.0, XM_NODATA };
+  TS_ASSERT_EQUALS(expected, interpValues);
+} // XmUGrid2dDataExtractorUnitTests::testCellScalarsOnly
+//------------------------------------------------------------------------------
+/// \brief Test extractor when using cell scalars and cell activity.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivity()
+{
+  // clang-format off
+  //  6----7---------8 point row 3
+  //  | 4 / \       /|
+  //  |  /   \  6  / |
+  //  | /  5  \   /  |
+  //  |/       \ / 7 |
+  //  3---------4----5 point row 2
+  //  |\       / \ 3 |
+  //  | \  1  /   \  |
+  //  |  \   /     \ |
+  //  | 0 \ /   2   \|
+  //  0----1---------2 point row 1
+  //
+  VecPt3d points = {
+    {0, 0, 0}, {1, 0, 0}, {3, 0, 0},  // row 1 of points
+    {0, 1, 0}, {2, 1, 0}, {3, 1, 0},  // row 2 of points
+    {0, 2, 0}, {1, 2, 0}, {3, 2, 0}}; // row 3 of points
+  VecInt cells = {
+    XMU_TRIANGLE, 3, 0, 1, 3, // row 1 of triangles
+    XMU_TRIANGLE, 3, 1, 4, 3,
+    XMU_TRIANGLE, 3, 1, 2, 4,
+    XMU_TRIANGLE, 3, 2, 5, 4,
+
+    XMU_TRIANGLE, 3, 3, 7, 6, // row 2 of triangles
+    XMU_TRIANGLE, 3, 3, 4, 7,
+    XMU_TRIANGLE, 3, 4, 8, 7,
+    XMU_TRIANGLE, 3, 4, 5, 8};
+
+  VecFlt cellScalars = {
+    2, 4, 6, 8,  // row 1
+    4, 6, 8, 10  // row 2
+  };
+
+  // extract value for each cell
+  VecPt3d extractLocations = {
+    {0.25, 0.25, 0}, // cell 0
+    {1.00, 0.25, 0}, // cell 1
+    {1.50, 0.25, 0}, // cell 2
+    {1.75, 0.75, 0}, // cell 3
+    {0.25, 1.75, 0}, // cell 4
+    {1.00, 1.25, 0}, // cell 5
+    {1.50, 1.75, 0}, // cell 6
+    {1.75, 1.25, 0}  // cell 7
+  };
+
+  // expected results with point 4 inactive
+  VecFlt expectedPerCell = {
+    XM_NODATA,   4.0, XM_NODATA, 6.25,
+    XM_NODATA, 5.875, XM_NODATA, 6.75 };
+  // clang-format on
+
+  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  TS_ASSERT(extractor);
+
+  extractor->SetGridCellScalars(cellScalars);
+
+  // extract interpolated scalar for each cell
+  extractor->SetExtractLocations(extractLocations);
+
+  // set point 4 inactive
+  // should cause all cells connected to point 4 to return XM_NODATA
+  DynBitset cellActivity;
+  cellActivity.resize(8, true);
+  cellActivity[0] = false;
+  cellActivity[2] = false;
+  cellActivity[4] = false;
+  cellActivity[6] = false;
+  extractor->SetGridCellActivity(cellActivity);
+
+  VecFlt interpValues;
+  extractor->ExtractData(interpValues);
+  TS_ASSERT_EQUALS(expectedPerCell, interpValues);
+} // XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivity
+//------------------------------------------------------------------------------
+/// \brief Test extractor when using point scalars and point activity.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testCellScalarPointActivity()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  TS_ASSERT(extractor);
+
+  extractor->SetGridCellScalars({1, 2});
+  extractor->SetExtractLocations({
+    Pt3d(0.0, 0.0, 0.0),
+    Pt3d(0.25, 0.75, 100.0),
+    Pt3d(0.5, 0.5, 0.0),
+    Pt3d(0.75, 0.25, -100.0),
+    Pt3d(-1.0, -1.0, 0.0)});
+  DynBitset pointActivity;
+  pointActivity.resize(4, true);
+  pointActivity[1] = false;
+  extractor->SetGridPointActivity(pointActivity);
+
+  VecFlt interpValues;
+  extractor->ExtractData(interpValues);
+  VecFlt expected = { 1.5, 2.0, 1.5, XM_NODATA, XM_NODATA };
+  TS_ASSERT_EQUALS(expected, interpValues);
+} // XmUGrid2dDataExtractorUnitTests::testCellScalarPointActivity
 //------------------------------------------------------------------------------
 /// \brief Test extractor built by copying triangles.
 //------------------------------------------------------------------------------

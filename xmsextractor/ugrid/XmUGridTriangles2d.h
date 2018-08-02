@@ -17,6 +17,7 @@
 // 5. Shared code headers
 #include <xmscore/misc/base_macros.h>
 #include <xmscore/misc/boost_defines.h>
+#include <xmscore/misc/DynBitset.h>
 #include <xmscore/stl/vector.h>
 
 //----- Forward declarations ---------------------------------------------------
@@ -43,6 +44,7 @@ public:
 
   virtual void BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters) = 0;
   virtual void BuildEarcutTriangles(const XmUGrid& a_ugrid) = 0;
+  virtual void SetCellActivity(const DynBitset& a_cellActivity) = 0;
 
   virtual const VecPt3d& GetPoints() const = 0;
   virtual const VecInt& GetTriangles() const = 0;

@@ -52,6 +52,7 @@ public:
 
   virtual void BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters) override;
   virtual void BuildEarcutTriangles(const XmUGrid& a_ugrid) override;
+  virtual void SetCellActivity(const DynBitset& a_cellActivity) override;
 
   virtual const VecPt3d& GetPoints() const override;
   virtual const VecInt& GetTriangles() const override;
@@ -340,6 +341,21 @@ void XmUGridTrianglesImpl::BuildEarcutTriangles(const XmUGrid& a_ugrid)
     iBuildEarcutTriangles(*this, cellIdx, cellPoints);
   }
 } // XmUGridTrianglesImpl::BuildEarcutTriangles
+//------------------------------------------------------------------------------
+/// \brief Set triangle activity based on each triangles cell.
+//------------------------------------------------------------------------------
+void XmUGridTrianglesImpl::SetCellActivity(const DynBitset& a_cellActivity)
+{
+  DynBitset triangleActivity;
+  int numTriangles = (int)m_triangleToCellIdx.size();
+  triangleActivity.resize(numTriangles);
+  for (size_t triangleIdx = 0; triangleIdx < numTriangles; ++triangleIdx)
+  {
+    int cellIdx = m_triangleToCellIdx[triangleIdx];
+    triangleActivity[triangleIdx] = a_cellActivity[cellIdx];
+  }
+  GetTriSearch()->SetTriActivity(triangleActivity);
+} // XmUGridTrianglesImpl::SetCellActivity
 //------------------------------------------------------------------------------
 /// \brief Get the generated triangle points.
 /// \return The triangle points
