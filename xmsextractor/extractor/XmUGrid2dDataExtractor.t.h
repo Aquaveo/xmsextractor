@@ -28,6 +28,7 @@ public:
   void testPointScalarPointActivity();
   void testCellScalarsOnly();
   void testCellScalarCellActivity();
+  void testCellScalarCellActivityIdw();
   void testCellScalarPointActivity();
   void testCopiedExtractor();
 }; // XmUGrid2dDataExtractorUnitTests

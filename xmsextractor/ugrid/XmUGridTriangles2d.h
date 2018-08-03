@@ -41,7 +41,7 @@ class XmUGridTriangles
 public:
   static BSHP<XmUGridTriangles> New();
   virtual ~XmUGridTriangles();
-  
+
   /// \cond
   virtual void BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters) = 0;
   virtual void BuildEarcutTriangles(const XmUGrid& a_ugrid) = 0;
@@ -54,14 +54,13 @@ public:
 
   virtual int GetCellCentroid(int a_cellIdx) const = 0;
   virtual int GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights) = 0;
-  /// \endcond
 
 protected:
   XmUGridTriangles();
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGridTriangles)
-  
+  /// \endcond
 
 };
 
