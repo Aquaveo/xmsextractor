@@ -42,20 +42,18 @@ public:
   static BSHP<XmUGrid2dDataExtractor> New(BSHP<XmUGrid2dDataExtractor> a_extractor);
   virtual ~XmUGrid2dDataExtractor();
 
+  enum ActivityTypeEnum { ACTIVITY_ON_POINTS, ACTIVITY_ON_CELLS };
+
   /// \cond
+  virtual void SetGridPointScalars(const VecFlt& a_pointScalars,
+                                   const DynBitset& a_activity = DynBitset(),
+                                   ActivityTypeEnum a_activityType = ACTIVITY_ON_POINTS) = 0;
+  virtual void SetGridCellScalars(const VecFlt& a_cellScalars,
+                                   const DynBitset& a_activity = DynBitset(),
+                                   ActivityTypeEnum a_activityType = ACTIVITY_ON_CELLS) = 0;
+
   virtual void SetExtractLocations(const VecPt3d& a_locations) = 0;
-
-  virtual void SetGridPointScalars(const VecFlt& a_pointScalars) = 0;
-  virtual void SetGridCellScalars(const VecFlt& a_cellScalars) = 0;
-  virtual void SetGridPointActivity(const DynBitset& a_activity) = 0;
-  virtual void SetGridCellActivity(const DynBitset& a_activity) = 0;
-
   virtual void ExtractData(VecFlt& outData) = 0;
-
-  //virtual void ExtractFromCellData(const VecFlt& a_cellScalars, const DynBitset& a_activity,
-  //                                 VecFlt& outData);
-  //virtual void ExtractFromPointData(const VecFlt& a_pointScalars, const DynBitset& a_activity,
-  //                                  VecFlt& outData);
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGrid2dDataExtractor)
