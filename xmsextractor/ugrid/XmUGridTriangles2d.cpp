@@ -456,7 +456,7 @@ void XmUGridTrianglesImpl::Initialize(const XmUGrid& a_ugrid)
   m_triSearch.reset();
 } // XmUGridTrianglesImpl::Initialize
 //------------------------------------------------------------------------------
-/// \brief 
+/// \brief Get triangle search object.
 //------------------------------------------------------------------------------
 BSHP<GmTriSearch> XmUGridTrianglesImpl::GetTriSearch()
 {
@@ -467,7 +467,6 @@ BSHP<GmTriSearch> XmUGridTrianglesImpl::GetTriSearch()
   }
   return m_triSearch;
 } // XmUGridTrianglesImpl::GetTriSearch
-
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGridTriangles
 /// \brief Class to store XmUGrid triangles. Tracks where midpoints and
