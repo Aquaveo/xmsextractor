@@ -424,12 +424,12 @@ void XmUGrid2dDataExtractorUnitTests::testPointScalarPointActivity()
   VecPt3d extractLocations = {
     {0.25, 0.25, 0}, // cell 0
     {1.00, 0.25, 0}, // cell 1
-    {1.50, 0.25, 0}, // cell 2
-    {1.75, 0.75, 0}, // cell 3
+    {2.00, 0.50, 0}, // cell 2
+    {2.75, 0.75, 0}, // cell 3
     {0.25, 1.75, 0}, // cell 4
     {1.00, 1.25, 0}, // cell 5
     {1.50, 1.75, 0}, // cell 6
-    {1.75, 1.25, 0}  // cell 7
+    {2.75, 1.25, 0}  // cell 7
   };
 
   // expected results with point 4 inactive
@@ -524,18 +524,18 @@ void XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivity()
   VecPt3d extractLocations = {
     {0.25, 0.25, 0}, // cell 0
     {1.00, 0.25, 0}, // cell 1
-    {1.50, 0.25, 0}, // cell 2
-    {1.75, 0.75, 0}, // cell 3
+    {2.00, 0.50, 0}, // cell 2
+    {2.75, 0.75, 0}, // cell 3
     {0.25, 1.75, 0}, // cell 4
     {1.00, 1.25, 0}, // cell 5
     {1.50, 1.75, 0}, // cell 6
-    {1.75, 1.25, 0}  // cell 7
+    {2.75, 1.25, 0}  // cell 7
   };
 
   // expected results with point 4 inactive
   VecFlt expectedPerCell = {
-    XM_NODATA,   4.0, XM_NODATA, 6.25,
-    XM_NODATA, 5.875, XM_NODATA, 6.75 };
+    XM_NODATA,   4.0, XM_NODATA, 8.25,
+    XM_NODATA, 5.875, XM_NODATA, 9.75 };
   // clang-format on
 
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
