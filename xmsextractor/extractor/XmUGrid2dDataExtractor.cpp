@@ -85,7 +85,7 @@ private:
 
   BSHP<XmUGrid> m_ugrid;              ///< UGrid for dataset
   DataLocationEnum m_triangleType;    ///< if triangles been generated for points or cells
-  BSHP<XmUGridTriangles> m_triangles; ///< manages triangles
+  BSHP<XmUGridTriangles> m_triangles; ///< triangles generated from UGrid to use for data extraction
   VecPt3d m_extractLocations;         ///< output locations for interpolated values
   VecFlt m_pointScalars;              ///< scalars to interpolate from
   bool m_useIdwForPointData;          ///< use IDW to calculate point data from cell data
@@ -140,7 +140,7 @@ void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalar
 {
   if (a_pointScalars.size() != m_ugrid->GetNumberOfPoints())
   {
-    XM_LOG(xmlog::debug, "Invalid scalar size in 2D data extractor.");
+    XM_LOG(xmlog::debug, "Invalid point scalar size in 2D data extractor.");
   }
 
   BuildTriangles(LOC_POINTS);
@@ -163,7 +163,7 @@ void XmUGrid2dDataExtractorImpl::SetGridCellScalars(const VecFlt& a_cellScalars,
 {
   if ((int)a_cellScalars.size() != m_ugrid->GetNumberOfCells())
   {
-    XM_LOG(xmlog::debug, "Invalid scalar size in 2D data extractor.");
+    XM_LOG(xmlog::debug, "Invalid cell scalar size in 2D data extractor.");
   }
 
   BuildTriangles(LOC_CELLS);
@@ -214,11 +214,11 @@ void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
 } // XmUGrid2dDataExtractorImpl::ExtractData
 //------------------------------------------------------------------------------
 /// \brief Set to use IDW to calculate point scalar values from cell scalars.
-/// \param a_ Whether to turn IDW on or off.
+/// \param a_useIdw Whether to turn IDW on or off.
 //------------------------------------------------------------------------------
-void XmUGrid2dDataExtractorImpl::SetUseIdwForPointData(bool a_)
+void XmUGrid2dDataExtractorImpl::SetUseIdwForPointData(bool a_useIdw)
 {
-  m_useIdwForPointData = a_;
+  m_useIdwForPointData = a_useIdw;
 } // XmUGrid2dDataExtractorImpl::SetUseIdwForPointData
 //------------------------------------------------------------------------------
 /// \brief Set value to use when extracted value is in inactive cell or doen't
@@ -441,7 +441,7 @@ float XmUGrid2dDataExtractorImpl::CalculatePointByIdw(int a_pointIdx,
 } // XmUGrid2dDataExtractorImpl::CalculatePointByIdw
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dDataExtractor
-/// \brief Provides ability to extract dataset values at points and along arcs
+/// \brief Provides ability to interpolate and extract the scalar values  points and along arcs
 ///        for an unstructured grid.
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------

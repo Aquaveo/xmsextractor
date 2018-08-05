@@ -44,7 +44,6 @@ namespace xms
 
 namespace
 {
-
 class XmUGridTrianglesImpl : public XmUGridTriangles
 {
 public:

@@ -1,7 +1,7 @@
 #pragma once
 //------------------------------------------------------------------------------
 /// \file
-/// \brief Contains the XmUGrid Class and supporting data types.
+/// \brief Contains the XmUGrid2dDataExtractor Class and supporting data types.
 /// \ingroup ugrid
 /// \copyright (C) Copyright Aquaveo 2018. Distributed under the xmsng
 ///  Software License, Version 1.0. (See accompanying file
@@ -68,12 +68,12 @@ public:
   virtual void ExtractData(VecFlt& a_outData) = 0;
 
   /// \brief Set to use IDW to calculate point scalar values from cell scalars.
-  /// \param a_ Whether to turn IDW on or off.
-  virtual void SetUseIdwForPointData(bool a_) = 0;
+  /// \param a_useIdw Whether to turn IDW on or off.
+  virtual void SetUseIdwForPointData(bool a_useIdw) = 0;
   /// \brief Set value to use when extracted value is in inactive cell or doen't
   ///        intersect with the grid.
-  /// \param[in] a_value The no data value
-  virtual void SetNoDataValue(float a_value) = 0;
+  /// \param[in] a_noDataValue The no data value
+  virtual void SetNoDataValue(float a_noDataValue) = 0;
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGrid2dDataExtractor)
