@@ -70,10 +70,10 @@ private:
   void Initialize(const XmUGrid& a_ugrid);
   BSHP<GmTriSearch> GetTriSearch();
 
-  BSHP<VecPt3d> m_points;      ///< Triangle points for the UGrid
-  BSHP<VecInt> m_triangles;    ///< Triangles for the UGrid
-  VecInt m_centroidIdxs;       ///< Index of each cell centroid or -1 if none
-  VecInt m_triangleToCellIdx;  ///< The cell index for each triangle
+  BSHP<VecPt3d> m_points;                ///< Triangle points for the UGrid
+  BSHP<VecInt> m_triangles;              ///< Triangles for the UGrid
+  VecInt m_centroidIdxs;                 ///< Index of each cell centroid or -1 if none
+  VecInt m_triangleToCellIdx;            ///< The cell index for each triangle
   mutable BSHP<GmTriSearch> m_triSearch; ///< Triangle searcher for triangles
 };
 
@@ -282,8 +282,6 @@ void iBuildEarcutTriangles(XmUGridTrianglesImpl& a_ugridTris,
   a_ugridTris.AddCellTriangle(a_cellIdx, polygonIdxs[0], polygonIdxs[1], polygonIdxs[2]);
 } // iBuildEarcutTriangles
 
-} // namespace
-
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGridTrianglesImpl
 /// \brief Class to store XmUGrid triangles. Tracks where midpoints and
@@ -428,7 +426,11 @@ int XmUGridTrianglesImpl::GetCellCentroid(int a_cellIdx) const
   return pointIdx;
 } // XmUGridTrianglesImpl::GetCellCentroid
 //------------------------------------------------------------------------------
-/// \brief 
+/// \brief Get the cell index and interpolation values intersected by a point.
+/// \param[in] a_point The point to intersect with the UGrid.
+/// \param[out] a_idxs The interpolation points.
+/// \param[out] a_weights The interpolation weights.
+/// \return The cell intersected by the point or -1 if outside of the UGrid.
 //------------------------------------------------------------------------------
 int XmUGridTrianglesImpl::GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights)
 {
@@ -467,6 +469,9 @@ BSHP<GmTriSearch> XmUGridTrianglesImpl::GetTriSearch()
   }
   return m_triSearch;
 } // XmUGridTrianglesImpl::GetTriSearch
+
+} // namespace
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGridTriangles
 /// \brief Class to store XmUGrid triangles. Tracks where midpoints and
@@ -474,6 +479,7 @@ BSHP<GmTriSearch> XmUGridTrianglesImpl::GetTriSearch()
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
 /// \brief Build an instance of XmUGridTriangles
+/// \return The new instance.
 //------------------------------------------------------------------------------
 BSHP<XmUGridTriangles> XmUGridTriangles::New()
 {
@@ -522,9 +528,9 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
 
   // test building cetroid in triangle cell
   triangles.BuildTriangles(*ugrid, true);
-  
+
   VecPt3d triPointsOut = triangles.GetPoints();
-  VecPt3d triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {0.5, 1, 0}, {0.5, 1/3.0, 0}};
+  VecPt3d triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {0.5, 1, 0}, {0.5, 1 / 3.0, 0}};
   TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
 
   VecInt trianglesOut = triangles.GetTriangles();
@@ -564,7 +570,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
   trianglesOut = triangles.GetTriangles();
   trianglesExpected = {0, 1, 2};
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
-  
+
   TS_ASSERT_EQUALS(-1, triangles.GetCellCentroid(0));
 
   cellIdx = triangles.GetIntersectedCell(Pt3d(0.5, 0.25, 0), idxs, weights);

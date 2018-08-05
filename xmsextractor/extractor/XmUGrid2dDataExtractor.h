@@ -45,23 +45,38 @@ public:
   /// The location at which the data will be stored.
   enum DataLocationEnum { LOC_UNKNOWN, LOC_POINTS, LOC_CELLS };
 
-  /// \cond
+  /// \brief Setup point scalars to be used to extract interpolated data.
+  /// \param[in] a_pointScalars The point scalars.
+  /// \param[in] a_activity The activity of the cells.
+  /// \param[in] a_activityType The location at which the data is currently stored.
   virtual void SetGridPointScalars(const VecFlt& a_pointScalars,
                                    const DynBitset& a_activity = DynBitset(),
                                    DataLocationEnum a_activityType = LOC_POINTS) = 0;
+  /// \brief Setup cell scalars to be used to extract interpolated data.
+  /// \param[in] a_cellScalars The point scalars.
+  /// \param[in] a_activity The activity of the cells.
+  /// \param[in] a_activityType The location at which the data is currently stored.
   virtual void SetGridCellScalars(const VecFlt& a_cellScalars,
                                   const DynBitset& a_activity = DynBitset(),
                                   DataLocationEnum a_activityType = LOC_CELLS) = 0;
 
+  /// \brief Sets locations of points to extract interpolated scalar data from.
+  /// \param[in] a_locations The locations.
   virtual void SetExtractLocations(const VecPt3d& a_locations) = 0;
-  virtual void ExtractData(VecFlt& outData) = 0;
+  /// \brief Extract interpolated data for the previously set locations.
+  /// \param[out] a_outData The interpolated scalars.
+  virtual void ExtractData(VecFlt& a_outData) = 0;
 
+  /// \brief Set to use IDW to calculate point scalar values from cell scalars.
+  /// \param a_ Whether to turn IDW on or off.
   virtual void SetUseIdwForPointData(bool a_) = 0;
+  /// \brief Set value to use when extracted value is in inactive cell or doen't
+  ///        intersect with the grid.
+  /// \param[in] a_value The no data value
   virtual void SetNoDataValue(float a_value) = 0;
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGrid2dDataExtractor)
-  /// \endcond
 
 protected:
   XmUGrid2dDataExtractor();

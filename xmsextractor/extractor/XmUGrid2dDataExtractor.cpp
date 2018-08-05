@@ -100,6 +100,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
 /// \brief Construct from a UGrid.
+/// \param[in] a_ugrid The UGrid to construct an extractor for.
 //------------------------------------------------------------------------------
 XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
 : m_ugrid(a_ugrid)
@@ -213,6 +214,7 @@ void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
 } // XmUGrid2dDataExtractorImpl::ExtractData
 //------------------------------------------------------------------------------
 /// \brief Set to use IDW to calculate point scalar values from cell scalars.
+/// \param a_ Whether to turn IDW on or off.
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::SetUseIdwForPointData(bool a_)
 {
@@ -242,6 +244,9 @@ void XmUGrid2dDataExtractorImpl::BuildTriangles(DataLocationEnum a_location)
 } // XmUGrid2dDataExtractorImpl::BuildTriangles
 //------------------------------------------------------------------------------
 /// \brief Apply point or cell activity to triangles.
+/// \param[in] a_activity The activity of the scalar values.
+/// \param[in] a_location The location of the activity (cells or points).
+/// \param[out] a_cellActivity The cell activity of the scalar values.
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::ApplyActivity(const DynBitset& a_activity,
                                                DataLocationEnum a_location,
@@ -292,6 +297,7 @@ void XmUGrid2dDataExtractorImpl::SetGridPointActivity(const DynBitset& a_pointAc
 } // XmUGrid2dDataExtractorImpl::SetGridPointActivity
 //------------------------------------------------------------------------------
 /// \brief Set activity on cells
+/// \param[in] a_cellActivity The cell activity of the scalar values.
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::SetGridCellActivity(const DynBitset& a_cellActivity)
 {
@@ -303,6 +309,7 @@ void XmUGrid2dDataExtractorImpl::SetGridCellActivity(const DynBitset& a_cellActi
 } // XmUGrid2dDataExtractorImpl::SetGridCellActivity
 //------------------------------------------------------------------------------
 /// \brief Push point scalar data to cell centroids using average.
+/// \param[in] a_cellActivity The cell activity of the scalar values.
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::PushPointDataToCentroids(const DynBitset& a_cellActivity)
 {
@@ -343,7 +350,8 @@ void XmUGrid2dDataExtractorImpl::PushCellDataToTrianglePoints(const VecFlt& a_ce
     m_ugrid->GetPointCells(pointIdx, cellIdxs);
     if (m_useIdwForPointData)
     {
-      m_pointScalars[pointIdx] = CalculatePointByIdw(pointIdx, cellIdxs, a_cellScalars, a_cellActivity);
+      m_pointScalars[pointIdx] =
+        CalculatePointByIdw(pointIdx, cellIdxs, a_cellScalars, a_cellActivity);
     }
     else
     {
@@ -811,7 +819,6 @@ void XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivityIdw()
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorUnitTests::testCellScalarPointActivity()
 {
-
   //  3----2
   //  | 1 /|
   //  |  / |
