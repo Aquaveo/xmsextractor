@@ -423,7 +423,7 @@ void XmUGridTrianglesImpl::AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2
 int XmUGridTrianglesImpl::GetCellCentroid(int a_cellIdx) const
 {
   int pointIdx = -1;
-  if (a_cellIdx >= 0 || a_cellIdx < (int)m_centroidIdxs.size())
+  if (a_cellIdx >= 0 && a_cellIdx < (int)m_centroidIdxs.size())
     pointIdx = m_centroidIdxs[a_cellIdx];
   return pointIdx;
 } // XmUGridTrianglesImpl::GetCellCentroid
