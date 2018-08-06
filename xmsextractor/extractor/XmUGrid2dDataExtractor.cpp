@@ -521,8 +521,9 @@ void XmUGrid2dDataExtractorUnitTests::testPointScalarsOnly()
 
   VecFlt pointScalars = {1, 2, 3, 2};
   extractor->SetGridPointScalars(pointScalars);
-  extractor->SetExtractLocations({Pt3d(0.0, 0.0, 0.0), Pt3d(0.25, 0.75, 100.0), Pt3d(0.5, 0.5, 0.0),
-                                  Pt3d(0.75, 0.25, -100.0), Pt3d(-1.0, -1.0, 0.0)});
+  VecPt3d extractLocations = {{0.0, 0.0, 0.0}, {0.25, 0.75, 100.0}, {0.5, 0.5, 0.0},
+    {0.75, 0.25, -100.0}, {-1.0, -1.0, 0.0}};
+  extractor->SetExtractLocations(extractLocations);
 
   VecFlt interpValues;
   extractor->ExtractData(interpValues);
@@ -552,7 +553,7 @@ void XmUGrid2dDataExtractorUnitTests::testPointScalarCellActivity()
   cellActivity.push_back(false);
   extractor->SetGridPointScalars(pointScalars, cellActivity, XmUGrid2dDataExtractor::LOC_CELLS);
   extractor->SetExtractLocations(
-    {Pt3d(0.25, 0.75, 100.0), Pt3d(0.75, 0.25, -100.0), Pt3d(-1.0, -1.0, 0.0)});
+    {{0.25, 0.75, 100.0}, {0.75, 0.25, -100.0}, {-1.0, -1.0, 0.0}});
 
   VecFlt interpValues;
   extractor->ExtractData(interpValues);
@@ -652,8 +653,8 @@ void XmUGrid2dDataExtractorUnitTests::testCellScalarsOnly()
 
   VecFlt cellScalars = {1, 2};
   extractor->SetGridCellScalars(cellScalars);
-  extractor->SetExtractLocations({Pt3d(0.0, 0.0, 0.0), Pt3d(0.25, 0.75, 100.0), Pt3d(0.5, 0.5, 0.0),
-                                  Pt3d(0.75, 0.25, -100.0), Pt3d(-1.0, -1.0, 0.0)});
+  extractor->SetExtractLocations({{0.0, 0.0, 0.0}, {0.25, 0.75, 100.0}, {0.5, 0.5, 0.0},
+                                  {0.75, 0.25, -100.0}, {-1.0, -1.0, 0.0}});
 
   VecFlt interpValues;
   extractor->ExtractData(interpValues);
@@ -836,8 +837,8 @@ void XmUGrid2dDataExtractorUnitTests::testCellScalarPointActivity()
   pointActivity[1] = false;
   VecFlt cellScalars = {1, 2};
   extractor->SetGridCellScalars(cellScalars, pointActivity, XmUGrid2dDataExtractor::LOC_POINTS);
-  extractor->SetExtractLocations({Pt3d(0.0, 0.0, 0.0), Pt3d(0.25, 0.75, 100.0), Pt3d(0.5, 0.5, 0.0),
-                                  Pt3d(0.75, 0.25, -100.0), Pt3d(-1.0, -1.0, 0.0)});
+  extractor->SetExtractLocations({{0.0, 0.0, 0.0}, {0.25, 0.75, 100.0}, {0.5, 0.5, 0.0},
+                                  {0.75, 0.25, -100.0}, {-1.0, -1.0, 0.0}});
 
   VecFlt interpValues;
   extractor->ExtractData(interpValues);
@@ -863,7 +864,7 @@ void XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()
 
   VecFlt pointScalars = {1, 2, 3, 4};
   extractor->SetGridPointScalars(pointScalars);
-  extractor->SetExtractLocations({Pt3d(0.5, 0.5, 0.0)});
+  extractor->SetExtractLocations({{0.5, 0.5, 0.0}});
   VecFlt interpValues;
   extractor->ExtractData(interpValues);
   VecFlt expected = {static_cast<float>((1.0 + 2.0 + 3.0 + 4.0) / 4)};
@@ -871,7 +872,7 @@ void XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()
 
   BSHP<XmUGrid2dDataExtractor> extractor2 = XmUGrid2dDataExtractor::New(extractor);
   extractor2->SetGridPointScalars(pointScalars);
-  extractor2->SetExtractLocations({Pt3d(0.5, 0.5, 0.0)});
+  extractor2->SetExtractLocations({{0.5, 0.5, 0.0}});
   extractor2->ExtractData(interpValues);
   TS_ASSERT_EQUALS(expected, interpValues);
 } // XmUGrid2dDataExtractorUnitTests::testCopiedExtractor
