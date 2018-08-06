@@ -70,7 +70,7 @@ public:
   /// \brief Set to use IDW to calculate point scalar values from cell scalars.
   /// \param a_useIdw Whether to turn IDW on or off.
   virtual void SetUseIdwForPointData(bool a_useIdw) = 0;
-  /// \brief Set value to use when extracted value is in inactive cell or doen't
+  /// \brief Set value to use when extracted value is in inactive cell or doesn't
   ///        intersect with the grid.
   /// \param[in] a_noDataValue The no data value
   virtual void SetNoDataValue(float a_noDataValue) = 0;

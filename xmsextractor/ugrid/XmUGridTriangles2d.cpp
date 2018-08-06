@@ -349,7 +349,7 @@ void XmUGridTrianglesImpl::SetCellActivity(const DynBitset& a_cellActivity)
   for (size_t triangleIdx = 0; triangleIdx < numTriangles; ++triangleIdx)
   {
     int cellIdx = m_triangleToCellIdx[triangleIdx];
-    triangleActivity[triangleIdx] = a_cellActivity[cellIdx];
+    triangleActivity[triangleIdx] = cellIdx >= a_cellActivity.size() || a_cellActivity[cellIdx];
   }
   GetTriSearch()->SetTriActivity(triangleActivity);
 } // XmUGridTrianglesImpl::SetCellActivity
