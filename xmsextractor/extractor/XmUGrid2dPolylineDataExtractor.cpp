@@ -166,28 +166,95 @@ void XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations(const VecPt3d& 
   }
 
   // get points crossing cell edges
-  VecInt intersectIdxs;
-  VecPt3d intersectPts;
-  bool lastGoingOut = false;
+  VecPt3d2d outPoints;
+  VecPt3d outPolyLine;
+  Pt3d lastPoint;
+  int lastPolyIdx = -1;
   for (size_t polyIdx = 1; polyIdx < a_polyline.size(); ++polyIdx)
   {
     Pt3d pt1 = a_polyline[polyIdx - 1];
     Pt3d pt2 = a_polyline[polyIdx];
+    VecInt intersectIdxs;
+    VecPt3d intersectPts;
     m_multiPolyIntersector->TraverseLineSegment(pt1.x, pt1.y, pt2.x, pt2.y, intersectIdxs,
                                                 intersectPts);
+
+    //for each intersection in this segment of the polyline
     for (size_t j = 0; j < intersectIdxs.size(); ++j)
     {
       Pt3d newPoint = intersectPts[j];
       int newCellIdx = intersectIdxs[j];
-      if (!a_locations.empty())
+      if (j == 0)
       {
-        Pt3d lastPoint = a_locations.back();
-        a_locations.push_back((newPoint + lastPoint)/2.0);
-        a_locationActivity.push_back(!lastGoingOut);
+        if (lastPolyIdx == polyIdx - 1)
+        {
+          //We are staring the next segment of the polyline.
+          if (newPoint == lastPoint)
+          {
+            //ignore the current point. It was already added.
+          }
+          else
+          {
+            // The point is not in the same location so we are starting a new output polyline.
+            if (!outPolyLine.empty())
+              outPoints.push_back(outPolyLine);
+            lastPolyIdx = (int)polyIdx;
+            outPolyLine.clear();
+            outPolyLine.push_back(newPoint);
+          }
+        }
+        else
+        {
+          // Skipped a polyline segment so we are starting a new output polyline.
+          if (!outPolyLine.empty())
+            outPoints.push_back(outPolyLine);
+          lastPolyIdx = (int)polyIdx;
+          outPolyLine.clear();
+          outPolyLine.push_back(newPoint);
+        }
       }
-      a_locations.push_back(newPoint);
+      else if (newCellIdx < 0 && j != intersectIdxs.size() - 1)
+      {
+        // Leaving the ugrid so we are starting a new polyline.
+        outPolyLine.push_back(newPoint);
+        outPoints.push_back(outPolyLine);
+        lastPolyIdx = (int)polyIdx;
+        outPolyLine.clear();
+      }
+      else
+      {
+        // Continuing the current polyline.
+        outPolyLine.push_back(newPoint);
+        lastPolyIdx = (int)polyIdx;
+      }
+      lastPoint = newPoint;
+    }
+  }
+  if (!outPolyLine.empty())
+    outPoints.push_back(outPolyLine);
+
+  //Now we have the "redefined" segments we can add mid points.
+  for (int polyLineIdx = 0; polyLineIdx < outPoints.size(); ++polyLineIdx)
+  {
+    for (int polyPointIdx = 1; polyPointIdx < outPoints[polyLineIdx].size(); ++polyPointIdx)
+    {
+      Pt3d pt1 = outPoints[polyLineIdx][polyPointIdx - 1];
+      Pt3d pt2 = outPoints[polyLineIdx][polyPointIdx];
+
+      if (polyPointIdx == 1)
+        a_locations.push_back(pt1);
+      a_locations.push_back((pt1 +  pt2) / 2.0);
+      a_locations.push_back(pt2);
       a_locationActivity.push_back(true);
-      lastGoingOut = newCellIdx < 0;
+      a_locationActivity.push_back(true);
+      a_locationActivity.push_back(true);
+    }
+    if (polyLineIdx != outPoints.size() - 1)
+    {
+      Pt3d pt1 = a_locations.back();
+      Pt3d pt2 = outPoints[polyLineIdx + 1][0];
+      a_locations.push_back((pt1 +  pt2) / 2.0);
+      a_locationActivity.push_back(false);
     }
   }
 } // XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations
@@ -285,22 +352,22 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSplitCells()
 //------------------------------------------------------------------------------
 /// \brief
 //------------------------------------------------------------------------------
-//void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellTwoSegments()
-//{
-//  VecPt3d points = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 } };
-//  VecInt cells = { XMU_QUAD, 4, 0, 1, 2, 3 };
-//  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-//  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid);
-//  VecPt3d polyline = { { -1, 0.5, 0 }, { 0.5, 0.5, 0.0 }, { 2, 0.5, 0 } };
-//  VecFlt pointScalars = { 0, 2, 3, 1 };
-//  extractor->SetGridPointScalars(pointScalars, DynBitset(), LOC_POINTS);
-//  VecFlt extractedData;
-//  VecPt3d extractedLocations;
-//  extractor->ExtractData(polyline, extractedData, extractedLocations);
-//
-//  VecFlt expectedData = { 0.5, 1.5, 2.5 };
-//  TS_ASSERT_EQUALS(expectedData, extractedData);
-//  VecPt3d expectedLocations = { { 0.0, 0.5, 0.0 }, { 0.5, 0.5, 0.0 }, { 1.0, 0.5, 0.0 } };
-//  TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
-//} // XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment
+void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellTwoSegments()
+{
+  VecPt3d points = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 } };
+  VecInt cells = { XMU_QUAD, 4, 0, 1, 2, 3 };
+  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid);
+  VecPt3d polyline = { { -1, 0.5, 0 }, { 0.5, 0.5, 0.0 }, { 2, 0.5, 0 } };
+  VecFlt pointScalars = { 0, 2, 3, 1 };
+  extractor->SetGridPointScalars(pointScalars, DynBitset(), LOC_POINTS);
+  VecFlt extractedData;
+  VecPt3d extractedLocations;
+  extractor->ExtractData(polyline, extractedData, extractedLocations);
+
+  VecFlt expectedData = { 0.5, 1.0, 1.5, 2.0, 2.5 };
+  TS_ASSERT_EQUALS(expectedData, extractedData);
+  VecPt3d expectedLocations = { { 0.0, 0.5, 0.0 }, { 0.25, 0.5, 0.0 }, { 0.5, 0.5, 0.0 }, { 0.75, 0.5, 0.0 }, { 1.0, 0.5, 0.0 } };
+  TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
+} // XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment
 #endif
