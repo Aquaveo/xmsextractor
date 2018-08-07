@@ -24,6 +24,8 @@ class XmUGrid2dPolylineDataExtractorUnitTests : public CxxTest::TestSuite
 {
 public:
   void testOneCellOneSegment();
+  void testSplitCells();
+  //void testOneCellTwoSegments();
 }; // XmUGrid2dPolylineDataExtractorUnitTests
 
 #endif

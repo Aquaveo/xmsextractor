@@ -177,20 +177,17 @@ void XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations(const VecPt3d& 
                                                 intersectPts);
     for (size_t j = 0; j < intersectIdxs.size(); ++j)
     {
-      //if (lastGoingOut || polyIdx == 1 || j > 0)
+      Pt3d newPoint = intersectPts[j];
+      int newCellIdx = intersectIdxs[j];
+      if (!a_locations.empty())
       {
-        Pt3d newPoint = intersectPts[j];
-        int newCellIdx = intersectIdxs[j];
-        if (!a_locations.empty())
-        {
-          Pt3d lastPoint = a_locations.back();
-          a_locations.push_back((newPoint + lastPoint)/2.0);
-          a_locationActivity.push_back(!lastGoingOut);
-        }
-        a_locations.push_back(newPoint);
-        a_locationActivity.push_back(true);
-        lastGoingOut = newCellIdx < 0;
+        Pt3d lastPoint = a_locations.back();
+        a_locations.push_back((newPoint + lastPoint)/2.0);
+        a_locationActivity.push_back(!lastGoingOut);
       }
+      a_locations.push_back(newPoint);
+      a_locationActivity.push_back(true);
+      lastGoingOut = newCellIdx < 0;
     }
   }
 } // XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations
@@ -233,6 +230,7 @@ using namespace xms;
 #include <xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.t.h>
 #include <xmsgrid/ugrid/XmUGrid.t.h>
 
+#include <xmscore/misc/xmstype.h>
 #include <xmscore/testing/TestTools.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -260,5 +258,49 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment()
   VecPt3d expectedLocations = {{0.0, 0.5, 0.0}, {0.5, 0.5, 0.0}, {1.0, 0.5, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment
+//------------------------------------------------------------------------------
+/// \brief Test extractor with point scalars only.
+//------------------------------------------------------------------------------
+void XmUGrid2dPolylineDataExtractorUnitTests::testSplitCells()
+{
+  VecPt3d points = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 },
+                     { 2, 0, 0 }, { 3, 0, 0 }, { 3, 1, 0 }, { 2, 1, 0 }};
+  VecInt cells = { XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 4, 5, 6, 7};
+  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid);
+  VecPt3d polyline = { { -1, 0.5, 0 }, { 2.5, 0.5, 0 } };
+  VecFlt pointScalars = { 0, 2, 3, 1, 4, 6, 7, 5};
+  extractor->SetGridPointScalars(pointScalars, DynBitset(), LOC_POINTS);
+  VecFlt extractedData;
+  VecPt3d extractedLocations;
+  extractor->ExtractData(polyline, extractedData, extractedLocations);
 
+  VecFlt expectedData = { 0.5, 1.5, 2.5, XM_NODATA, 4.5, 5.0, 5.5};
+  TS_ASSERT_EQUALS(expectedData, extractedData);
+  VecPt3d expectedLocations = { { 0.0, 0.5, 0.0 }, { 0.5, 0.5, 0.0 }, { 1.0, 0.5, 0.0 },
+                                { 1.5, 0.5, 0.0 }, { 2.0, 0.5, 0.0 }, { 2.25, 0.5, 0.0 },
+                                { 2.5, 0.5, 0.0 }};
+  TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
+} // XmUGrid2dPolylineDataExtractorUnitTests::testSplitCells
+//------------------------------------------------------------------------------
+/// \brief
+//------------------------------------------------------------------------------
+//void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellTwoSegments()
+//{
+//  VecPt3d points = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 } };
+//  VecInt cells = { XMU_QUAD, 4, 0, 1, 2, 3 };
+//  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+//  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid);
+//  VecPt3d polyline = { { -1, 0.5, 0 }, { 0.5, 0.5, 0.0 }, { 2, 0.5, 0 } };
+//  VecFlt pointScalars = { 0, 2, 3, 1 };
+//  extractor->SetGridPointScalars(pointScalars, DynBitset(), LOC_POINTS);
+//  VecFlt extractedData;
+//  VecPt3d extractedLocations;
+//  extractor->ExtractData(polyline, extractedData, extractedLocations);
+//
+//  VecFlt expectedData = { 0.5, 1.5, 2.5 };
+//  TS_ASSERT_EQUALS(expectedData, extractedData);
+//  VecPt3d expectedLocations = { { 0.0, 0.5, 0.0 }, { 0.5, 0.5, 0.0 }, { 1.0, 0.5, 0.0 } };
+//  TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
+//} // XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment
 #endif
