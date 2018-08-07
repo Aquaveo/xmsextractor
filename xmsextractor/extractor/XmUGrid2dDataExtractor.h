@@ -32,6 +32,9 @@ class XmUGrid;
 
 //----- Constants / Enumerations -----------------------------------------------
 
+/// The location at which the data will be stored.
+enum DataLocationEnum { LOC_POINTS, LOC_CELLS, LOC_UNKNOWN };
+
 //----- Structs / Classes ------------------------------------------------------
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,23 +45,20 @@ public:
   static BSHP<XmUGrid2dDataExtractor> New(BSHP<XmUGrid2dDataExtractor> a_extractor);
   virtual ~XmUGrid2dDataExtractor();
 
-  /// The location at which the data will be stored.
-  enum DataLocationEnum { LOC_UNKNOWN, LOC_POINTS, LOC_CELLS };
-
   /// \brief Setup point scalars to be used to extract interpolated data.
   /// \param[in] a_pointScalars The point scalars.
   /// \param[in] a_activity The activity of the cells.
   /// \param[in] a_activityType The location at which the data is currently stored.
   virtual void SetGridPointScalars(const VecFlt& a_pointScalars,
-                                   const DynBitset& a_activity = DynBitset(),
-                                   DataLocationEnum a_activityType = LOC_POINTS) = 0;
+                                   const DynBitset& a_activity,
+                                   DataLocationEnum a_activityType) = 0;
   /// \brief Setup cell scalars to be used to extract interpolated data.
   /// \param[in] a_cellScalars The point scalars.
   /// \param[in] a_activity The activity of the cells.
   /// \param[in] a_activityType The location at which the data is currently stored.
   virtual void SetGridCellScalars(const VecFlt& a_cellScalars,
-                                  const DynBitset& a_activity = DynBitset(),
-                                  DataLocationEnum a_activityType = LOC_CELLS) = 0;
+                                  const DynBitset& a_activity,
+                                  DataLocationEnum a_activityType) = 0;
 
   /// \brief Sets locations of points to extract interpolated scalar data from.
   /// \param[in] a_locations The locations.
@@ -66,6 +66,10 @@ public:
   /// \brief Extract interpolated data for the previously set locations.
   /// \param[out] a_outData The interpolated scalars.
   virtual void ExtractData(VecFlt& a_outData) = 0;
+  /// \brief Extract interpolated data for the previously set locations.
+  /// \param[int] a_location The location to get the interpolated scalar.
+  /// \return The interpolated value.
+  virtual float ExtractAtLocation(const Pt3d& a_location) = 0;
 
   /// \brief Set to use IDW to calculate point scalar values from cell scalars.
   /// \param a_useIdw Whether to turn IDW on or off.
