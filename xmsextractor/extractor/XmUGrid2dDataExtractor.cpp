@@ -95,8 +95,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dDataExtractorImpl
 /// \brief Implementation for XmUGrid2dDataExtractor which provides ability
-///        to extract dataset values at points and along arcs for an
-///        unstructured grid.
+///        to extract dataset values at points for an unstructured grid.
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
 /// \brief Construct from a UGrid.

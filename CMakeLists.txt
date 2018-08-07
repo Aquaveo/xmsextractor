@@ -43,11 +43,13 @@ link_directories(${EXT_LIB_DIRS})
 # Static library sources
 set(xmsextractor_sources
   xmsextractor/extractor/XmUGrid2dDataExtractor.cpp
+  xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.cpp
   xmsextractor/ugrid/XmUGridTriangles2d.cpp
 )
 
 set(xmsextractor_headers
   xmsextractor/extractor/XmUGrid2dDataExtractor.h
+  xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.h
   xmsextractor/ugrid/XmUGridTriangles2d.h
 )
 
@@ -61,6 +63,7 @@ if (BUILD_TESTING)
 
  list(APPEND xmsextractor_sources
    xmsextractor/extractor/XmUGrid2dDataExtractor.t.h
+   xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.t.h
    xmsextractor/ugrid/XmUGridTriangles2d.t.h
  )
 
