@@ -26,6 +26,8 @@ public:
   void testOneCellOneSegment();
   void testSplitCells();
   void testOneCellTwoSegments();
+  void testSegmentAllInCell();
+  void testSegmentAlongEdge();
 }; // XmUGrid2dPolylineDataExtractorUnitTests
 
 #endif
