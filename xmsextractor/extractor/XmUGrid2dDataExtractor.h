@@ -67,7 +67,7 @@ public:
   /// \param[out] a_outData The interpolated scalars.
   virtual void ExtractData(VecFlt& a_outData) = 0;
   /// \brief Extract interpolated data for the previously set locations.
-  /// \param[int] a_location The location to get the interpolated scalar.
+  /// \param[in] a_location The location to get the interpolated scalar.
   /// \return The interpolated value.
   virtual float ExtractAtLocation(const Pt3d& a_location) = 0;
 

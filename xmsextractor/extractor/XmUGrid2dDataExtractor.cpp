@@ -183,7 +183,7 @@ void XmUGrid2dDataExtractorImpl::SetExtractLocations(const VecPt3d& a_locations)
 } // XmUGrid2dDataExtractorImpl::SetExtractLocations
 //------------------------------------------------------------------------------
 /// \brief Extract interpolated data for the previously set locations.
-/// \param[in] a_outData The interpolated scalars.
+/// \param[out] a_outData The interpolated scalars.
 //------------------------------------------------------------------------------
 void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
 {
@@ -214,8 +214,8 @@ void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
 } // XmUGrid2dDataExtractorImpl::ExtractData
 //------------------------------------------------------------------------------
 /// \brief Extract interpolated data for the previously set locations.
-/// \param[int] a_location The location to get the interpolated scalar.
-/// \param[out] a_value The interpolated scalars.
+/// \param[in] a_location The location to get the interpolated scalar.
+/// \return The interpolated value.
 //------------------------------------------------------------------------------
 float XmUGrid2dDataExtractorImpl::ExtractAtLocation(const Pt3d& a_location)
 {
