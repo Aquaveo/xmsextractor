@@ -58,8 +58,8 @@ public:
   virtual void ExtractData(const VecPt3d& a_polyline, VecFlt& a_extractedData,
                            VecPt3d& a_extractedLocations) override;
 
-  virtual void SetUseIdwForPointData(bool a_useIdw);
-  virtual void SetNoDataValue(float a_noDataValue);
+  virtual void SetUseIdwForPointData(bool a_useIdw) override;
+  virtual void SetNoDataValue(float a_noDataValue) override;
 
 private:
   void ComputeExtractLocations(const VecPt3d& a_polyline, VecPt3d& a_locations,
