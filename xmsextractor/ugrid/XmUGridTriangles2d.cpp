@@ -311,15 +311,11 @@ void XmUGridTrianglesImpl::BuildTriangles(const XmUGrid& a_ugrid, bool a_addTria
   for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
   {
     a_ugrid.GetPointsOfCell(cellIdx, cellPoints);
-    if (a_ugrid.GetCellType(cellIdx) == XMU_TRIANGLE && !a_addTriangleCenters)
-    {
-      AddCellTriangle(cellIdx, cellPoints[0], cellPoints[1], cellPoints[2]);
-    }
-    else
-    {
-      if (!iGenerateCentroidTriangles(*this, cellIdx, cellPoints))
-        iBuildEarcutTriangles(*this, cellIdx, cellPoints);
-    }
+    bool builtTriangles = false;
+    if (a_addTriangleCenters)
+      builtTriangles = iGenerateCentroidTriangles(*this, cellIdx, cellPoints);
+    if (!builtTriangles)
+      iBuildEarcutTriangles(*this, cellIdx, cellPoints);
   }
 } // XmUGridTrianglesImpl::BuildTriangles
 //------------------------------------------------------------------------------

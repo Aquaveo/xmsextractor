@@ -342,7 +342,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment
 //------------------------------------------------------------------------------
-/// \brief Test two different disjointed cells with a single polyline ending in the final cell
+/// \brief
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSplitCells()
 {
@@ -376,7 +376,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSplitCells()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSplitCells
 //------------------------------------------------------------------------------
-/// \brief Test using two segments of a polyline with a segment split inside the cell
+/// \brief
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellTwoSegments()
 {
@@ -407,7 +407,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellTwoSegments()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment
 //------------------------------------------------------------------------------
-/// \brief Test using two segments of a polyline with a segment split inside the cell
+/// \brief
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell()
 {
@@ -438,7 +438,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell
 //------------------------------------------------------------------------------
-/// \brief Test using two segments of a polyline with a segment split inside the cell
+/// \brief
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge()
 {

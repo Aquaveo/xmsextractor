@@ -1050,7 +1050,7 @@ void XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()
   extractor->SetExtractLocations({{0.5, 0.5, 0.0}});
   VecFlt interpValues;
   extractor->ExtractData(interpValues);
-  VecFlt expected = {static_cast<float>((1.0 + 2.0 + 3.0 + 4.0) / 4)};
+  VecFlt expected = {2.0};
   TS_ASSERT_EQUALS(expected, interpValues);
 
   BSHP<XmUGrid2dDataExtractor> extractor2 = XmUGrid2dDataExtractor::New(extractor);
