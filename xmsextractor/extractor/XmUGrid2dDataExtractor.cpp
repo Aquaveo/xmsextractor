@@ -276,7 +276,7 @@ void XmUGrid2dDataExtractorImpl::ApplyActivity(const DynBitset& a_activity,
   if (a_activity.empty())
   {
     // when empty, everything gets enabled on the cells
-    a_cellActivity.resize(m_ugrid->GetNumberOfCells(), true);
+    a_cellActivity = a_activity;
     SetGridCellActivity(a_cellActivity);
   }
   else
@@ -305,6 +305,14 @@ void XmUGrid2dDataExtractorImpl::SetGridPointActivity(const DynBitset& a_pointAc
   {
     XM_LOG(xmlog::debug, "Invalid point activity size in 2D data extractor.");
   }
+
+  if (a_pointActivity.empty())
+  {
+    a_cellActivity = a_pointActivity;
+    m_triangles->SetCellActivity(a_cellActivity);
+    return;
+  }
+
   a_cellActivity.reset();
   a_cellActivity.resize(m_ugrid->GetNumberOfCells(), true);
   VecInt attachedCells;

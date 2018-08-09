@@ -339,6 +339,13 @@ void XmUGridTrianglesImpl::BuildEarcutTriangles(const XmUGrid& a_ugrid)
 //------------------------------------------------------------------------------
 void XmUGridTrianglesImpl::SetCellActivity(const DynBitset& a_cellActivity)
 {
+  if (a_cellActivity.empty())
+  {
+    DynBitset emptyActivity;
+    GetTriSearch()->SetTriActivity(emptyActivity);
+    return;
+  }
+
   DynBitset triangleActivity;
   int numTriangles = (int)m_triangleToCellIdx.size();
   triangleActivity.resize(numTriangles);
