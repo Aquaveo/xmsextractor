@@ -24,10 +24,23 @@ class XmUGrid2dPolylineDataExtractorUnitTests : public CxxTest::TestSuite
 {
 public:
   void testOneCellOneSegment();
-  void testSplitCells();
-  void testOneCellTwoSegments();
   void testSegmentAllInCell();
   void testSegmentAlongEdge();
+  void testSegmentAllOutside();
+  void testSegmentOutToTouch();
+  void testSegmentTouchToOut();
+  void testSegmentCrossCellPoint();
+
+  void testSegmentAcrossCellIntoSecond();
+  void testSegmentAcrossSplitCells();
+
+  void testTwoSegmentsAcrossOneCell();
+  void testTwoSegmentsAllOutside();
+  void testTwoSegmentsFirstExiting();
+  void testTwoSegmentsJoinInCell();
+  void testTwoSegmentsJoinOnBoundary();
+
+  void testThreeSegmentsCrossOnBoundary();
 }; // XmUGrid2dPolylineDataExtractorUnitTests
 
 #endif

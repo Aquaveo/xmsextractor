@@ -28,6 +28,7 @@
 namespace xms
 {
 //----- Forward declarations ---------------------------------------------------
+class GmMultiPolyIntersector;
 class XmUGrid;
 
 //----- Constants / Enumerations -----------------------------------------------
@@ -78,6 +79,9 @@ public:
   ///        intersect with the grid.
   /// \param[in] a_noDataValue The no data value
   virtual void SetNoDataValue(float a_noDataValue) = 0;
+
+  /// \brief Get the multi-polygon intersector for the triangles.
+  virtual const BSHP<GmMultiPolyIntersector> GetMultiPolyIntersector() const = 0;
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGrid2dDataExtractor)

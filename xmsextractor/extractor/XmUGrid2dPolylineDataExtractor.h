@@ -58,7 +58,8 @@ public:
                                   const DynBitset& a_activity,
                                   DataLocationEnum a_activityType) = 0;
 
-  virtual void ExtractData(const VecPt3d& a_polyline, VecFlt& a_extractedData,
+  virtual void ExtractData(const VecPt3d& a_polyline,
+                           VecFlt& a_extractedData,
                            VecPt3d& a_extractedLocations) = 0;
 
   /// \brief Set to use IDW to calculate point scalar values from cell scalars.
