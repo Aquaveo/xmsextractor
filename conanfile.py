@@ -73,7 +73,7 @@ class XmsextractorConan(ConanFile):
             self.requires("pybind11/2.2.2@aquaveo/stable")
 
         # Use the dev version of XMSCore, XMSInterp, and XMSGrid
-        self.requires("xmscore/[>1.0.25]@aquaveo/stable")
+        self.requires("xmscore/[>=1.0.31]@aquaveo/stable")
         self.requires("xmsinterp/[>=1.0.14]@aquaveo/stable")
         self.requires("xmsgrid/[>=1.0.5]@aquaveo/stable")
 
