@@ -58,9 +58,23 @@ public:
                                   const DynBitset& a_activity,
                                   DataLocationEnum a_activityType) = 0;
 
-  virtual void ExtractData(const VecPt3d& a_polyline,
-                           VecFlt& a_extractedData,
-                           VecPt3d& a_extractedLocations) = 0;
+  /// \brief Set the polyline along which to extract the scalar data. Locations
+  ///        crossing cell boundaries are computed along the polyline.
+  /// \param[in] a_polyline The polyline.
+  virtual void SetPolyline(const VecPt3d& a_polyline) = 0;
+  /// \brief Gets computed locations along polyline to extract interpolated scalar data from.
+  /// \return The locations.
+  virtual const VecPt3d& GetExtractLocations() const = 0;
+  /// \brief Extract data at previously computed locations returned by GetExtractLocations.
+  /// \param[out] The interpolated scalar data at the previously computed locations.
+  virtual void ExtractData(VecFlt& a_extractedData) = 0;
+
+  /// \brief Extract data for given polyline.
+  /// \param[in] a_polyline The polyline.
+  /// \param[out] a_extractedLocations The locations.
+  virtual void ComputeLocationsAndExtractData(const VecPt3d& a_polyline,
+                                              VecFlt& a_extractedData,
+                                              VecPt3d& a_extractedLocations) = 0;
 
   /// \brief Set to use IDW to calculate point scalar values from cell scalars.
   /// \param a_useIdw Whether to turn IDW on or off.

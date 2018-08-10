@@ -23,8 +23,6 @@
 #include <xmsextractor/ugrid/XmUGridTriangles2d.h>
 #include <xmsgrid/ugrid/XmUGrid.h>
 #include <xmsinterp/geometry/geoms.h>
-#include <xmsinterp/geometry/GmMultiPolyIntersector.h>
-#include <xmsinterp/geometry/GmMultiPolyIntersectionSorterTerse.h>
 #include <xmsinterp/geometry/GmTriSearch.h>
 #include <xmsinterp/interpolate/InterpUtil.h>
 
@@ -63,11 +61,14 @@ public:
                                   DataLocationEnum a_activityType) override;
 
   virtual void SetExtractLocations(const VecPt3d& a_locations) override;
+  virtual const VecPt3d& GetExtractLocations() const override;
   virtual void ExtractData(VecFlt& a_outData) override;
   virtual float ExtractAtLocation(const Pt3d& a_location) override;
 
   virtual void SetUseIdwForPointData(bool a_) override;
   virtual void SetNoDataValue(float a_value) override;
+
+  virtual const BSHP<XmUGridTriangles2d> GetUGridTriangles() const override;
 
 private:
   void BuildTriangles(DataLocationEnum a_location);
@@ -86,18 +87,13 @@ private:
                             const VecFlt& a_cellScalars,
                             const DynBitset& a_cellActivity);
 
-  virtual const BSHP<GmMultiPolyIntersector> GetMultiPolyIntersector() const;
-
-  BSHP<XmUGrid> m_ugrid;              ///< UGrid for dataset
-  DataLocationEnum m_triangleType;    ///< if triangles been generated for points or cells
-  BSHP<XmUGridTriangles> m_triangles; ///< triangles generated from UGrid to use for data extraction
-  VecPt3d m_extractLocations;         ///< output locations for interpolated values
-  VecFlt m_pointScalars;              ///< scalars to interpolate from
-  bool m_useIdwForPointData;          ///< use IDW to calculate point data from cell data
-  float m_noDataValue;                ///< value to use for inactive result
-  mutable BSHP<GmMultiPolyIntersector> m_multiPolyIntersector; ///< The intersection tool used from
-                                                       ///   xmsinterp to find the intersections
-                                                       ///   with the polyline.
+  BSHP<XmUGrid> m_ugrid;                ///< UGrid for dataset
+  DataLocationEnum m_triangleType;      ///< if triangles been generated for points or cells
+  BSHP<XmUGridTriangles2d> m_triangles; ///< triangles generated from UGrid to use for data extraction
+  VecPt3d m_extractLocations;           ///< output locations for interpolated values
+  VecFlt m_pointScalars;                ///< scalars to interpolate from
+  bool m_useIdwForPointData;            ///< use IDW to calculate point data from cell data
+  float m_noDataValue;                  ///< value to use for inactive result
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +108,7 @@ private:
 XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
 : m_ugrid(a_ugrid)
 , m_triangleType(LOC_UNKNOWN)
-, m_triangles(XmUGridTriangles::New())
+, m_triangles(XmUGridTriangles2d::New())
 , m_extractLocations()
 , m_pointScalars()
 , m_useIdwForPointData(false)
@@ -188,6 +184,14 @@ void XmUGrid2dDataExtractorImpl::SetExtractLocations(const VecPt3d& a_locations)
 {
   m_extractLocations = a_locations;
 } // XmUGrid2dDataExtractorImpl::SetExtractLocations
+//------------------------------------------------------------------------------
+/// \brief Gets locations of points to extract interpolated scalar data from.
+/// \return The locations.
+//------------------------------------------------------------------------------
+const VecPt3d& XmUGrid2dDataExtractorImpl::GetExtractLocations() const
+{
+  return m_extractLocations;
+} // XmUGrid2dDataExtractorImpl::GetExtractLocations
 //------------------------------------------------------------------------------
 /// \brief Extract interpolated data for the previously set locations.
 /// \param[out] a_outData The interpolated scalars.
@@ -477,27 +481,13 @@ float XmUGrid2dDataExtractorImpl::CalculatePointByIdw(int a_pointIdx,
   }
 } // XmUGrid2dDataExtractorImpl::CalculatePointByIdw
 //------------------------------------------------------------------------------
-/// \brief Get the multi-polygon intersector for the triangles.
+/// \brief Get the UGrid triangles.
+/// \return The UGrid triangles.
 //------------------------------------------------------------------------------
-const BSHP<GmMultiPolyIntersector> XmUGrid2dDataExtractorImpl::GetMultiPolyIntersector() const
+const BSHP<XmUGridTriangles2d> XmUGrid2dDataExtractorImpl::GetUGridTriangles() const
 {
-  if (!m_multiPolyIntersector)
-  {
-    const VecPt3d& points = m_triangles->GetPoints();
-    const VecInt& triangles = m_triangles->GetTriangles();
-    VecInt2d polygons;
-    VecInt triangle;
-    for (size_t triangleIdx = 0; triangleIdx <triangles.size(); triangleIdx += 3)
-    {
-      triangle = { triangles[triangleIdx], triangles[triangleIdx+1], triangles[triangleIdx+2] };
-      polygons.push_back(triangle);
-    }
-
-    BSHP<GmMultiPolyIntersectionSorter> sorter(new GmMultiPolyIntersectionSorterTerse());
-    m_multiPolyIntersector = GmMultiPolyIntersector::New(points, polygons, sorter, 0);
-  }
-  return m_multiPolyIntersector;
-} // XmUGrid2dDataExtractorImpl::GetMultiPolyIntersector
+  return m_triangles;
+} // XmUGrid2dDataExtractorImpl::GetUGridTriangles
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dDataExtractor
 /// \brief Provides ability to interpolate and extract the scalar values  points and along arcs

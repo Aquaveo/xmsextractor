@@ -41,6 +41,8 @@ public:
   void testTwoSegmentsJoinOnBoundary();
 
   void testThreeSegmentsCrossOnBoundary();
+
+  void testTutorial();
 }; // XmUGrid2dPolylineDataExtractorUnitTests
 
 #endif

@@ -36,11 +36,11 @@ class XmUGrid;
 //----- Structs / Classes ------------------------------------------------------
 
 ////////////////////////////////////////////////////////////////////////////////
-class XmUGridTriangles
+class XmUGridTriangles2d
 {
 public:
-  static BSHP<XmUGridTriangles> New();
-  virtual ~XmUGridTriangles();
+  static BSHP<XmUGridTriangles2d> New();
+  virtual ~XmUGridTriangles2d();
 
   /// \brief Generate triangles for the UGrid.
   /// \param[in] a_ugrid The UGrid for which triangles are generated.
@@ -79,10 +79,10 @@ public:
   virtual int GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights) = 0;
 
 protected:
-  XmUGridTriangles();
+  XmUGridTriangles2d();
 
 private:
-  XM_DISALLOW_COPY_AND_ASSIGN(XmUGridTriangles)
+  XM_DISALLOW_COPY_AND_ASSIGN(XmUGridTriangles2d)
 };
 
 //----- Function prototypes ----------------------------------------------------

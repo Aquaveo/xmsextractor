@@ -30,6 +30,7 @@ namespace xms
 //----- Forward declarations ---------------------------------------------------
 class GmMultiPolyIntersector;
 class XmUGrid;
+class XmUGridTriangles2d;
 
 //----- Constants / Enumerations -----------------------------------------------
 
@@ -64,6 +65,9 @@ public:
   /// \brief Sets locations of points to extract interpolated scalar data from.
   /// \param[in] a_locations The locations.
   virtual void SetExtractLocations(const VecPt3d& a_locations) = 0;
+  /// \brief Gets locations of points to extract interpolated scalar data from.
+  /// \return The locations.
+  virtual const VecPt3d& GetExtractLocations() const = 0;
   /// \brief Extract interpolated data for the previously set locations.
   /// \param[out] a_outData The interpolated scalars.
   virtual void ExtractData(VecFlt& a_outData) = 0;
@@ -80,8 +84,8 @@ public:
   /// \param[in] a_noDataValue The no data value
   virtual void SetNoDataValue(float a_noDataValue) = 0;
 
-  /// \brief Get the multi-polygon intersector for the triangles.
-  virtual const BSHP<GmMultiPolyIntersector> GetMultiPolyIntersector() const = 0;
+  /// \brief Get the UGrid triangles.
+  virtual const BSHP<XmUGridTriangles2d> GetUGridTriangles() const = 0;
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGrid2dDataExtractor)

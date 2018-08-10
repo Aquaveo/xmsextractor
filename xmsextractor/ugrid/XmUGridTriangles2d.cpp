@@ -44,10 +44,10 @@ namespace xms
 
 namespace
 {
-class XmUGridTrianglesImpl : public XmUGridTriangles
+class XmUGridTriangles2dImpl : public XmUGridTriangles2d
 {
 public:
-  XmUGridTrianglesImpl();
+  XmUGridTriangles2dImpl();
 
   virtual void BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters) override;
   virtual void BuildEarcutTriangles(const XmUGrid& a_ugrid) override;
@@ -166,7 +166,7 @@ bool iValidTriangle(const VecPt3d& a_points,
 /// \param[in] a_polygonIdxs The indices for the cell polygon.
 /// \return true on success (can fail for concave cell)
 //------------------------------------------------------------------------------
-bool iGenerateCentroidTriangles(XmUGridTrianglesImpl& a_ugridTris,
+bool iGenerateCentroidTriangles(XmUGridTriangles2dImpl& a_ugridTris,
                                 int a_cellIdx,
                                 const VecInt& a_polygonIdxs)
 {
@@ -209,7 +209,7 @@ bool iGenerateCentroidTriangles(XmUGridTrianglesImpl& a_ugridTris,
 /// \param[in] a_cellIdx The cell index.
 /// \param[in] a_polygonIdxs The indices for the cell polygon.
 //------------------------------------------------------------------------------
-void iBuildEarcutTriangles(XmUGridTrianglesImpl& a_ugridTris,
+void iBuildEarcutTriangles(XmUGridTriangles2dImpl& a_ugridTris,
                            int a_cellIdx,
                            const VecInt& a_polygonIdxs)
 {
@@ -282,27 +282,27 @@ void iBuildEarcutTriangles(XmUGridTrianglesImpl& a_ugridTris,
 } // iBuildEarcutTriangles
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \class XmUGridTrianglesImpl
+/// \class XmUGridTriangles2dImpl
 /// \brief Class to store XmUGrid triangles. Tracks where midpoints and
 ///        triangles came from.
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
 /// \brief Constructor
 //------------------------------------------------------------------------------
-XmUGridTrianglesImpl::XmUGridTrianglesImpl()
+XmUGridTriangles2dImpl::XmUGridTriangles2dImpl()
 : m_points(new VecPt3d)
 , m_triangles(new VecInt)
 , m_centroidIdxs()
 , m_triangleToCellIdx()
 , m_triSearch()
 {
-} // XmUGridTrianglesImpl::XmUGridTrianglesImpl
+} // XmUGridTriangles2dImpl::XmUGridTriangles2dImpl
 //------------------------------------------------------------------------------
 /// \brief Generate triangles for the UGrid.
 /// \param[in] a_ugrid The UGrid for which triangles are generated.
 /// \param[in] a_addTriangleCenters Whether or not triangle cells get a centroid added.
 //------------------------------------------------------------------------------
-void XmUGridTrianglesImpl::BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters)
+void XmUGridTriangles2dImpl::BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters)
 {
   Initialize(a_ugrid);
 
@@ -317,12 +317,12 @@ void XmUGridTrianglesImpl::BuildTriangles(const XmUGrid& a_ugrid, bool a_addTria
     if (!builtTriangles)
       iBuildEarcutTriangles(*this, cellIdx, cellPoints);
   }
-} // XmUGridTrianglesImpl::BuildTriangles
+} // XmUGridTriangles2dImpl::BuildTriangles
 //------------------------------------------------------------------------------
 /// \brief Generate triangles for the UGrid using earcut algorithm.
 /// \param[in] a_ugrid The UGrid for which triangles are generated.
 //------------------------------------------------------------------------------
-void XmUGridTrianglesImpl::BuildEarcutTriangles(const XmUGrid& a_ugrid)
+void XmUGridTriangles2dImpl::BuildEarcutTriangles(const XmUGrid& a_ugrid)
 {
   Initialize(a_ugrid);
 
@@ -333,11 +333,11 @@ void XmUGridTrianglesImpl::BuildEarcutTriangles(const XmUGrid& a_ugrid)
     a_ugrid.GetPointsOfCell(cellIdx, cellPoints);
     iBuildEarcutTriangles(*this, cellIdx, cellPoints);
   }
-} // XmUGridTrianglesImpl::BuildEarcutTriangles
+} // XmUGridTriangles2dImpl::BuildEarcutTriangles
 //------------------------------------------------------------------------------
 /// \brief Set triangle activity based on each triangles cell.
 //------------------------------------------------------------------------------
-void XmUGridTrianglesImpl::SetCellActivity(const DynBitset& a_cellActivity)
+void XmUGridTriangles2dImpl::SetCellActivity(const DynBitset& a_cellActivity)
 {
   if (a_cellActivity.empty())
   {
@@ -355,52 +355,52 @@ void XmUGridTrianglesImpl::SetCellActivity(const DynBitset& a_cellActivity)
     triangleActivity[triangleIdx] = cellIdx >= a_cellActivity.size() || a_cellActivity[cellIdx];
   }
   GetTriSearch()->SetTriActivity(triangleActivity);
-} // XmUGridTrianglesImpl::SetCellActivity
+} // XmUGridTriangles2dImpl::SetCellActivity
 //------------------------------------------------------------------------------
 /// \brief Get the generated triangle points.
 /// \return The triangle points
 //------------------------------------------------------------------------------
-const VecPt3d& XmUGridTrianglesImpl::GetPoints() const
+const VecPt3d& XmUGridTriangles2dImpl::GetPoints() const
 {
   return *m_points;
-} // XmUGridTrianglesImpl::GetPoints
+} // XmUGridTriangles2dImpl::GetPoints
 //------------------------------------------------------------------------------
 /// \brief Get the generated triangles.
 /// \return a vector of indices for the triangles.
 //------------------------------------------------------------------------------
-const VecInt& XmUGridTrianglesImpl::GetTriangles() const
+const VecInt& XmUGridTriangles2dImpl::GetTriangles() const
 {
   return *m_triangles;
-} // XmUGridTrianglesImpl::GetTriangles
+} // XmUGridTriangles2dImpl::GetTriangles
 //------------------------------------------------------------------------------
 /// \brief Get the generated triangle points as a shared pointer.
 /// \return The triangle points
 //------------------------------------------------------------------------------
-BSHP<VecPt3d> XmUGridTrianglesImpl::GetPointsPtr()
+BSHP<VecPt3d> XmUGridTriangles2dImpl::GetPointsPtr()
 {
   return m_points;
-} // XmUGridTrianglesImpl::GetPointsPtr
+} // XmUGridTriangles2dImpl::GetPointsPtr
 //------------------------------------------------------------------------------
 /// \brief Get the generated triangles as a shared pointer.
 /// \return a vector of indices for the triangles.
 //------------------------------------------------------------------------------
-BSHP<VecInt> XmUGridTrianglesImpl::GetTrianglesPtr()
+BSHP<VecInt> XmUGridTriangles2dImpl::GetTrianglesPtr()
 {
   return m_triangles;
-} // XmUGridTrianglesImpl::GetTrianglesPtr
+} // XmUGridTriangles2dImpl::GetTrianglesPtr
 //------------------------------------------------------------------------------
 /// \brief Add a cell centroid point.
 /// \param a_cellIdx The cell index for the centroid point
 /// \param a_point The centroid point
 /// \return The index of the added point
 //------------------------------------------------------------------------------
-int XmUGridTrianglesImpl::AddCellCentroid(int a_cellIdx, const Pt3d& a_point)
+int XmUGridTriangles2dImpl::AddCellCentroid(int a_cellIdx, const Pt3d& a_point)
 {
   int centroidIdx = (int)m_points->size();
   m_points->push_back(a_point);
   m_centroidIdxs[a_cellIdx] = centroidIdx;
   return centroidIdx;
-} // XmUGridTrianglesImpl::AddCellCentroid
+} // XmUGridTriangles2dImpl::AddCellCentroid
 //------------------------------------------------------------------------------
 /// \brief Add a triangle cell.
 /// \param[in] a_cellIdx The cell index the triangle is from
@@ -408,25 +408,25 @@ int XmUGridTrianglesImpl::AddCellCentroid(int a_cellIdx, const Pt3d& a_point)
 /// \param[in] a_idx2 The second triangle point index (counter clockwise)
 /// \param[in] a_idx3 The third triangle point index (counter clockwise)
 //------------------------------------------------------------------------------
-void XmUGridTrianglesImpl::AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, int a_idx3)
+void XmUGridTriangles2dImpl::AddCellTriangle(int a_cellIdx, int a_idx1, int a_idx2, int a_idx3)
 {
   m_triangles->push_back(a_idx1);
   m_triangles->push_back(a_idx2);
   m_triangles->push_back(a_idx3);
   m_triangleToCellIdx.push_back(a_cellIdx);
-} // XmUGridTrianglesImpl::AddCellTriangle
+} // XmUGridTriangles2dImpl::AddCellTriangle
 //------------------------------------------------------------------------------
 /// \brief Get the centroid of a cell.
 /// \param[in] a_cellIdx The cell index.
 /// \return The index of the cell point.
 //------------------------------------------------------------------------------
-int XmUGridTrianglesImpl::GetCellCentroid(int a_cellIdx) const
+int XmUGridTriangles2dImpl::GetCellCentroid(int a_cellIdx) const
 {
   int pointIdx = -1;
   if (a_cellIdx >= 0 && a_cellIdx < (int)m_centroidIdxs.size())
     pointIdx = m_centroidIdxs[a_cellIdx];
   return pointIdx;
-} // XmUGridTrianglesImpl::GetCellCentroid
+} // XmUGridTriangles2dImpl::GetCellCentroid
 //------------------------------------------------------------------------------
 /// \brief Get the cell index and interpolation values intersected by a point.
 /// \param[in] a_point The point to intersect with the UGrid.
@@ -434,7 +434,7 @@ int XmUGridTrianglesImpl::GetCellCentroid(int a_cellIdx) const
 /// \param[out] a_weights The interpolation weights.
 /// \return The cell intersected by the point or -1 if outside of the UGrid.
 //------------------------------------------------------------------------------
-int XmUGridTrianglesImpl::GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights)
+int XmUGridTriangles2dImpl::GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights)
 {
   if (!m_triSearch)
     GetTriSearch();
@@ -446,23 +446,23 @@ int XmUGridTrianglesImpl::GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs
     cellIdx = m_triangleToCellIdx[triangleIdx];
   }
   return cellIdx;
-} // XmUGridTrianglesImpl::GetIntersectedCell
+} // XmUGridTriangles2dImpl::GetIntersectedCell
 //------------------------------------------------------------------------------
 /// \brief Initialize triangulation for a UGrid.
 /// \param[in] a_ugrid The UGrid for which triangles are generated.
 //------------------------------------------------------------------------------
-void XmUGridTrianglesImpl::Initialize(const XmUGrid& a_ugrid)
+void XmUGridTriangles2dImpl::Initialize(const XmUGrid& a_ugrid)
 {
   *m_points = a_ugrid.GetPoints();
   m_triangles->clear();
   m_centroidIdxs.assign(a_ugrid.GetNumberOfCells(), -1);
   m_triangleToCellIdx.clear();
   m_triSearch.reset();
-} // XmUGridTrianglesImpl::Initialize
+} // XmUGridTriangles2dImpl::Initialize
 //------------------------------------------------------------------------------
 /// \brief Get triangle search object.
 //------------------------------------------------------------------------------
-BSHP<GmTriSearch> XmUGridTrianglesImpl::GetTriSearch()
+BSHP<GmTriSearch> XmUGridTriangles2dImpl::GetTriSearch()
 {
   if (!m_triSearch)
   {
@@ -470,36 +470,36 @@ BSHP<GmTriSearch> XmUGridTrianglesImpl::GetTriSearch()
     m_triSearch->TrisToSearch(m_points, m_triangles);
   }
   return m_triSearch;
-} // XmUGridTrianglesImpl::GetTriSearch
+} // XmUGridTriangles2dImpl::GetTriSearch
 
 } // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \class XmUGridTriangles
+/// \class XmUGridTriangles2d
 /// \brief Class to store XmUGrid triangles. Tracks where midpoints and
 ///        triangles came from.
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
-/// \brief Build an instance of XmUGridTriangles
+/// \brief Build an instance of XmUGridTriangles2d
 /// \return The new instance.
 //------------------------------------------------------------------------------
-BSHP<XmUGridTriangles> XmUGridTriangles::New()
+BSHP<XmUGridTriangles2d> XmUGridTriangles2d::New()
 {
-  BSHP<XmUGridTriangles> triangles(new XmUGridTrianglesImpl);
+  BSHP<XmUGridTriangles2d> triangles(new XmUGridTriangles2dImpl);
   return triangles;
-} // XmUGridTriangles::New
+} // XmUGridTriangles2d::New
 //------------------------------------------------------------------------------
 /// \brief Default contructor.
 //------------------------------------------------------------------------------
-XmUGridTriangles::XmUGridTriangles()
+XmUGridTriangles2d::XmUGridTriangles2d()
 {
-} // XmUGridTriangles::XmUGridTriangles
+} // XmUGridTriangles2d::XmUGridTriangles2d
 //------------------------------------------------------------------------------
 /// \brief Destructor.
 //------------------------------------------------------------------------------
-XmUGridTriangles::~XmUGridTriangles()
+XmUGridTriangles2d::~XmUGridTriangles2d()
 {
-} // XmUGridTriangles::XmUGridTriangles
+} // XmUGridTriangles2d::XmUGridTriangles2d
 
 } // namespace xms
 
@@ -526,7 +526,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2};
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
   TS_REQUIRE_NOT_NULL(ugrid);
-  XmUGridTrianglesImpl triangles;
+  XmUGridTriangles2dImpl triangles;
 
   // test building cetroid in triangle cell
   triangles.BuildTriangles(*ugrid, true);
@@ -592,7 +592,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnQuad()
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
   TS_REQUIRE_NOT_NULL(ugrid);
-  XmUGridTrianglesImpl triangles;
+  XmUGridTriangles2dImpl triangles;
   triangles.BuildTriangles(*ugrid, true);
   VecPt3d triPointsOut = triangles.GetPoints();
   VecPt3d triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {0.5, 0.5, 0}};
@@ -636,7 +636,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTriangles2dCellTypes()
 
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
   TS_REQUIRE_NOT_NULL(ugrid);
-  XmUGridTrianglesImpl triangles;
+  XmUGridTriangles2dImpl triangles;
   triangles.BuildTriangles(*ugrid, true);
 
   VecPt3d triPointsOut = triangles.GetPoints();
@@ -698,7 +698,7 @@ void XmUGridTriangles2dUnitTests::testBuildEarcutTriangles()
     // clang-format on
 
     BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-    XmUGridTrianglesImpl ugridTris;
+    XmUGridTriangles2dImpl ugridTris;
 
     ugridTris.BuildTriangles(*ugrid, true);
 
@@ -726,7 +726,7 @@ void XmUGridTriangles2dUnitTests::testBuildEarcutTriangles()
     // clang-format on
 
     BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-    XmUGridTrianglesImpl ugridTris;
+    XmUGridTriangles2dImpl ugridTris;
     ugridTris.BuildEarcutTriangles(*ugrid);
 
     VecPt3d triPointsOut = ugridTris.GetPoints();
@@ -776,7 +776,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidAndEarcutTriangles()
   // clang-format on
 
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  XmUGridTrianglesImpl ugridTris;
+  XmUGridTriangles2dImpl ugridTris;
 
   ugridTris.BuildTriangles(*ugrid, true);
 
