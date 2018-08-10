@@ -717,34 +717,44 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize()
 } // XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize
 //------------------------------------------------------------------------------
 /// \brief Test extractor with cell scalars only.
+/// \verbatim
+///  3----2
+///  | 1 /|
+///  |  / |
+///  | /  |
+///  |/ 0 |
+///  0----1
+/// \endverbatim
 //------------------------------------------------------------------------------
+//! [snip_test_Example_SimpleLocationExtractor]
 void XmUGrid2dDataExtractorUnitTests::testCellScalarsOnly()
 {
-  //  3----2
-  //  | 1 /|
-  //  |  / |
-  //  | /  |
-  //  |/ 0 |
-  //  0----1
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+
+  // Step 1. Create an extractor for an existing XmUGrid (call xms::XmUGrid2dDataExtractor).
   BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
+  // Step 2. Set scalar and activity values (call xms::XmUGrid2dDataExtractor::SetGridCellScalars or XmUGrid2dDataExtractor::SetPointCellScalars).
   VecFlt cellScalars = {1, 2};
   extractor->SetGridCellScalars(cellScalars, DynBitset(), LOC_CELLS);
+
+  // Step 3. Set extract locations (call XmUGrid2dDataExtractor::SetExtractLocations).
   extractor->SetExtractLocations({{0.0, 0.0, 0.0},
                                   {0.25, 0.75, 100.0},
                                   {0.5, 0.5, 0.0},
                                   {0.75, 0.25, -100.0},
-                                  {-1.0, -1.0, 0.0}});
+                                  {-0.1, -0.1, 0.0}});
 
+  // Step 4. Extract the data (call xms::XmUGrid2dDataExtractor::ExtractData).
   VecFlt interpValues;
   extractor->ExtractData(interpValues);
   VecFlt expected = {1.5, 2.0, 1.5, 1.0, XM_NODATA};
   TS_ASSERT_EQUALS(expected, interpValues);
 } // XmUGrid2dDataExtractorUnitTests::testCellScalarsOnly
+//! [snip_test_Example_SimpleLocationExtractor]
 //------------------------------------------------------------------------------
 /// \brief Test extractor when using cell scalars and cell activity.
 //------------------------------------------------------------------------------

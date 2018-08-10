@@ -5,10 +5,10 @@ xmsextractor {#mainpage}
 xmsextractor {#xmsextractor}
 ============
 
-Introduction {#XmsugridIntroduction}
+Introduction {#Introduction}
 ------------
 
-xmsextractor is a grid geometry library used in xms libraries and products.
+xmsextractor is a cross-platform C++ software library written by [Aquaveo](http://www.aquaveo.com/) in partnership with [ERDC](http://www.erdc.usace.army.mil/). The code can be obtained by authorized users from [a GIT repository](https://public.git.erdc.dren.mil/computational-analysis-and-mechanics/Filigree) hosted by ERDC.
 
 <table align="center" border="0">
   <tr>
@@ -16,17 +16,24 @@ xmsextractor is a grid geometry library used in xms libraries and products.
   </tr>
 </table>
 
-License {#XmsextractorLicense}
+License {#License}
 -------
 
-The code is distributed under the xmsng Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at [http://www.aquaveo.com/xmsng/LICENSE_1_0.txt](http://www.aquaveo.com/xmsng/LICENSE_1_0.txt)). 
+The code is distributed under the xmsextractor Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at [http://www.aquaveo.com/xmsng/LICENSE_1_0.txt](http://www.aquaveo.com/xmsng/LICENSE_1_0.txt)). 
 
-Features {#XmsextractorFeatures}
+Features {#Features}
 --------
+xmsextractor includes the following functionality:
 
-The library supports unstructured grids with 0D, 1D, 2D and 3D elements.
+* Polyline scalar extraction from any XmGrid.
+* Location scalar extraction from any XmGrid.
+* Polyline extraction locations can be obtained.
+* XmGrids may have scalars assigned to either the points or to the cells.
 
 The following tutorials are available:
+
+* [Location extractor tutorial](Location_Tutorial.md)
+* [Polyline extractor tutorial](Polyline_Tutorial.md)
 
 Testing {#XmsextractorTesting}
 -------
@@ -39,7 +46,7 @@ The Code {#XmsextractorTheCode}
 * "xms" - Most code is in this namespace. The use of other namespaces is kept to a minimum. Two-letter prefixes are used as "pseudo-namespaces" in code modules. Preprocessor macros typically start with "XM_" to prevent name collisions.
 * "xmt" - Testing code will be put into this namespace once CXX_TEST is upgraded such that it will find the testing code in this namespace.
 
-### Interface pattern {#XmsgridInterfacePattern}
+### Interface pattern {#XmsextractorInterfacePattern}
 Many classes follow the interface pattern. An abstract base class is used to define the interface and a concrete implementation class is used to implement the functionality. The implementation class will be named the same as the interface class but will end in "Impl" and will only be found in the .cpp file. For example: xms::InterpIdw and xms::InterpIdwImpl. The Doxygen documentation will be for the Impl class.
 
 More about the interface pattern can be found at the following resources:
