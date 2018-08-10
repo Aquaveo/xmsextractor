@@ -37,6 +37,8 @@ public:
   void testChangingScalarsAndActivity();
 
   void testCopiedExtractor();
+
+  void testTutorial();
 }; // XmUGrid2dDataExtractorUnitTests
 
 #endif

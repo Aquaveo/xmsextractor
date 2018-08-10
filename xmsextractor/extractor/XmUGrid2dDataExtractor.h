@@ -84,6 +84,9 @@ public:
   /// \param[in] a_noDataValue The no data value
   virtual void SetNoDataValue(float a_noDataValue) = 0;
 
+  /// \brief Build triangles for UGrid for either point or cell scalars.
+  /// \param[in] a_location Location to build on (points or cells).
+  virtual void BuildTriangles(DataLocationEnum a_location) = 0;
   /// \brief Get the UGrid triangles.
   virtual const BSHP<XmUGridTriangles2d> GetUGridTriangles() const = 0;
 

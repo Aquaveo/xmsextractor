@@ -40,23 +40,17 @@ class XmUGrid;
 class XmUGrid2dPolylineDataExtractor
 {
 public:
-  static BSHP<XmUGrid2dPolylineDataExtractor> New(BSHP<XmUGrid> a_ugrid);
+  static BSHP<XmUGrid2dPolylineDataExtractor> New(BSHP<XmUGrid> a_ugrid,
+                                                  DataLocationEnum a_scalarLocation);
   virtual ~XmUGrid2dPolylineDataExtractor();
 
   /// \brief Setup point scalars to be used to extract interpolated data.
-  /// \param[in] a_pointScalars The point scalars.
+  /// \param[in] a_scalars The cell or point scalars.
   /// \param[in] a_activity The activity of the cells.
-  /// \param[in] a_activityType The location at which the data is currently stored.
-  virtual void SetGridPointScalars(const VecFlt& a_pointScalars,
-                                   const DynBitset& a_activity,
-                                   DataLocationEnum a_activityType) = 0;
-  /// \brief Setup cell scalars to be used to extract interpolated data.
-  /// \param[in] a_cellScalars The point scalars.
-  /// \param[in] a_activity The activity of the cells.
-  /// \param[in] a_activityType The location at which the data is currently stored.
-  virtual void SetGridCellScalars(const VecFlt& a_cellScalars,
-                                  const DynBitset& a_activity,
-                                  DataLocationEnum a_activityType) = 0;
+  /// \param[in] a_activityLocation The location at which the data is currently stored.
+  virtual void SetGridScalars(const VecFlt& a_scalars,
+                              const DynBitset& a_activity,
+                              DataLocationEnum a_activityLocation) = 0;
 
   /// \brief Set the polyline along which to extract the scalar data. Locations
   ///        crossing cell boundaries are computed along the polyline.
