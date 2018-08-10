@@ -784,6 +784,38 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testThreeSegmentsCrossOnBoundary()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary
 //------------------------------------------------------------------------------
+/// \brief
+//------------------------------------------------------------------------------
+void XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars()
+{
+  // clang-format off
+  //      3========2========5
+  //      |        |        |
+  //   0===============1    |
+  //      |        |        |
+  //      0--------1--------4
+  // clang-format on
+
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {2, 0, 0}, {2, 1, 0}};
+  VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 1, 4, 5, 2};
+  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_CELLS);
+
+  VecFlt cellScalars = {1, 2};
+  extractor->SetGridScalars(cellScalars, DynBitset(), LOC_CELLS);
+
+  VecFlt extractedData;
+  VecPt3d extractedLocations;
+  VecPt3d polyline = {{-0.5, 0.75, 0.0}, {1.5, 0.75, 0.0}};
+  extractor->ComputeLocationsAndExtractData(polyline, extractedData, extractedLocations);
+
+  VecFlt expectedData = {XM_NODATA, 1.0, 1.0, 1.25, 1.5, 1.75, 1.875};
+  TS_ASSERT_EQUALS(expectedData, extractedData);
+  VecPt3d expectedLocations =  {{-0.5, 0.75, 0.0}, {0.0, 0.75, 0.0}, {0.25, 0.75, 0.0},
+    {0.75, 0.75, 0.0}, {1., 0.75, 0.0}, {1.25, 0.75, 0.0}, {1.5, 0.75, 0.0}};
+  TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
+} // XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars
+//------------------------------------------------------------------------------
 /// \brief Test XmUGrid2dPolylineDataExtractor for tutorial with transient data.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
@@ -807,13 +839,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
   BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   extractor->SetNoDataValue(-999.0);
-  VecFlt pointScalars = {
-    730.787f, 1214.54f, 1057.145f, 629.2069f, 351.1153f, 631.6649f,
-    1244.366f, 449.9133f, 64.04247f, 240.9716f, 680.0491f, 294.9547f
-  };
-  extractor->SetGridScalars(pointScalars, DynBitset(), LOC_CELLS);
 
-  VecFlt extractedData;
   VecPt3d extractedLocations;
   VecPt3d polyline = {
     {290764, 3895106, 0}, {291122, 3909108, 0},
@@ -838,11 +864,27 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
   };
   TS_ASSERT_DELTA_VECPT3D(expectedLocations, extractedLocations, 0.15);
 
+  VecFlt extractedData;
+
   // time step 1
+  VecFlt pointScalars = {
+    730.787f, 1214.54f, 1057.145f, 629.2069f, 351.1153f, 631.6649f,
+    1244.366f, 449.9133f, 64.04247f, 240.9716f, 680.0491f, 294.9547f
+  };
+  extractor->SetGridScalars(pointScalars, DynBitset(), LOC_CELLS);
   extractor->ExtractData(extractedData);
   VecFlt expectedData = {-999.0f, 144.5f, 299.4f, 485.9f, 681.8f,
                          975.7f, -999.0f, -999.0f, 862.8f, 780.9f,
                          882.3f, 811.0f, 504.4f};
+  TS_ASSERT_DELTA_VEC(expectedData, extractedData, 0.2);
+
+  // time step 2
+  pointScalars = {-999.0f, 1220.5f, 1057.1f, 613.2f, 380.1f, 625.6f, 722.2f, 449.9f, 51.0f, 240.9f,
+                  609.0f, 294.9f};
+  extractor->SetGridScalars(pointScalars, DynBitset(), LOC_CELLS);
+  extractor->ExtractData(extractedData);
+  expectedData = {-999.0f, 137.4f, 314.8f, 498.1f, -196.9f, 124.7f, -999.0f, -999.0f, 855.5f,
+    780.9f, 598.1f, 527.1f, 465.4f};
   TS_ASSERT_DELTA_VEC(expectedData, extractedData, 0.2);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial
 
