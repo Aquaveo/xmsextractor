@@ -32,8 +32,7 @@ xmsextractor includes the following functionality:
 
 The following tutorials are available:
 
-* [Location extractor tutorial](Location_Tutorial.md)
-* [Polyline extractor tutorial](Polyline_Tutorial.md)
+* [Extractor tutorial](Extractor_Tutorial.md)
 
 Testing {#XmsextractorTesting}
 -------

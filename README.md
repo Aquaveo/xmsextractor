@@ -3,7 +3,7 @@
 
 XMSExtractor
 ========
-Grid library for XMS products
+Scalar extractor library for XMS products
 
 Prerequisites
 --------------

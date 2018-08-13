@@ -1105,6 +1105,7 @@ void XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()
 //------------------------------------------------------------------------------
 /// \brief Test XmUGrid2dDataExtractor for tutorial.
 //------------------------------------------------------------------------------
+//! [snip_test_Example_TransientLocationExtractor]
 void XmUGrid2dDataExtractorUnitTests::testTutorial()
 {
   // build 2x3 grid
@@ -1123,8 +1124,10 @@ void XmUGrid2dDataExtractorUnitTests::testTutorial()
     XMU_QUAD, 4, 6, 10, 11, 7
   };
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  // Step 1. Create an extractor for an XmUGrid (call XmUGrid2dDataExtractor::New).
   BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
 
+  // Step 2. Set extract locations (call XmUGrid2dDataExtractor::SetExtractLocations).
   VecPt3d extractLocations = {
     {289780, 3906220, 0},
     {293780, 3899460, 0},
@@ -1138,26 +1141,34 @@ void XmUGrid2dDataExtractorUnitTests::testTutorial()
   VecPt3d retrievedLocations = extractor->GetExtractLocations();
   TS_ASSERT_EQUALS(extractLocations, retrievedLocations);
 
-  // time step 1
+  // Step 3. Optionally set the "no data" value for output interpolated values
+  //         (XmUGrid2dDataExtractor::SetNoDataValue).
   extractor->SetNoDataValue(-999.0);
+
+  // time step 1
+  // Step 4. Set the point scalars for the first time step (XmUGrid2dDataExtractor::SetGridPointScalars).
   VecFlt pointScalars = {730.787f, 1214.54f, 1057.145f, 629.2069f, 351.1153f, 631.6649f, 1244.366f,
     449.9133f, 64.04247f, 240.9716f, 680.0491f, 294.9547f};
   extractor->SetGridPointScalars(pointScalars, DynBitset(), LOC_CELLS);
+  // Step 5. Extract the data (call xms::XmUGrid2dDataExtractor::ExtractData).
   extractor->ExtractData(extractedData);
 
   VecFlt expectedData = {719.6f, 468.6f, 1033.8f, 996.5f, 1204.3f, -999.0f};
   TS_ASSERT_DELTA_VEC(expectedData, extractedData, 0.2);
 
   // time step 2
+  // Step 6. Continue using steps 4 and 5 for remaining time steps.
   pointScalars = {-999.0f, 1220.5f, 1057.1f, 613.2f, 380.1f, 625.6f, 722.2f, 449.9f, 51.0f, 240.9f, 609.0f, 294.9f};
   DynBitset cellActivity;
   cellActivity.resize(ugrid->GetNumberOfCells(), true);
   cellActivity[0] = false;
   extractor->SetGridPointScalars(pointScalars, cellActivity, LOC_CELLS);
+  // Step 7. Extract the data (call xms::XmUGrid2dDataExtractor::ExtractData).
   extractor->ExtractData(extractedData);
 
   expectedData = {-999.0f, 466.4f, 685.0f, 849.4f, 1069.6f, -999.0f};
   TS_ASSERT_DELTA_VEC(expectedData, extractedData, 0.2);
 } // XmUGrid2dDataExtractorUnitTests::testTutorial
+//! [snip_test_Example_TransientLocationExtractor]
 
 #endif

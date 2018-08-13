@@ -818,6 +818,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars()
 //------------------------------------------------------------------------------
 /// \brief Test XmUGrid2dPolylineDataExtractor for tutorial with transient data.
 //------------------------------------------------------------------------------
+//! [snip_test_Example_TransientPolylineExtractor]
 void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
 {
   // build 2x3 grid
@@ -836,16 +837,21 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
     XMU_QUAD, 4, 6, 10, 11, 7
   };
   BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  // Step 1. Create an extractor for an XmUGrid giving the mapped location of the scalar values
   BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
+  // Step 2. Optionally set the "no data" value.
   extractor->SetNoDataValue(-999.0);
 
+  // Step 3. Set the polyline to be extracted along.
   VecPt3d extractedLocations;
   VecPt3d polyline = {
     {290764, 3895106, 0}, {291122, 3909108, 0},
     {302772, 3909130, 0}, {302794, 3895775, 0}
   };
   extractor->SetPolyline(polyline);
+
+  // Step 4. Optionally get the locations used for extraction along the polyline.
   extractedLocations = extractor->GetExtractLocations();
   VecPt3d expectedLocations = {
     {290764.0, 3895106.0, 0.0},
@@ -867,11 +873,13 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
   VecFlt extractedData;
 
   // time step 1
+  // Step 5. Set the point scalars for the first time step.
   VecFlt pointScalars = {
     730.787f, 1214.54f, 1057.145f, 629.2069f, 351.1153f, 631.6649f,
     1244.366f, 449.9133f, 64.04247f, 240.9716f, 680.0491f, 294.9547f
   };
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_CELLS);
+  // Step 6. Extract the data.
   extractor->ExtractData(extractedData);
   VecFlt expectedData = {-999.0f, 144.5f, 299.4f, 485.9f, 681.8f,
                          975.7f, -999.0f, -999.0f, 862.8f, 780.9f,
@@ -879,6 +887,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
   TS_ASSERT_DELTA_VEC(expectedData, extractedData, 0.2);
 
   // time step 2
+  // Step 7. Continue using steps 5 and 6 for remaining time steps.
   pointScalars = {-999.0f, 1220.5f, 1057.1f, 613.2f, 380.1f, 625.6f, 722.2f, 449.9f, 51.0f, 240.9f,
                   609.0f, 294.9f};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_CELLS);
@@ -887,5 +896,6 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
     780.9f, 598.1f, 527.1f, 465.4f};
   TS_ASSERT_DELTA_VEC(expectedData, extractedData, 0.2);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial
+//! [snip_test_Example_TransientPolylineExtractor]
 
 #endif
