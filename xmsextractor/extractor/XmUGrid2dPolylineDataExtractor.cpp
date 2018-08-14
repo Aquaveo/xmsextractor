@@ -111,7 +111,7 @@ void XmUGrid2dPolylineDataExtractorImpl::SetGridScalars(const VecFlt& a_scalars,
 {
   if (m_scalarLocation == LOC_POINTS)
     m_extractor->SetGridPointScalars(a_scalars, a_activity, a_activityLocation);
-  else if (m_scalarLocation = LOC_CELLS)
+  else if (m_scalarLocation == LOC_CELLS)
     m_extractor->SetGridCellScalars(a_scalars, a_activity, a_activityLocation);
 } // XmUGrid2dPolylineDataExtractorImpl::SetGridScalars
 //------------------------------------------------------------------------------
