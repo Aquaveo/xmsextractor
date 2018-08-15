@@ -258,9 +258,9 @@ void XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations(const VecPt3d& 
 } // XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \class XmUGrid2dDataExtractor
-/// \brief Provides ability to interpolate and extract the scalar values  points and along arcs
-///        for an unstructured grid.
+/// \class XmUGrid2dPolylineDataExtractor
+/// \brief Provides ability to interpolate and extract the scalar values along a
+///        polyline for an unstructured grid.
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
 /// \brief Create a new XmUGrid2dPolylineDataExtractor.
@@ -340,7 +340,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with single segment all inside of cell.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell()
 {
@@ -371,7 +371,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with single segment along an edge.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge()
 {
@@ -402,7 +402,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with single segment all outside of cell.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllOutside()
 {
@@ -433,7 +433,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllOutside()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllOutside
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with single segment with endpoint touching cell.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentOutToTouch()
 {
@@ -464,7 +464,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentOutToTouch()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentOutToTouch
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with single segment with first point touching edge.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentTouchToOut()
 {
@@ -495,7 +495,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentTouchToOut()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentTouchToOut
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with single segment touching cell point.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentCrossCellPoint()
 {
@@ -528,7 +528,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentCrossCellPoint()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentCrossCellPoint
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with single segment crossing first cell into second.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossCellIntoSecond()
 {
@@ -560,7 +560,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossCellIntoSecond()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossCellIntoSecond
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with single segment going across unconnected cells.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossSplitCells()
 {
@@ -594,7 +594,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossSplitCells()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossSplitCells
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with two segments going across a single cell.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAcrossOneCell()
 {
@@ -626,7 +626,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAcrossOneCell()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAcrossOneCell
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with two segments all outside of cell.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAllOutside()
 {
@@ -657,7 +657,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAllOutside()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAllOutside
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with two segments: first in to outside, second outside.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsFirstExiting()
 {
@@ -688,7 +688,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsFirstExiting()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsFirstExiting
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with  two segments joining in a cell.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinInCell()
 {
@@ -720,7 +720,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinInCell()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinInCell
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with two segments joining on two cell boundary.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary()
 {
@@ -752,7 +752,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with three segments two crossing at boundary.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testThreeSegmentsCrossOnBoundary()
 {
@@ -784,7 +784,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testThreeSegmentsCrossOnBoundary()
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Test extractor with cell scalars.
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars()
 {
