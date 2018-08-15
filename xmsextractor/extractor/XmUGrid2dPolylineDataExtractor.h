@@ -60,11 +60,12 @@ public:
   /// \return The locations.
   virtual const VecPt3d& GetExtractLocations() const = 0;
   /// \brief Extract data at previously computed locations returned by GetExtractLocations.
-  /// \param[out] The interpolated scalar data at the previously computed locations.
+  /// \param[out] a_extractedData The interpolated scalar data at the previously computed locations.
   virtual void ExtractData(VecFlt& a_extractedData) = 0;
 
   /// \brief Extract data for given polyline.
   /// \param[in] a_polyline The polyline.
+  /// \param[out] a_extractedData The interpolated scalar data at the extracted locations.
   /// \param[out] a_extractedLocations The locations.
   virtual void ComputeLocationsAndExtractData(const VecPt3d& a_polyline,
                                               VecFlt& a_extractedData,

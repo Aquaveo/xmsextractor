@@ -54,7 +54,17 @@ set(xmsextractor_headers
 )
 
 # Pybind11 sources
+set(xmsextractor_py
+  xmsextractor/python/xmsextractor_py.cpp
+  #Extractor
+  xmsextractor/python/extractor/extractor_py.cpp
+  xmsextractor/python/extractor/XmUGrid2dDataExtractor_py.cpp
+  xmsextractor/python/extractor/XmUGrid2dPolylineDataExtractor_py.cpp
+)
 
+set(xmsextractor_py_headers
+  xmsextractor/python/extractor/extractor_py.h
+)
 
 # Tests
 if (BUILD_TESTING)

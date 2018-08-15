@@ -88,6 +88,7 @@ public:
   /// \param[in] a_location Location to build on (points or cells).
   virtual void BuildTriangles(DataLocationEnum a_location) = 0;
   /// \brief Get the UGrid triangles.
+  /// \return Shared pointer to triangles.
   virtual const BSHP<XmUGridTriangles2d> GetUGridTriangles() const = 0;
 
 private:
