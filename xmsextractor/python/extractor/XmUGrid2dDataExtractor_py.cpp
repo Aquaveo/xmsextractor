@@ -77,9 +77,6 @@ void initXmUGrid2dDataExtractor(py::module &m) {
         .def("set_use_idw_for_point_data", &xms::XmUGrid2dDataExtractor::SetUseIdwForPointData)
         //virtual void SetNoDataValue(float a_noDataValue) = 0;
         .def("set_no_data_value", &xms::XmUGrid2dDataExtractor::SetNoDataValue,"Set the no data value",py::arg("no_data_value"))
-        //.def("set_no_data_value", [](xms::XmUGrid2dDataExtractor &self, double a_noDataValue) {
-        //    self.SetNoDataValue(a_noDataValue);
-        //},"Set the no data value",py::arg("no_data_value"))
     ;
 
     // DataLocationEnum

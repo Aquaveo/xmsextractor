@@ -1,4 +1,4 @@
-"""Test XmUGrid_py.cpp"""
+"""Test XmUGrid2dDataExtractor_py.cpp"""
 import unittest
 import xmsextractor_py
 from xmsgrid_py.ugrid import XmUGrid

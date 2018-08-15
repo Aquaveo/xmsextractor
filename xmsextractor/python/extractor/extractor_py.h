@@ -17,4 +17,4 @@ namespace py = pybind11;
 void initExtractor(py::module &);
 
 void initXmUGrid2dDataExtractor(py::module &);
-//void initXmUGrid2dPolylineDataExtractor(py::module &);
+void initXmUGrid2dPolylineDataExtractor(py::module &);

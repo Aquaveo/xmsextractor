@@ -59,10 +59,7 @@ set(xmsextractor_py
   #Extractor
   xmsextractor/python/extractor/extractor_py.cpp
   xmsextractor/python/extractor/XmUGrid2dDataExtractor_py.cpp
-  #UGrid
-  #xmsextractor/python/ugrid/ugrid_py.cpp
-  #xmsextractor/python/ugrid/XmUGrid_py.cpp
-  #xmsextractor/python/ugrid/XmUGridUtils_py.cpp
+  xmsextractor/python/extractor/XmUGrid2dPolylineDataExtractor_py.cpp
 )
 
 set(xmsextractor_py_headers
