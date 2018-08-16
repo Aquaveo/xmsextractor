@@ -15,6 +15,7 @@
 #include <sstream>
 
 // 4. External library headers
+#include <boost/container/flat_map.hpp>
 
 // 5. Shared code headers
 #include <xmscore/misc/XmError.h>
@@ -44,6 +45,11 @@ namespace xms
 
 namespace
 {
+
+typedef std::tuple<int, int, int> Triangle;     ///< three consecutive polygon points for triangle
+typedef boost::container::flat_map<Triangle, double> RatioCache;  ///< ratio cache to speed up earcut calculation
+typedef boost::container::flat_map<Triangle, bool> ValidCache;    ///< valid cache to speed up earcut calculation
+
 class XmUGridTriangles2dImpl : public XmUGridTriangles2d
 {
 public:
@@ -92,11 +98,18 @@ double iMagnitude(const Pt3d& a_vec)
 /// \param[in] a_idx1: first point of first edge
 /// \param[in] a_idx2: second point of first edge, first point of second edge
 /// \param[in] a_idx2: second point of second edge
+/// \
 /// \return The ratio, -1.0 for an inverted triangle, or -2.0 for a zero area
 ///         triangle
 //------------------------------------------------------------------------------
-double iGetEarcutTriangleRatio(const VecPt3d& a_points, int a_idx1, int a_idx2, int a_idx3)
+double iGetEarcutTriangleRatio(const VecPt3d& a_points, int a_idx1, int a_idx2, int a_idx3,
+                               RatioCache& a_ratioCache)
 {
+  Triangle triangle(a_idx1, a_idx2, a_idx3);
+  auto ratioIter = a_ratioCache.find(triangle);
+  if (ratioIter != a_ratioCache.end())
+    return ratioIter->second;
+
   Pt3d pt1 = a_points[a_idx1];
   Pt3d pt2 = a_points[a_idx2];
   Pt3d pt3 = a_points[a_idx3];
@@ -128,6 +141,7 @@ double iGetEarcutTriangleRatio(const VecPt3d& a_points, int a_idx1, int a_idx2, 
     }
   }
 
+  a_ratioCache[triangle] = ratio;
   return ratio;
 } // iGetEarcutTriangleRatio
 //------------------------------------------------------------------------------
@@ -137,8 +151,14 @@ bool iValidTriangle(const VecPt3d& a_points,
                     const VecInt a_polygon,
                     int a_idx1,
                     int a_idx2,
-                    int a_idx3)
+                    int a_idx3,
+                    ValidCache& a_validCache)
 {
+  Triangle triangle(a_idx1, a_idx2, a_idx3);
+  auto validIter = a_validCache.find(triangle);
+  if (validIter != a_validCache.end())
+    return validIter->second;
+  
   const Pt3d& pt1 = a_points[a_idx1];
   const Pt3d& pt2 = a_points[a_idx2];
   const Pt3d& pt3 = a_points[a_idx3];
@@ -151,11 +171,13 @@ bool iValidTriangle(const VecPt3d& a_points,
       if (gmTurn(pt1, pt2, pt, 0.0) == TURN_LEFT && gmTurn(pt2, pt3, pt) == TURN_LEFT &&
           gmTurn(pt3, pt1, pt, 0.0) == TURN_LEFT)
       {
+        a_validCache[triangle] = false;
         return false;
       }
     }
   }
 
+  a_validCache[triangle] = true;
   return true;
 } // iValidTriangle
 //------------------------------------------------------------------------------
@@ -217,6 +239,8 @@ void iBuildEarcutTriangles(XmUGridTriangles2dImpl& a_ugridTris,
   const VecPt3d& points = a_ugridTris.GetPoints();
 
   // continually find best triangle on adjacent edges and cut it off polygon
+  RatioCache ratioCache;
+  ValidCache validCache;
   while (polygonIdxs.size() >= 4)
   {
     int bestIdx = -1;
@@ -232,10 +256,10 @@ void iBuildEarcutTriangles(XmUGridTriangles2dImpl& a_ugridTris,
       int idx3 = polygonIdxs[(pointIdx + 1) % numPoints];
 
       // make sure triangle is valid (not inverted and doesn't have other points in it)
-      double ratio = iGetEarcutTriangleRatio(points, idx1, idx2, idx3);
+      double ratio = iGetEarcutTriangleRatio(points, idx1, idx2, idx3, ratioCache);
       if (ratio > 0.0)
       {
-        if (iValidTriangle(points, polygonIdxs, idx1, idx2, idx3))
+        if (iValidTriangle(points, polygonIdxs, idx1, idx2, idx3, validCache))
         {
           if (ratio < bestRatio)
           {
