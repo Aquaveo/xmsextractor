@@ -46,11 +46,6 @@ class XmsextractorConan(ConanFile):
         self.options['xmsgrid'].pybind = self.options.pybind
         self.options['xmsgrid'].testing = self.options.testing
 
-        if s_compiler != "Visual Studio" and s_compiler != "apple-clang":
-            self.options['boost'].fPIC = True
-        elif s_compiler == "apple-clang":
-            self.options['boost'].fPIC = False
-
         if s_compiler == "apple-clang" and s_os == 'Linux':
             raise ConanException("Clang on Linux is not supported.")
 
