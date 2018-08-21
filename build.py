@@ -11,11 +11,13 @@ if __name__ == "__main__":
 
     # Add environment variables to build definitions
     XMS_VERSION = os.environ.get('XMS_VERSION', None)
+    python_target_version = os.environ.get('PYTHON_TARGET_VERSION', "3.6")
 
     for settings, options, env_vars, build_requires, reference in builder.items:
         # General Options
         env_vars.update({
             'XMS_VERSION': XMS_VERSION,
+            'PYTHON_TARGET_VERSION': python_target_version
             'VERBOSE': 1
         })
 
@@ -42,7 +44,9 @@ if __name__ == "__main__":
     xms_updated_builds = []
     for settings, options, env_vars, build_requires, reference in builder.items:
         # xms option
-        if settings['compiler'] == 'Visual Studio' and 'MD' in settings['compiler.runtime']:
+        if settings['compiler'] == 'Visual Studio' \
+                and 'MD' in settings['compiler.runtime'] \
+                and int(settings['compiler.version']) < 13:
             xms_options = dict(options)
             xms_options.update({'xmsextractor:xms': True})
             xms_updated_builds.append([settings, xms_options, env_vars, build_requires])

@@ -43,6 +43,9 @@ namespace xms
 
 //----- Class / Function definitions -------------------------------------------
 
+namespace
+{
+
 ////////////////////////////////////////////////////////////////////////////////
 /// Implementation for XmUGrid2dPolylineDataExtractor
 class XmUGrid2dPolylineDataExtractorImpl : public XmUGrid2dPolylineDataExtractor
@@ -256,6 +259,8 @@ void XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations(const VecPt3d& 
     }
   }
 } // XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations
+
+} // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dPolylineDataExtractor

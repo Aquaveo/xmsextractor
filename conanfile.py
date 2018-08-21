@@ -46,11 +46,6 @@ class XmsextractorConan(ConanFile):
         self.options['xmsgrid'].pybind = self.options.pybind
         self.options['xmsgrid'].testing = self.options.testing
 
-        if s_compiler != "Visual Studio" and s_compiler != "apple-clang":
-            self.options['boost'].fPIC = True
-        elif s_compiler == "apple-clang":
-            self.options['boost'].fPIC = False
-
         if s_compiler == "apple-clang" and s_os == 'Linux':
             raise ConanException("Clang on Linux is not supported.")
 
@@ -73,9 +68,9 @@ class XmsextractorConan(ConanFile):
             self.requires("pybind11/2.2.2@aquaveo/stable")
 
         # Use the dev version of XMSCore, XMSInterp, and XMSGrid
-        self.requires("xmscore/[>=1.0.35]@aquaveo/stable")
-        self.requires("xmsinterp/[>=1.0.14]@aquaveo/stable")
-        self.requires("xmsgrid/[>=1.0.5]@aquaveo/stable")
+        self.requires("xmscore/[>=1.0.36]@aquaveo/stable")
+        self.requires("xmsinterp/[>=1.0.15]@aquaveo/stable")
+        self.requires("xmsgrid/[>=1.0.6]@aquaveo/stable")
 
     def build(self):
         cmake = CMake(self)
@@ -91,6 +86,8 @@ class XmsextractorConan(ConanFile):
         cmake.definitions["IS_PYTHON_BUILD"] = self.options.pybind
         cmake.definitions["BUILD_TESTING"] = self.options.testing
         cmake.definitions["XMSEXTRACTOR_TEST_PATH"] = "test_files"
+        cmake.definitions["PYTHON_TARGET_VERSION"] = self.env.get("PYTHON_TARGET_VERSION", "3.6")
+        
         cmake.configure(source_folder=".")
         cmake.build()
 
