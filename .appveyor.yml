@@ -4,13 +4,6 @@ version: 1.0.0-{build}  # This version is somewhat arbitrary. Does not affect th
 environment:
     PYTHON: "C:\\Python35-x64"
     PYTHON_ARCH: "64"
-    CONAN_USERNAME: "aquaveo"
-    CONAN_CHANNEL: "stable"
-    CONAN_LOGIN_USERNAME: ${CONAN_USER_SECRET}
-    CONAN_PASSWORD: ${CONAN_PASSWORD_SECRET}
-    CONAN_REMOTES: ${AQUAVEO_CONAN}
-    CONAN_UPLOAD: ${AQUAVEO_CONAN}
-
     # Assume we are only building on tagged commits.
     # Will not work on untagged commits.
     XMS_VERSION: ${APPVEYOR_REPO_TAG_NAME}
