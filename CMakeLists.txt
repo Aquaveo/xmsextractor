@@ -126,11 +126,16 @@ if(BUILD_TESTING)
 endif()
 
 if(IS_PYTHON_BUILD)
-  list(APPEND xmsextractor_sources
-    xmsextractor/python/misc/PyUtils.cpp
+  list(APPEND xmsextractor_py
+    # add c++ python files
+    xmsextractor/python/xmsextractor_py.cpp
+	xmsextractor/python/extractor/extractor_py.cpp
+	xmsextractor/python/extractor/XmUGrid2dDataExtractor_py.cpp
+	xmsextractor/python/extractor/XmUGrid2dPolylineDataExtractor_py.cpp
   )
-  list(APPEND xmsextractor_headers
-    xmsextractor/python/misc/PyUtils.h
+  list(APPEND xmsextractor_py_headers
+    # add python files here
+    xmsextractor/python/extractor/extractor_py.h
   )
 endif()
 

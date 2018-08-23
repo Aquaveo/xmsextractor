@@ -1,8 +1,8 @@
-mkdir build
+mkdir build_py
 pushd .
-cd build
-conan install -pr ..\dev\xmsprofile_release_py .. --build missing
+cd build_py
+conan install -pr ..\dev\xmsprofile_py .. --build missing
 pause
-cmake .. -G "Visual Studio 14 2015 Win64" -DIS_PYTHON_BUILD=True 
+cmake .. -G "Visual Studio 14 2015 Win64" -DIS_PYTHON_BUILD=True -DBUILD_TESTING=False
 pause
 popd

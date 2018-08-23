@@ -30,6 +30,18 @@ class XmsextractorConan(ConanFile):
         s_compiler = self.settings.compiler
         s_compiler_version = self.settings.compiler.version
 
+        self.options['xmscore'].xms = self.options.xms
+        self.options['xmscore'].pybind = self.options.pybind
+        self.options['xmscore'].testing = self.options.testing
+		
+        self.options['xmsinterp'].xms = self.options.xms
+        self.options['xmsinterp'].pybind = self.options.pybind
+        self.options['xmsinterp'].testing = self.options.testing
+		
+        self.options['xmsgrid'].xms = self.options.xms
+        self.options['xmsgrid'].pybind = self.options.pybind
+        self.options['xmsgrid'].testing = self.options.testing
+
         if s_compiler == "apple-clang" and s_os == 'Linux':
             raise ConanException("Clang on Linux is not supported.")
 
