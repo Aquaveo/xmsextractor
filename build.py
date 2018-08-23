@@ -10,13 +10,14 @@ if __name__ == "__main__":
     builder.add_common_builds()
 
     # Add environment variables to build definitions
-    xms_version = os.environ.get('XMS_VERSION', None)
+    XMS_VERSION = os.environ.get('XMS_VERSION', None)
     python_target_version = os.environ.get('PYTHON_TARGET_VERSION', "3.6")
 
     for settings, options, env_vars, build_requires, reference in builder.items:
         # General Options
         env_vars.update({
-            'XMS_VERSION': xms_version,
+            'XMS_VERSION': XMS_VERSION,
+            'VERBOSE': 1,
             'PYTHON_TARGET_VERSION': python_target_version
         })
 
@@ -26,14 +27,13 @@ if __name__ == "__main__":
                 'compiler.libcxx': 'libstdc++11'
             })
 
-
     pybind_updated_builds = []
     for settings, options, env_vars, build_requires, reference in builder.items:
         # pybind option
         if not settings['compiler'] == "apple-clang" \
-                and (not settings['compiler'] == "Visual Studio" \
-                     or int(settings['compiler.version']) > 12) \
-                and settings['arch'] == "x86_64":
+                and ((not settings['compiler'] == "Visual Studio" \
+                or int(settings['compiler.version']) > 12) \
+                and settings['arch'] == "x86_64"):
             pybind_options = dict(options)
             pybind_options.update({'xmsextractor:pybind': True})
             pybind_updated_builds.append([settings, pybind_options, env_vars, build_requires])
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
     testing_updated_builds = []
     for settings, options, env_vars, build_requires, reference in builder.items:
-        # xms option
+        # testing option
         if not options.get('xmsextractor:xms', False) and not options.get('xmsextractor:pybind', False):
             testing_options = dict(options)
             testing_options.update({'xmsextractor:testing': True})

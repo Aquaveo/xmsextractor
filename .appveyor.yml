@@ -4,8 +4,8 @@ version: 1.0.0-{build}  # This version is somewhat arbitrary. Does not affect th
 environment:
     PYTHON: "C:\\Python35-x64"
     PYTHON_ARCH: 64
-    # Assume we are only building on tagged commits.
-    # Will not work on untagged commits.
+    PYTHON_VERSION: 3.5
+    PYTHON_TARGET_VERSION: ${PYTHON_VERSION}
     XMS_VERSION: ${APPVEYOR_REPO_TAG_NAME}
     AQUAVEO_CONAN: https://conan.aquaveo.com:443
     CONAN_REFERENCE: "xmsextractor/${XMS_VERSION}"
@@ -21,15 +21,7 @@ environment:
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
           CONAN_VISUAL_VERSIONS: 12
           CONAN_BUILD_TYPES: Debug
-          CONAN_ARCHS: x86
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-          CONAN_VISUAL_VERSIONS: 12
-          CONAN_BUILD_TYPES: Debug
           CONAN_ARCHS: x86_64
-        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
-          CONAN_VISUAL_VERSIONS: 12
-          CONAN_BUILD_TYPES: Release
-          CONAN_ARCHS: x86
         - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2013
           CONAN_VISUAL_VERSIONS: 12
           CONAN_BUILD_TYPES: Release
@@ -51,6 +43,7 @@ install:
   - conan user # It creates the conan data directory
 
 build_script:
+  # Set conditional ENVs
   - ps: |
       if ($env:APPVEYOR_REPO_TAG -eq 'false') { 
         $env:XMS_VERSION = 'Dev'
