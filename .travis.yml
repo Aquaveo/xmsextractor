@@ -1,5 +1,5 @@
 env:
- global:
+  global:
    # TRAVIS_BRANCH is tag name if tag provided else branch name
    - XMS_VERSION: $TRAVIS_BRANCH
    - CONAN_REFERENCE: "xmsextractor/${XMS_VERSION}"
@@ -11,13 +11,14 @@ env:
    - GH_REPO_NAME: xmsextractor
    - DOXYFILE: $TRAVIS_BUILD_DIR/Doxygen/Doxyfile
    - GH_REPO_REF: github.com/Aquaveo/xmsextractor.git
-
+   - PYTHON_TARGET_VERSION: 2.7
+     
 linux: &linux
    os: linux
    sudo: required
    language: python
-   python: 
-     - 3.6
+   python:
+     - 2.7
    services:
      - docker
 osx: &osx
@@ -69,19 +70,21 @@ jobs:
           - chmod +x generateDocumentationAndDeploy.sh
           - ./generateDocumentationAndDeploy.sh
 
-      # GCC
+      # GCC 5
       - stage: test
         <<: *linux
         env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=lasote/conangcc5 CONAN_BUILD_TYPES=Debug CONAN_ARCHS=x86_64
       - stage: test
         <<: *linux
         env: CONAN_GCC_VERSIONS=5 CONAN_DOCKER_IMAGE=lasote/conangcc5 CONAN_BUILD_TYPES=Release CONAN_ARCHS=x86_64
+      # GCC 6
       - stage: test
         <<: *linux
         env: CONAN_GCC_VERSIONS=6 CONAN_DOCKER_IMAGE=lasote/conangcc6 CONAN_BUILD_TYPES=Debug CONAN_ARCHS=x86_64
       - stage: test
         <<: *linux
         env: CONAN_GCC_VERSIONS=6 CONAN_DOCKER_IMAGE=lasote/conangcc6 CONAN_BUILD_TYPES=Release CONAN_ARCHS=x86_64
+      # GCC 7
       - stage: test
         <<: *linux
         env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=lasote/conangcc7 CONAN_BUILD_TYPES=Debug CONAN_ARCHS=x86_64

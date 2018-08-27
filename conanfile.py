@@ -12,7 +12,7 @@ class XmsextractorConan(ConanFile):
     version = None
     license = "XMSNG Software License"
     url = "https://github.com/Aquaveo/xmsextractor"
-    description = "Grid library for XMS products"
+    description = "Extractor library for XMS products"
     settings = "os", "compiler", "build_type", "arch"
     options = {
         "xms": [True, False],
@@ -26,7 +26,7 @@ class XmsextractorConan(ConanFile):
     exports_sources = "xmsextractor/*", "test_files/*"
 
     def configure(self):
-        # Set verion dynamically using XMS_VERSION env variable.
+        # Set version dynamically using XMS_VERSION env variable.
         self.version = self.env.get('XMS_VERSION', 'master')
 
         # Raise ConanExceptions for Unsupported Versions
@@ -37,11 +37,11 @@ class XmsextractorConan(ConanFile):
         self.options['xmscore'].xms = self.options.xms
         self.options['xmscore'].pybind = self.options.pybind
         self.options['xmscore'].testing = self.options.testing
-
+		
         self.options['xmsinterp'].xms = self.options.xms
         self.options['xmsinterp'].pybind = self.options.pybind
         self.options['xmsinterp'].testing = self.options.testing
-
+		
         self.options['xmsgrid'].xms = self.options.xms
         self.options['xmsgrid'].pybind = self.options.pybind
         self.options['xmsgrid'].testing = self.options.testing
@@ -68,9 +68,9 @@ class XmsextractorConan(ConanFile):
             self.requires("pybind11/2.2.2@aquaveo/stable")
 
         # Use the dev version of XMSCore, XMSInterp, and XMSGrid
-        self.requires("xmscore/[>=1.0.36]@aquaveo/stable")
-        self.requires("xmsinterp/[>=1.0.15]@aquaveo/stable")
-        self.requires("xmsgrid/[>=1.0.6]@aquaveo/stable")
+        self.requires("xmscore/[>=1.0.37]@aquaveo/stable")
+        self.requires("xmsinterp/[>=1.0.16]@aquaveo/stable")
+        self.requires("xmsgrid/[>=1.0.8]@aquaveo/stable")
 
     def build(self):
         cmake = CMake(self)
@@ -87,7 +87,6 @@ class XmsextractorConan(ConanFile):
         cmake.definitions["BUILD_TESTING"] = self.options.testing
         cmake.definitions["XMSEXTRACTOR_TEST_PATH"] = "test_files"
         cmake.definitions["PYTHON_TARGET_VERSION"] = self.env.get("PYTHON_TARGET_VERSION", "3.6")
-        
         cmake.configure(source_folder=".")
         cmake.build()
 

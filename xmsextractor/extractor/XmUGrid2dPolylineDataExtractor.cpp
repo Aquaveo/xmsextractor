@@ -260,7 +260,7 @@ void XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations(const VecPt3d& 
   }
 } // XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations
 
-} // namespace {
+} // namespace
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dPolylineDataExtractor

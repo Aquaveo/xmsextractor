@@ -13,6 +13,7 @@
 
 // 3. Standard library headers
 #include <sstream>
+#include <cmath>
 
 // 4. External library headers
 #include <boost/container/flat_map.hpp>

@@ -27,10 +27,10 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     extractor
         .def(py::init([](boost::shared_ptr<xms::XmUGrid> a_ugrid) {
             return boost::shared_ptr<xms::XmUGrid2dDataExtractor>(xms::XmUGrid2dDataExtractor::New(a_ugrid));
-        }))
+            }), "Create a new XmUGrid2dDataExtractor.", py::arg("a_ugrid"))
         .def(py::init([](boost::shared_ptr<xms::XmUGrid2dDataExtractor> a_extractor) {
             return boost::shared_ptr<xms::XmUGrid2dDataExtractor>(xms::XmUGrid2dDataExtractor::New(a_extractor));
-        }))
+        }), "Copy construct a new XmUGrid2dDataExtractor.", py::arg("a_extractor"))
         //virtual void SetGridPointScalars(const VecFlt& a_pointScalars,
         //                                 const DynBitset& a_activity,
         //                                 DataLocationEnum a_activityType) = 0;
@@ -55,28 +55,30 @@ void initXmUGrid2dDataExtractor(py::module &m) {
         .def("set_extract_locations", [](xms::XmUGrid2dDataExtractor &self, py::iterable a_locations) {
             boost::shared_ptr<xms::VecPt3d> locations = xms::VecPt3dFromPyIter(a_locations);
             self.SetExtractLocations(*locations);
-        })
+        }, "Set extraction locations.", py::arg("a_locations"))
         //virtual const VecPt3d& GetExtractLocations() const = 0;
         .def("get_extract_locations", [](xms::XmUGrid2dDataExtractor &self) -> py::iterable {
             xms::VecPt3d locations = self.GetExtractLocations();
             return xms::PyIterFromVecPt3d(locations);
-        })
+        }, "Get extraction locations.")
         //virtual void ExtractData(VecFlt& a_outData) = 0;
         .def("extract_data", [](xms::XmUGrid2dDataExtractor &self) -> py::iterable {
             xms::VecFlt outData;
             self.ExtractData(outData);
             return xms::PyIterFromVecFlt(outData);
-        })
+          }, "Extract data.")
         //virtual float ExtractAtLocation(const Pt3d& a_location) = 0;
         .def("extract_at_location", [](xms::XmUGrid2dDataExtractor &self, py::iterable a_location) -> float {
             xms::Pt3d location = xms::Pt3dFromPyIter(a_location);
             float value = self.ExtractAtLocation(location);
             return value;
-        })
+          }, "Extract at location", py::arg("a_location"))
         //virtual void SetUseIdwForPointData(bool a_useIdw) = 0;
-        .def("set_use_idw_for_point_data", &xms::XmUGrid2dDataExtractor::SetUseIdwForPointData)
+        .def("set_use_idw_for_point_data", &xms::XmUGrid2dDataExtractor::SetUseIdwForPointData,
+            "Set whether to use IDW for point data.", py::arg("a_useIdw"))
         //virtual void SetNoDataValue(float a_noDataValue) = 0;
-        .def("set_no_data_value", &xms::XmUGrid2dDataExtractor::SetNoDataValue,"Set the no data value",py::arg("no_data_value"))
+        .def("set_no_data_value", &xms::XmUGrid2dDataExtractor::SetNoDataValue,
+           "Set the no data value",py::arg("no_data_value"))
     ;
 
     // DataLocationEnum
