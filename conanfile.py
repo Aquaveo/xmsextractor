@@ -2,7 +2,7 @@
 XMSExtractor Conanfile and Support
 """
 import os
-from conans import ConanFile, CMake
+from conans import ConanFile, CMake, tools
 from conans.errors import ConanException
 
 
