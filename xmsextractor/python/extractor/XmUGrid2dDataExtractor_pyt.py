@@ -419,7 +419,7 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
 
         # timestep 3
         scalars = [3, 4, 5]
-        activity.clear()
+        activity = []
         extractor.set_grid_cell_scalars(scalars, activity, data_location_enum.LOC_CELLS)
         extractor.set_extract_locations(extract_locations)
 
@@ -461,7 +461,7 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         np.testing.assert_array_equal(expected_values, extracted_values)
 
         # timestep 4
-        activity.clear()
+        activity = []
         extractor.set_grid_point_scalars(scalars, activity, data_location_enum.LOC_POINTS)
         extractor.set_extract_locations(extract_locations)
 
