@@ -23,67 +23,170 @@ namespace py = pybind11;
 PYBIND11_DECLARE_HOLDER_TYPE(T, boost::shared_ptr<T>);
 
 void initXmUGrid2dDataExtractor(py::module &m) {
-    py::class_<xms::XmUGrid2dDataExtractor, boost::shared_ptr<xms::XmUGrid2dDataExtractor>> extractor(m, "XmUGrid2dDataExtractor");
-    extractor
-        .def(py::init([](boost::shared_ptr<xms::XmUGrid> a_ugrid) {
-            return boost::shared_ptr<xms::XmUGrid2dDataExtractor>(xms::XmUGrid2dDataExtractor::New(a_ugrid));
-            }), "Create a new XmUGrid2dDataExtractor.", py::arg("a_ugrid"))
-        .def(py::init([](boost::shared_ptr<xms::XmUGrid2dDataExtractor> a_extractor) {
-            return boost::shared_ptr<xms::XmUGrid2dDataExtractor>(xms::XmUGrid2dDataExtractor::New(a_extractor));
-        }), "Copy construct a new XmUGrid2dDataExtractor.", py::arg("a_extractor"))
-        //virtual void SetGridPointScalars(const VecFlt& a_pointScalars,
-        //                                 const DynBitset& a_activity,
-        //                                 DataLocationEnum a_activityType) = 0;
-        .def("set_grid_point_scalars", [](xms::XmUGrid2dDataExtractor &self, py::iterable a_pointScalars,
+    py::class_<xms::XmUGrid2dDataExtractor, 
+        boost::shared_ptr<xms::XmUGrid2dDataExtractor>> 
+        extractor(m, "XmUGrid2dDataExtractor");
+    // -------------------------------------------------------------------------
+    // function: init
+    // -------------------------------------------------------------------------
+    const char* init_doc = R"pydoc(
+        Create a new XmUGrid2dDataExtractor.
+
+        Args:
+            a_ugrid (XmUGrid): A ugrid
+    )pydoc";
+    extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> a_ugrid) {
+            return boost::shared_ptr<xms::XmUGrid2dDataExtractor>
+                (xms::XmUGrid2dDataExtractor::New(a_ugrid));
+            }), init_doc, py::arg("a_ugrid"));
+    // -------------------------------------------------------------------------
+    // function: init
+    // -------------------------------------------------------------------------
+    const char* init_doc2 = R"pydoc(
+        Copy construct a new XmUGrid2dDataExtractor.
+
+        Args:
+            a_extractor (XmUGrid2dDataExtractor): extractor to copy
+    )pydoc";
+    extractor.def(py::init(
+        [](boost::shared_ptr<xms::XmUGrid2dDataExtractor> a_extractor) {
+            return boost::shared_ptr<xms::XmUGrid2dDataExtractor>
+                (xms::XmUGrid2dDataExtractor::New(a_extractor));
+        }), init_doc2, py::arg("a_extractor"));
+    // -------------------------------------------------------------------------
+    // function: set_grid_point_scalars
+    // -------------------------------------------------------------------------
+    const char* set_grid_point_scalars_doc = R"pydoc(
+        Set the point scalar values
+
+        Args:
+            point_scalars (iterable): The point scalars.
+            activity (iterable): The activity of the cells.
+            activity_type (data_location_enum): The location at which the data 
+            is currently stored.
+    )pydoc";
+    extractor.def("set_grid_point_scalars", 
+        [](xms::XmUGrid2dDataExtractor &self, py::iterable a_pointScalars,
                                           py::iterable a_activity,
                                           xms::DataLocationEnum a_activityType) {
-            boost::shared_ptr<xms::VecFlt> pointScalars = xms::VecFltFromPyIter(a_pointScalars);
+            boost::shared_ptr<xms::VecFlt> pointScalars =
+                 xms::VecFltFromPyIter(a_pointScalars);
             xms::DynBitset activity = xms::DynamicBitsetFromPyIter(a_activity);
             self.SetGridPointScalars(*pointScalars, activity, a_activityType);
-        },"Set the point scalar values",py::arg("point_scalars"),py::arg("activity"),py::arg("activity_type"))
-        //virtual void SetGridCellScalars(const VecFlt& a_cellScalars,
-        //                                const DynBitset& a_activity,
-        //                                DataLocationEnum a_activityType) = 0;
-        .def("set_grid_cell_scalars", [](xms::XmUGrid2dDataExtractor &self, py::iterable a_cellScalars,
-                                          py::iterable a_activity,
-                                          xms::DataLocationEnum a_activityType) {
-            boost::shared_ptr<xms::VecFlt> cellScalars = xms::VecFltFromPyIter(a_cellScalars);
+        },set_grid_point_scalars_doc,py::arg("point_scalars"),
+        py::arg("activity"),py::arg("activity_type"));
+    // -------------------------------------------------------------------------
+    // function: set_grid_cell_scalars
+    // -------------------------------------------------------------------------
+    const char* set_grid_cell_scalars_doc = R"pydoc(
+        Set the point scalar values
+
+        Args:
+            point_scalars (iterable): The point scalars.
+            activity (iterable): The activity of the cells.
+            activity_type (data_location_enum): The location at which the data 
+            is currently stored.
+    )pydoc";
+    extractor.def("set_grid_cell_scalars", [](xms::XmUGrid2dDataExtractor &self,
+        py::iterable a_cellScalars,
+                                        py::iterable a_activity,
+                                        xms::DataLocationEnum a_activityType) {
+            boost::shared_ptr<xms::VecFlt> cellScalars = 
+                xms::VecFltFromPyIter(a_cellScalars);
             xms::DynBitset activity = xms::DynamicBitsetFromPyIter(a_activity);
             self.SetGridCellScalars(*cellScalars, activity, a_activityType);
-        },"Set the point scalar values",py::arg("point_scalars"),py::arg("activity"),py::arg("activity_type"))
-        //virtual void SetExtractLocations(const VecPt3d& a_locations) = 0;
-        .def("set_extract_locations", [](xms::XmUGrid2dDataExtractor &self, py::iterable a_locations) {
-            boost::shared_ptr<xms::VecPt3d> locations = xms::VecPt3dFromPyIter(a_locations);
+        },set_grid_cell_scalars_doc,py::arg("point_scalars"),py::arg("activity")
+        ,py::arg("activity_type"));
+    // -------------------------------------------------------------------------
+    // function: set_extract_locations
+    // -------------------------------------------------------------------------
+    const char* set_extract_locations_doc = R"pydoc(
+        Set extraction locations.
+
+        Args:
+            a_locations (iterable): The locations.
+    )pydoc";
+    extractor.def("set_extract_locations", [](xms::XmUGrid2dDataExtractor &self,
+        py::iterable a_locations) {
+            boost::shared_ptr<xms::VecPt3d> locations = 
+                xms::VecPt3dFromPyIter(a_locations);
             self.SetExtractLocations(*locations);
-        }, "Set extraction locations.", py::arg("a_locations"))
-        //virtual const VecPt3d& GetExtractLocations() const = 0;
-        .def("get_extract_locations", [](xms::XmUGrid2dDataExtractor &self) -> py::iterable {
+        }, set_extract_locations_doc, py::arg("a_locations"));
+    // -------------------------------------------------------------------------
+    // function: get_extract_locations
+    // -------------------------------------------------------------------------
+    const char* get_extract_locations_doc = R"pydoc(
+        Get extraction locations.
+
+        Returns:
+            iterable: The locations.
+    )pydoc";
+    extractor.def("get_extract_locations", 
+        [](xms::XmUGrid2dDataExtractor &self) -> py::iterable {
             xms::VecPt3d locations = self.GetExtractLocations();
             return xms::PyIterFromVecPt3d(locations);
-        }, "Get extraction locations.")
-        //virtual void ExtractData(VecFlt& a_outData) = 0;
-        .def("extract_data", [](xms::XmUGrid2dDataExtractor &self) -> py::iterable {
+        }, get_extract_locations_doc);
+    // -------------------------------------------------------------------------
+    // function: extract_data
+    // -------------------------------------------------------------------------
+    const char* extract_data_doc = R"pydoc(
+        Extract interpolated data for the previously set locations.
+
+        Returns:
+            iterable: The interpolated scalars.
+    )pydoc";
+    extractor.def("extract_data", 
+        [](xms::XmUGrid2dDataExtractor &self) -> py::iterable {
             xms::VecFlt outData;
             self.ExtractData(outData);
             return xms::PyIterFromVecFlt(outData);
-          }, "Extract data.")
-        //virtual float ExtractAtLocation(const Pt3d& a_location) = 0;
-        .def("extract_at_location", [](xms::XmUGrid2dDataExtractor &self, py::iterable a_location) -> float {
+          }, extract_data_doc);
+    // -------------------------------------------------------------------------
+    // function: extract_at_location
+    // -------------------------------------------------------------------------
+    const char* extract_at_location_doc = R"pydoc(
+        Extract interpolated data for the previously set locations.
+
+        Args:
+            a_location (iterable): The location to get the interpolated scalar.
+
+        Returns:
+            float: The interpolated value.
+    )pydoc";
+    extractor.def("extract_at_location", 
+       [](xms::XmUGrid2dDataExtractor &self, py::iterable a_location) -> float {
             xms::Pt3d location = xms::Pt3dFromPyIter(a_location);
             float value = self.ExtractAtLocation(location);
             return value;
-          }, "Extract at location", py::arg("a_location"))
-        //virtual void SetUseIdwForPointData(bool a_useIdw) = 0;
-        .def("set_use_idw_for_point_data", &xms::XmUGrid2dDataExtractor::SetUseIdwForPointData,
-            "Set whether to use IDW for point data.", py::arg("a_useIdw"))
-        //virtual void SetNoDataValue(float a_noDataValue) = 0;
-        .def("set_no_data_value", &xms::XmUGrid2dDataExtractor::SetNoDataValue,
-           "Set the no data value",py::arg("no_data_value"))
-    ;
+          }, extract_at_location_doc, py::arg("a_location"));
+    // -------------------------------------------------------------------------
+    // function: set_use_idw_for_point_data
+    // -------------------------------------------------------------------------
+    const char* set_use_idw_for_point_data_doc = R"pydoc(
+        Set whether to use IDW for point data.
+
+        Args:
+            a_useIdw (bool): Whether to turn IDW on or off.
+    )pydoc";
+    extractor.def("set_use_idw_for_point_data", 
+        &xms::XmUGrid2dDataExtractor::SetUseIdwForPointData,
+            set_use_idw_for_point_data_doc, py::arg("a_useIdw"));
+    // -------------------------------------------------------------------------
+    // function: set_no_data_value
+    // -------------------------------------------------------------------------
+    const char* set_no_data_value_doc = R"pydoc(
+        Set the no data value
+
+        Args:
+            no_data_value (bool): The no data value
+    )pydoc";
+    extractor.def("set_no_data_value", 
+        &xms::XmUGrid2dDataExtractor::SetNoDataValue,
+      set_no_data_value_doc,py::arg("no_data_value"));
 
     // DataLocationEnum
     py::enum_<xms::DataLocationEnum>(m, "data_location_enum",
-                                    "data_location_enum location mapping for dataset values")
+                    "data_location_enum location mapping for dataset values")
         .value("LOC_POINTS", xms::LOC_POINTS)
         .value("LOC_CELLS", xms::LOC_CELLS)
         .value("LOC_UNKNOWN", xms::LOC_UNKNOWN);
