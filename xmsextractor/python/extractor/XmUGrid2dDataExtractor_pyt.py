@@ -549,7 +549,7 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         # time step 2
         # Step 6. Continue using steps 4 and 5 for remaining time steps.
         point_scalars = [-999.0, 1220.5, 1057.1, 613.2, 380.1, 625.6, 722.2, 449.9, 51.0, 240.9, 609.0, 294.9]
-        cell_activity = [True]*ugrid.get_number_of_cells()
+        cell_activity = [True]*ugrid.get_cell_count()
         cell_activity[0] = False
         extractor.set_grid_point_scalars(point_scalars, cell_activity, data_location_enum.LOC_CELLS)
         # Step 7. Extract the data (call xms::XmUGrid2dDataExtractor::extract_data).
