@@ -331,11 +331,11 @@ void XmUGridTriangles2dImpl::BuildTriangles(const XmUGrid& a_ugrid, bool a_addTr
 {
   Initialize(a_ugrid);
 
-  int numCells = a_ugrid.GetNumberOfCells();
+  int numCells = a_ugrid.GetCellCount();
   VecInt cellPoints;
   for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
   {
-    a_ugrid.GetPointsOfCell(cellIdx, cellPoints);
+    a_ugrid.GetCellPoints(cellIdx, cellPoints);
     bool builtTriangles = false;
     if (a_addTriangleCenters)
       builtTriangles = iGenerateCentroidTriangles(*this, cellIdx, cellPoints);
@@ -351,11 +351,11 @@ void XmUGridTriangles2dImpl::BuildEarcutTriangles(const XmUGrid& a_ugrid)
 {
   Initialize(a_ugrid);
 
-  int numCells = a_ugrid.GetNumberOfCells();
+  int numCells = a_ugrid.GetCellCount();
   VecInt cellPoints;
   for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
   {
-    a_ugrid.GetPointsOfCell(cellIdx, cellPoints);
+    a_ugrid.GetCellPoints(cellIdx, cellPoints);
     iBuildEarcutTriangles(*this, cellIdx, cellPoints);
   }
 } // XmUGridTriangles2dImpl::BuildEarcutTriangles
@@ -478,9 +478,9 @@ int XmUGridTriangles2dImpl::GetIntersectedCell(const Pt3d& a_point, VecInt& a_id
 //------------------------------------------------------------------------------
 void XmUGridTriangles2dImpl::Initialize(const XmUGrid& a_ugrid)
 {
-  *m_points = a_ugrid.GetPoints();
+  *m_points = a_ugrid.GetLocations();
   m_triangles->clear();
-  m_centroidIdxs.assign(a_ugrid.GetNumberOfCells(), -1);
+  m_centroidIdxs.assign(a_ugrid.GetCellCount(), -1);
   m_triangleToCellIdx.clear();
   m_triSearch.reset();
 } // XmUGridTriangles2dImpl::Initialize
