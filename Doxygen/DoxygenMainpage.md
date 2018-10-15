@@ -5,7 +5,7 @@ xmsextractor {#mainpage}
 xmsextractor {#xmsextractor}
 ============
 
-Introduction {#Introduction}
+Introduction {#XmsextractorIntroduction}
 ------------
 
 xmsextractor is a cross-platform C++ software library written by [Aquaveo](http://www.aquaveo.com/) in partnership with [ERDC](http://www.erdc.usace.army.mil/). The code can be obtained by authorized users from [a GIT repository](https://public.git.erdc.dren.mil/computational-analysis-and-mechanics/Filigree) hosted by ERDC.
@@ -16,7 +16,7 @@ xmsextractor is a cross-platform C++ software library written by [Aquaveo](http:
   </tr>
 </table>
 
-License {#License}
+License {#XmsextractorLicense}
 -------
 
 The code is distributed under the xmsextractor Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at [http://www.aquaveo.com/xmsng/LICENSE_1_0.txt](http://www.aquaveo.com/xmsng/LICENSE_1_0.txt)). 
@@ -26,7 +26,7 @@ Python
 
 This library is available as a python module. See [Python Documentation](./pydocs)
 
-Features {#Features}
+Features {#XmsextractorFeatures}
 --------
 xmsextractor includes the following functionality:
 
