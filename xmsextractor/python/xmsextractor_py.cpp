@@ -23,9 +23,16 @@ PYBIND11_MODULE(xmsextractor_py, m) {
     m.doc() = "Python bindings for xmsextractor"; // optional module docstring
     m.def("version", &version,
           "Get current version of xmsextractor Python bindings.");
-
+    const char* extractor_doc = R"pydoc(
+        The misc module of the xmsextractor python library contains classes and
+        functions that are shared between all of the xms family of libraries.
+        These functions included in this class include polyline scalar extraction 
+        from any XmUGrid, location scalar extraction from any XmUGrid, polyline 
+        extraction locations can be obtained, and xmUGrids may have scalars 
+        assigned to either the points or to the cells.
+    )pydoc";
     // Extractor module
-    py::module modExtractor = m.def_submodule("extractor");
+    py::module modExtractor = m.def_submodule("extractor", extractor_doc);
     initExtractor(modExtractor);
 }
 
