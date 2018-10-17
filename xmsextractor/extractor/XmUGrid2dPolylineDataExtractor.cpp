@@ -140,7 +140,7 @@ const VecPt3d& XmUGrid2dPolylineDataExtractorImpl::GetExtractLocations() const
   return m_extractor->GetExtractLocations();
 } // XmUGrid2dPolylineDataExtractorImpl::GetExtractLocations
 //------------------------------------------------------------------------------
-/// \brief \brief Extract data at previously computed locations returned by
+/// \brief Extract data at previously computed locations returned by
 ///               GetExtractLocations.
 /// \param[out] a_extractedData The extracted values interpolated from the
 ///             scalar values.

@@ -22,9 +22,14 @@ namespace py = pybind11;
 PYBIND11_DECLARE_HOLDER_TYPE(T, boost::shared_ptr<T>);
 
 void initXmUGrid2dDataExtractor(py::module &m) {
+    // XmUGrid2dDataExtractor Class
+    const char* xmUGrid2dDataExtractor_doc = R"pydoc(
+        Class provides ability to extract dataset values at points for an 
+            unstructured grid.
+    )pydoc";
     py::class_<xms::XmUGrid2dDataExtractor, 
         boost::shared_ptr<xms::XmUGrid2dDataExtractor>> 
-        extractor(m, "XmUGrid2dDataExtractor");
+        extractor(m, "XmUGrid2dDataExtractor", xmUGrid2dDataExtractor_doc);
     // -------------------------------------------------------------------------
     // function: init
     // -------------------------------------------------------------------------
@@ -32,7 +37,10 @@ void initXmUGrid2dDataExtractor(py::module &m) {
         Create a new XmUGrid2dDataExtractor.
 
         Args:
-            a_ugrid (XmUGrid): A ugrid
+            a_ugrid (XmUGrid): The UGrid geometry to use to extract values from.
+        Returns: 
+            iterable: The new XmUGrid2dDataExtractor.
+
     )pydoc";
     extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> a_ugrid) {
             return boost::shared_ptr<xms::XmUGrid2dDataExtractor>
@@ -42,21 +50,24 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     // function: init
     // -------------------------------------------------------------------------
     const char* init_doc2 = R"pydoc(
-        Copy construct a new XmUGrid2dDataExtractor.
+        Create a new XmUGrid2dDataExtractor using shallow copy from existing
+            extractor.
 
         Args:
-            a_extractor (XmUGrid2dDataExtractor): extractor to copy
+            xm_extractor (XmUGrid2dDataExtractor): The extractor to shallow copy.
+        Returns:
+            iterable: The new XmUGrid2dDataExtractor.
     )pydoc";
     extractor.def(py::init(
-        [](boost::shared_ptr<xms::XmUGrid2dDataExtractor> a_extractor) {
+        [](boost::shared_ptr<xms::XmUGrid2dDataExtractor> xm_extractor) {
             return boost::shared_ptr<xms::XmUGrid2dDataExtractor>
-                (xms::XmUGrid2dDataExtractor::New(a_extractor));
-        }), init_doc2, py::arg("a_extractor"));
+                (xms::XmUGrid2dDataExtractor::New(xm_extractor));
+        }), init_doc2, py::arg("xm_extractor"));
     // -------------------------------------------------------------------------
     // function: set_grid_point_scalars
     // -------------------------------------------------------------------------
     const char* set_grid_point_scalars_doc = R"pydoc(
-        Set the point scalar values
+        Setup point scalars to be used to extract interpolated data.
 
         Args:
             point_scalars (iterable): The point scalars.
@@ -78,13 +89,13 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     // function: set_grid_cell_scalars
     // -------------------------------------------------------------------------
     const char* set_grid_cell_scalars_doc = R"pydoc(
-        Set the point scalar values
+        Setup cell scalars to be used to extract interpolated data.
 
         Args:
             point_scalars (iterable): The point scalars.
             activity (iterable): The activity of the cells.
             activity_type (data_location_enum): The location at which the data 
-            is currently stored.
+                is currently stored.
     )pydoc";
     extractor.def("set_grid_cell_scalars", [](xms::XmUGrid2dDataExtractor &self,
         py::iterable a_cellScalars,
@@ -100,22 +111,22 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     // function: set_extract_locations
     // -------------------------------------------------------------------------
     const char* set_extract_locations_doc = R"pydoc(
-        Set extraction locations.
+        Sets locations of points to extract interpolated scalar data from.
 
         Args:
-            a_locations (iterable): The locations.
+            grid_locations (iterable): The locations.
     )pydoc";
     extractor.def("set_extract_locations", [](xms::XmUGrid2dDataExtractor &self,
-        py::iterable a_locations) {
+        py::iterable grid_locations) {
             boost::shared_ptr<xms::VecPt3d> locations = 
-                xms::VecPt3dFromPyIter(a_locations);
+                xms::VecPt3dFromPyIter(grid_locations);
             self.SetExtractLocations(*locations);
-        }, set_extract_locations_doc, py::arg("a_locations"));
+        }, set_extract_locations_doc, py::arg("grid_locations"));
     // -------------------------------------------------------------------------
     // function: get_extract_locations
     // -------------------------------------------------------------------------
     const char* get_extract_locations_doc = R"pydoc(
-        Get extraction locations.
+        Gets locations of points to extract interpolated scalar data from.
 
         Returns:
             iterable: The locations.
@@ -162,7 +173,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     // function: set_use_idw_for_point_data
     // -------------------------------------------------------------------------
     const char* set_use_idw_for_point_data_doc = R"pydoc(
-        Set whether to use IDW for point data.
+        Set to use IDW to calculate point scalar values from cell scalars.
 
         Args:
             a_useIdw (bool): Whether to turn IDW on or off.
@@ -174,10 +185,11 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     // function: set_no_data_value
     // -------------------------------------------------------------------------
     const char* set_no_data_value_doc = R"pydoc(
-        Set the no data value
+        Set value to use when extracted value is in inactive cell or doesn't
+            intersect with the grid.
 
         Args:
-            no_data_value (bool): The no data value
+            no_data_value (bool): The no data value.
     )pydoc";
     extractor.def("set_no_data_value", 
         &xms::XmUGrid2dDataExtractor::SetNoDataValue,
