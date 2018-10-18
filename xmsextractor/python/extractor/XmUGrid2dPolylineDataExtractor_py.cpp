@@ -41,7 +41,7 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
         Args:
             xm_ugrid (XmUGrid): The UGrid geometry to use to extract values 
                 from.
-            scalarLocation (data_location_enum): The location of the scalars 
+            scalar_location (data_location_enum): The location of the scalars 
                 (points or cells).
     )pydoc";
     extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> xm_ugrid, 
@@ -59,18 +59,18 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
         Args:
             scalars (iterable): The cell or point scalars.
             activity (iterable): The activity of the points or cells.
-            activityType (data_location_enum): The location of the activity 
+            activity_type (data_location_enum): The location of the activity 
                 (points or cells).
     )pydoc";
     extractor.def("set_grid_scalars", 
         [](xms::XmUGrid2dPolylineDataExtractor &self, py::iterable scalars,
-                py::iterable activity, xms::DataLocationEnum activityType) {
+                py::iterable activity, xms::DataLocationEnum activity_type) {
             boost::shared_ptr<xms::VecFlt> scalars = 
                 xms::VecFltFromPyIter(scalars);
             xms::DynBitset activity = xms::DynamicBitsetFromPyIter(activity);
-            self.SetGridScalars(*scalars, activity, activityType);
+            self.SetGridScalars(*scalars, activity, activity_type);
         },set_grid_scalars_doc, py::arg("scalars"),py::arg("activity"),
-            py::arg("activityType"));
+            py::arg("activity_type"));
     // -------------------------------------------------------------------------
     // function: set_polyline
     // -------------------------------------------------------------------------

@@ -25,7 +25,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     // XmUGrid2dDataExtractor Class
     const char* xmUGrid2dDataExtractor_doc = R"pydoc(
         Class provides ability to extract dataset values at points for an 
-            unstructured grid.
+        unstructured grid.
     )pydoc";
     py::class_<xms::XmUGrid2dDataExtractor, 
         boost::shared_ptr<xms::XmUGrid2dDataExtractor>> 
@@ -51,7 +51,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     // -------------------------------------------------------------------------
     const char* init_doc2 = R"pydoc(
         Create a new XmUGrid2dDataExtractor using shallow copy from existing
-            extractor.
+        extractor.
 
         Args:
             xm_extractor (XmUGrid2dDataExtractor): The extractor to shallow copy.
@@ -73,7 +73,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
             point_scalars (iterable): The point scalars.
             activity (iterable): The activity of the cells.
             activity_type (data_location_enum): The location at which the data 
-            is currently stored.
+                is currently stored.
     )pydoc";
     extractor.def("set_grid_point_scalars", 
         [](xms::XmUGrid2dDataExtractor &self, py::iterable point_scalars,
@@ -186,7 +186,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     // -------------------------------------------------------------------------
     const char* set_no_data_value_doc = R"pydoc(
         Set value to use when extracted value is in inactive cell or doesn't
-            intersect with the grid.
+        intersect with the grid.
 
         Args:
             no_data_value (bool): The no data value.
