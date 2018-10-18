@@ -26,7 +26,7 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     // XmUGrid2dPolylineDataExtractor Class
     const char* xmUGrid2dPolylineDataExtractor_doc = R"pydoc(
         Class provides ability to extract dataset values along arcs for an 
-            unstructured grid.
+        unstructured grid.
     )pydoc";
     py::class_<xms::XmUGrid2dPolylineDataExtractor, 
         boost::shared_ptr<xms::XmUGrid2dPolylineDataExtractor>> 
@@ -43,9 +43,6 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
                 from.
             scalarLocation (data_location_enum): The location of the scalars 
                 (points or cells).
-        Returns:
-            (xms::XmUGrid2dPolylineDataExtractor): The new 
-                XmUGrid2dPolylineDataExtractor.
     )pydoc";
     extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> xm_ugrid, 
         xms::DataLocationEnum scalarLocation) {
@@ -79,7 +76,7 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     // -------------------------------------------------------------------------
     const char* set_polyline = R"pydoc(
        Set the polyline along which to extract the scalar data. Locations
-            crossing cell boundaries are computed along the polyline.
+        crossing cell boundaries are computed along the polyline.
 
         Args:
             polyline (iterable): The polyline.
@@ -95,7 +92,7 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     // -------------------------------------------------------------------------
     const char* get_extract_locations_doc = R"pydoc(
         Gets computed locations along polyline to extract interpolated scalar
-            data from.
+        data from.
 
         Returns:
             iterable: The locations.
@@ -110,7 +107,7 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     // -------------------------------------------------------------------------
     const char* extract_data_doc = R"pydoc(
         Extract data at previously computed locations returned by
-            GetExtractLocations.
+        GetExtractLocations.
 
         Returns:
             iterable: The extracted values interpolated from the scalar values.
@@ -138,7 +135,7 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     // -------------------------------------------------------------------------
     const char* set_no_data_value_doc = R"pydoc(
          Set value to use when extracted value is in inactive cell or doesn't
-            intersect with the grid.
+        intersect with the grid.
 
         Args:
             no_data_value (float): The no data value.
