@@ -24,10 +24,6 @@ PYBIND11_MODULE(xmsextractor_py, m) {
     m.def("version", &version,
           "Get current version of xmsextractor Python bindings.");
     const char* extractor_doc = R"pydoc(
-        These functions included in this class include polyline scalar 
-        extraction from any XmUGrid, location scalar extraction from any 
-        XmUGrid, polyline extraction locations can be obtained, and xmUGrids may 
-        have scalars assigned to either the points or to the cells.
     )pydoc";
     // Extractor module
     py::module modExtractor = m.def_submodule("extractor", extractor_doc);
