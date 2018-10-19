@@ -158,13 +158,15 @@ void initXmUGrid2dDataExtractor(py::module &m) {
         Extract interpolated data for the previously set locations.
 
         Args:
-            scalar_location (iterable): The location to get the interpolated scalar.
+            scalar_location (iterable): The location to get the interpolated 
+                scalar.
 
         Returns:
             float: The interpolated value.
     )pydoc";
     extractor.def("extract_at_location", 
-       [](xms::XmUGrid2dDataExtractor &self, py::iterable scalar_location) -> float {
+       [](xms::XmUGrid2dDataExtractor &self, py::iterable scalar_location) -> 
+       float {
             xms::Pt3d location = xms::Pt3dFromPyIter(scalar_location);
             float value = self.ExtractAtLocation(location);
             return value;
