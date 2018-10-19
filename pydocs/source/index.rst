@@ -9,7 +9,7 @@ XmsExtractor |version|
 
 **Last Updated:** October 5, 2018
 
-The xmsinerp library is a grid extractor library for other aquaveo products. This library contains classes used to perform data extraction from a grid.
+The xmsextractor library is a extraction library for other aquaveo products.
 
 
 Contents
