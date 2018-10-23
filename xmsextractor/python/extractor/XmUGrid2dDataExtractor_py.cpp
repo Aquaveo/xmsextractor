@@ -52,8 +52,6 @@ void initXmUGrid2dDataExtractor(py::module &m) {
 
         Args:
             xm_extractor (XmUGrid2dDataExtractor): The extractor to shallow copy.
-        Returns:
-            iterable: The new XmUGrid2dDataExtractor.
     )pydoc";
     extractor.def(py::init(
         [](boost::shared_ptr<xms::XmUGrid2dDataExtractor> xm_extractor) {
