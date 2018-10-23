@@ -38,9 +38,6 @@ void initXmUGrid2dDataExtractor(py::module &m) {
 
         Args:
             ugrid (XmUGrid): The UGrid geometry to use to extract values from.
-        Returns: 
-            iterable: The new XmUGrid2dDataExtractor.
-
     )pydoc";
     extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> ugrid) {
             return boost::shared_ptr<xms::XmUGrid2dDataExtractor>
@@ -55,8 +52,6 @@ void initXmUGrid2dDataExtractor(py::module &m) {
 
         Args:
             xm_extractor (XmUGrid2dDataExtractor): The extractor to shallow copy.
-        Returns:
-            iterable: The new XmUGrid2dDataExtractor.
     )pydoc";
     extractor.def(py::init(
         [](boost::shared_ptr<xms::XmUGrid2dDataExtractor> xm_extractor) {
@@ -98,7 +93,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
                 is currently stored.
     )pydoc";
     extractor.def("set_grid_cell_scalars", [](xms::XmUGrid2dDataExtractor &self,
-        py::iterable point_scalars,
+                                        py::iterable point_scalars,
                                         py::iterable activity,
                                         xms::DataLocationEnum activity_type) {
             boost::shared_ptr<xms::VecFlt> cellScalars = 
