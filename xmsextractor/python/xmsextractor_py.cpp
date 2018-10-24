@@ -24,8 +24,6 @@ PYBIND11_MODULE(xmsextractor_py, m) {
     m.def("version", &version,
           "Get current version of xmsextractor Python bindings.");
     const char* extractor_doc = R"pydoc(
-        The misc module of the xmsextractor python library contains classes and
-        functions that are shared between all of the xms family of libraries.
         These functions included in this class include polyline scalar 
         extraction from any XmUGrid, location scalar extraction from any 
         XmUGrid, polyline extraction locations can be obtained, and xmUGrids may 
