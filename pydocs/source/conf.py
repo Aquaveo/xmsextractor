@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'build_py', 'lib')))
 
 # -- Project information -----------------------------------------------------
 
-
+project = 'XmsExtractor Library'
 copyright = '2018, aquaveo'
 author = 'aquaveo'
 
@@ -154,7 +154,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-
+    (master_doc, 'xmsextractor', 'xmsextractor Documentation',
+     author, 'xmsextractor', 'Extractor library used by aquaveo libraries.',
      'Miscellaneous'),
 ]
 

@@ -39,10 +39,9 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
         Create a new XmUGrid2dPolylineDataExtractor.
 
         Args:
-            xm_ugrid (XmUGrid): The UGrid geometry to use to extract values 
-                from.
-            scalar_location (data_location_enum): The location of the scalars 
-                (points or cells).
+            xm_ugrid (XmUGrid): The UGrid geometry to use to extract values from.
+
+            scalar_location (data_location_enum): The location of the scalars (points or cells).
     )pydoc";
     extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> xm_ugrid, 
         xms::DataLocationEnum scalar_location) {
@@ -58,24 +57,25 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
 
         Args:
             scalars (iterable): The cell or point scalars.
+
             activity (iterable): The activity of the points or cells.
-            activity_type (data_location_enum): The location of the activity 
-                (points or cells).
+
+            activity_type (data_location_enum): The location of the activity (points or cells).
     )pydoc";
     extractor.def("set_grid_scalars", 
         [](xms::XmUGrid2dPolylineDataExtractor &self, py::iterable scalars,
                 py::iterable activity, xms::DataLocationEnum activity_type) {
-            boost::shared_ptr<xms::VecFlt> scalars = 
+            boost::shared_ptr<xms::VecFlt> grid_scalars = 
                 xms::VecFltFromPyIter(scalars);
-            xms::DynBitset activity = xms::DynamicBitsetFromPyIter(activity);
-            self.SetGridScalars(*scalars, activity, activity_type);
+            xms::DynBitset cell_activity = xms::DynamicBitsetFromPyIter(activity);
+            self.SetGridScalars(*grid_scalars, cell_activity, activity_type);
         },set_grid_scalars_doc, py::arg("scalars"),py::arg("activity"),
             py::arg("activity_type"));
     // -------------------------------------------------------------------------
     // function: set_polyline
     // -------------------------------------------------------------------------
     const char* set_polyline = R"pydoc(
-       Set the polyline along which to extract the scalar data. Locations
+        Set the polyline along which to extract the scalar data. Locations
         crossing cell boundaries are computed along the polyline.
 
         Args:
@@ -83,9 +83,9 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     )pydoc";
     extractor.def("set_polyline", 
         [](xms::XmUGrid2dPolylineDataExtractor &self, py::iterable polyline) {
-            boost::shared_ptr<xms::VecPt3d> polyline = 
+            boost::shared_ptr<xms::VecPt3d> cell_polyline =
                 xms::VecPt3dFromPyIter(polyline);
-            self.SetPolyline(*polyline);
+            self.SetPolyline(*cell_polyline);
         },set_polyline,py::arg("polyline"));
     // -------------------------------------------------------------------------
     // function: get_extract_locations
@@ -134,7 +134,7 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     // function: set_no_data_value
     // -------------------------------------------------------------------------
     const char* set_no_data_value_doc = R"pydoc(
-         Set value to use when extracted value is in inactive cell or doesn't
+        Set value to use when extracted value is in inactive cell or doesn't
         intersect with the grid.
 
         Args:

@@ -69,9 +69,10 @@ void initXmUGrid2dDataExtractor(py::module &m) {
 
         Args:
             point_scalars (iterable): The point scalars.
+
             activity (iterable): The activity of the cells.
-            activity_type (data_location_enum): The location at which the data 
-                is currently stored.
+
+            activity_type (data_location_enum): The location at which the data is currently stored.
     )pydoc";
     extractor.def("set_grid_point_scalars", 
         [](xms::XmUGrid2dDataExtractor &self, py::iterable point_scalars,
@@ -79,8 +80,8 @@ void initXmUGrid2dDataExtractor(py::module &m) {
                                           xms::DataLocationEnum activity_type) {
             boost::shared_ptr<xms::VecFlt> pointScalars =
                  xms::VecFltFromPyIter(point_scalars);
-            xms::DynBitset activity = xms::DynamicBitsetFromPyIter(activity);
-            self.SetGridPointScalars(*pointScalars, activity, activity_type);
+            xms::DynBitset cell_activity = xms::DynamicBitsetFromPyIter(activity);
+            self.SetGridPointScalars(*pointScalars, cell_activity, activity_type);
         },set_grid_point_scalars_doc,py::arg("point_scalars"),
         py::arg("activity"),py::arg("activity_type"));
     // -------------------------------------------------------------------------
@@ -91,9 +92,10 @@ void initXmUGrid2dDataExtractor(py::module &m) {
 
         Args:
             point_scalars (iterable): The point scalars.
+
             activity (iterable): The activity of the cells.
-            activity_type (data_location_enum): The location at which the data 
-                is currently stored.
+
+            activity_type (data_location_enum): The location at which the data is currently stored.
     )pydoc";
     extractor.def("set_grid_cell_scalars", [](xms::XmUGrid2dDataExtractor &self,
                                         py::iterable point_scalars,
@@ -101,8 +103,8 @@ void initXmUGrid2dDataExtractor(py::module &m) {
                                         xms::DataLocationEnum activity_type) {
             boost::shared_ptr<xms::VecFlt> cellScalars = 
                 xms::VecFltFromPyIter(point_scalars);
-            xms::DynBitset activity = xms::DynamicBitsetFromPyIter(activity);
-            self.SetGridCellScalars(*cellScalars, activity, activity_type);
+            xms::DynBitset cell_activity = xms::DynamicBitsetFromPyIter(activity);
+            self.SetGridCellScalars(*cellScalars, cell_activity, activity_type);
         },set_grid_cell_scalars_doc,py::arg("point_scalars"),py::arg("activity")
         ,py::arg("activity_type"));
     // -------------------------------------------------------------------------
@@ -156,8 +158,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
         Extract interpolated data for the previously set locations.
 
         Args:
-            scalar_location (iterable): The location to get the interpolated 
-                scalar.
+            scalar_location (iterable): The location to get the interpolated scalar.
 
         Returns:
             float: The interpolated value.
