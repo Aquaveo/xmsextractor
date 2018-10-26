@@ -15,7 +15,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'build_py', 'lib')))
+sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'build', 'lib')))
 
 
 # -- Project information -----------------------------------------------------
@@ -106,7 +106,8 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'xmsinterpdoc'
+
+htmlhelp_basename = 'xmsextractordoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -154,6 +155,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
+    (master_doc, 'xmsextractor', 'xmsextractor Documentation',
      author, 'xmsextractor', 'Extractor library used by aquaveo libraries.',
      'Miscellaneous'),
 ]

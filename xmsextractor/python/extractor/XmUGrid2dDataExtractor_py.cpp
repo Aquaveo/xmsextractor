@@ -158,8 +158,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
         Extract interpolated data for the previously set locations.
 
         Args:
-            scalar_location (iterable): The location to get the interpolated 
-                scalar.
+            scalar_location (iterable): The location to get the interpolated scalar.
 
         Returns:
             float: The interpolated value.
