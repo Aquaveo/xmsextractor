@@ -11,9 +11,6 @@ Extractor
 
 .. automodule:: xmsextractor_py.extractor
 
-.. note::
-   
-    Description of the extractor module is coming soon!
 
 .. toctree::
    :maxdepth: 1
