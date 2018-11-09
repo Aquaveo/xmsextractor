@@ -142,7 +142,7 @@ void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalar
                                                      const DynBitset& a_activity,
                                                      DataLocationEnum a_activityLocation)
 {
-  if (a_pointScalars.size() != m_ugrid->PointCount())
+  if (a_pointScalars.size() != m_ugrid->GetPointCount())
   {
     XM_LOG(xmlog::debug, "Invalid point scalar size in 2D data extractor.");
   }
@@ -294,7 +294,7 @@ void XmUGrid2dDataExtractorImpl::ApplyActivity(const DynBitset& a_activity,
 void XmUGrid2dDataExtractorImpl::SetGridPointActivity(const DynBitset& a_pointActivity,
                                                       DynBitset& a_cellActivity)
 {
-  if (a_pointActivity.size() != m_ugrid->PointCount() && !a_pointActivity.empty())
+  if (a_pointActivity.size() != m_ugrid->GetPointCount() && !a_pointActivity.empty())
   {
     XM_LOG(xmlog::debug, "Invalid point activity size in 2D data extractor.");
   }
@@ -309,7 +309,7 @@ void XmUGrid2dDataExtractorImpl::SetGridPointActivity(const DynBitset& a_pointAc
   a_cellActivity.reset();
   a_cellActivity.resize(m_ugrid->GetCellCount(), true);
   VecInt attachedCells;
-  int numPoints = m_ugrid->PointCount();
+  int numPoints = m_ugrid->GetPointCount();
   for (int pointIdx = 0; pointIdx < numPoints; ++pointIdx)
   {
     if (pointIdx < a_pointActivity.size() && !a_pointActivity[pointIdx])
@@ -374,7 +374,7 @@ void XmUGrid2dDataExtractorImpl::PushCellDataToTrianglePoints(const VecFlt& a_ce
 {
   m_pointScalars.resize(m_triangles->GetPoints().size());
   VecInt cellIdxs;
-  int numPoints = m_ugrid->PointCount();
+  int numPoints = m_ugrid->GetPointCount();
   for (int pointIdx = 0; pointIdx < numPoints; ++pointIdx)
   {
     m_ugrid->GetPointAdjacentCells(pointIdx, cellIdxs);
