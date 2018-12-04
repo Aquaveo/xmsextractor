@@ -1,13 +1,13 @@
-"""Test XmUGrid2dDataExtractor_py.cpp"""
+"""Test UGrid2dDataExtractor_py.cpp"""
 import unittest
 import xmsextractor_py
 from xmsgrid_py.ugrid import XmUGrid
-from xmsextractor_py.extractor import XmUGrid2dDataExtractor
+from xmsextractor_py.extractor import UGrid2dDataExtractor
 from xmsextractor_py.extractor import data_location_enum
 import numpy as np
 
-class TestXmUGrid2dDataExtractor(unittest.TestCase):
-    """XmUGrid2dDataExtractor tests"""
+class TestUGrid2dDataExtractor(unittest.TestCase):
+    """UGrid2dDataExtractor tests"""
 
     def test_point_scalars_only(self):
         """Test extractor with point scalars only."""
@@ -22,8 +22,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2,
                  XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
         extractor.set_no_data_value(-999.0)
 
         point_scalars = np.array((1, 2, 3, 2))
@@ -46,8 +46,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
         cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         point_scalars = [1, 2, 3, 2]
         cell_activity = [True, False]
@@ -109,8 +109,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         1.75, -9999999.0, -9999999.0, -9999999.0 ]
 
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         # set point 4 inactive
         # should cause all cells connected to point 4 to return -9999999.0
@@ -135,8 +135,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
         cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         point_scalars = [1, 2, 3]
         activity = [True, False]
@@ -163,22 +163,22 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
         ugrid = XmUGrid(points, cells)
 
-        # Step 1. Create an extractor for an existing XmUGrid (call xms::XmUGrid2dDataExtractor).
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        # Step 1. Create an extractor for an existing XmUGrid (call xms::UGrid2dDataExtractor).
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
-        # Step 2. Set scalar and activity values (call xms::XmUGrid2dDataExtractor::set_grid_cell_scalars or XmUGrid2dDataExtractor::set_point_cell_scalars).
+        # Step 2. Set scalar and activity values (call xms::UGrid2dDataExtractor::set_grid_cell_scalars or UGrid2dDataExtractor::set_point_cell_scalars).
         cellScalars = [1, 2]
         extractor.set_grid_cell_scalars(cellScalars, [], data_location_enum.LOC_CELLS)
 
-        # Step 3. Set extract locations (call XmUGrid2dDataExtractor::set_extract_locations).
+        # Step 3. Set extract locations (call UGrid2dDataExtractor::set_extract_locations).
         extractor.set_extract_locations([(0.0, 0.0, 0.0),
                                         (0.25, 0.75, 100.0),
                                         (0.5, 0.5, 0.0),
                                         (0.75, 0.25, -100.0),
                                         (-0.1, -0.1, 0.0)])
 
-        # Step 4. Extract the data (call xms::XmUGrid2dDataExtractor::extract_data).
+        # Step 4. Extract the data (call xms::UGrid2dDataExtractor::extract_data).
         interp_values = extractor.extract_data()
         expected = [1.5, 2.0, 1.5, 1.0, -9999999.0]
         np.testing.assert_array_equal(expected, interp_values)
@@ -236,8 +236,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         ]
 
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         # set point 4 inactive
         # should cause all cells connected to point 4 to return -9999999.0
@@ -307,8 +307,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         ]
 
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
         extractor.set_use_idw_for_point_data(True)
 
         # set point 4 inactive
@@ -334,8 +334,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
         cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         pointActivity = [True]*4
         pointActivity[1] = False
@@ -362,8 +362,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
         cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         cellScalars = [1]
         activity = [False]
@@ -386,8 +386,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         ]
 
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         extract_locations = [
             (0.75, 0.25, 0.0), # cell 0
@@ -480,8 +480,8 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
         cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
         ugrid = XmUGrid(points, cells)
-        extractor = XmUGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, XmUGrid2dDataExtractor)
+        extractor = UGrid2dDataExtractor(ugrid)
+        self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         point_scalars = [1, 2, 3, 4]
         extractor.set_grid_point_scalars(point_scalars, [], data_location_enum.LOC_POINTS)
@@ -491,14 +491,14 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         expected = [2.0]
         np.testing.assert_array_equal(expected, interp_values)
 
-        extractor2 = XmUGrid2dDataExtractor(extractor)
+        extractor2 = UGrid2dDataExtractor(extractor)
         extractor2.set_grid_point_scalars(point_scalars, [], data_location_enum.LOC_POINTS)
         extractor2.set_extract_locations(extract_locations)
         interp_values = extractor2.extract_data()
         np.testing.assert_array_equal(expected, interp_values)
 
     def test_tutorial(self):
-        """Test XmUGrid2dDataExtractor for tutorial."""
+        """Test UGrid2dDataExtractor for tutorial."""
         # build 2x3 grid
         points = [
             (288050, 3907770, 0), (294050, 3907770, 0), (300050, 3907770, 0),
@@ -515,10 +515,10 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
             XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 6, 10, 11, 7
         ]
         ugrid = XmUGrid(points, cells)
-        # Step 1. Create an extractor for an XmUGrid (call XmUGrid2dDataExtractor).
-        extractor = XmUGrid2dDataExtractor(ugrid)
+        # Step 1. Create an extractor for an XmUGrid (call UGrid2dDataExtractor).
+        extractor = UGrid2dDataExtractor(ugrid)
 
-        # Step 2. Set extract locations (call XmUGrid2dDataExtractor::set_extract_locations).
+        # Step 2. Set extract locations (call UGrid2dDataExtractor::set_extract_locations).
         extract_locations = [
             (289780, 3906220, 0),
             (293780, 3899460, 0),
@@ -532,15 +532,15 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         np.testing.assert_array_equal(extract_locations, retrieved_locations)
 
         # Step 3. Optionally set the "no data" value for output interpolated values
-        #         (XmUGrid2dDataExtractor::set_no_data_value).
+        #         (UGrid2dDataExtractor::set_no_data_value).
         extractor.set_no_data_value(-999.0)
 
         # time step 1
-        # Step 4. Set the point scalars for the first time step (XmUGrid2dDataExtractor::set_grid_point_scalars).
+        # Step 4. Set the point scalars for the first time step (UGrid2dDataExtractor::set_grid_point_scalars).
         point_scalars = [730.787, 1214.54, 1057.145, 629.2069, 351.1153, 631.6649, 1244.366,
         449.9133, 64.04247, 240.9716, 680.0491, 294.9547]
         extractor.set_grid_point_scalars(point_scalars, [], data_location_enum.LOC_CELLS)
-        # Step 5. Extract the data (call xms::XmUGrid2dDataExtractor::extract_data).
+        # Step 5. Extract the data (call xms::UGrid2dDataExtractor::extract_data).
         extracted_data = extractor.extract_data()
 
         expectedData = [719.6, 468.6, 1033.8, 996.5, 1204.3, -999.0]
@@ -552,7 +552,7 @@ class TestXmUGrid2dDataExtractor(unittest.TestCase):
         cell_activity = [True]*ugrid.get_cell_count()
         cell_activity[0] = False
         extractor.set_grid_point_scalars(point_scalars, cell_activity, data_location_enum.LOC_CELLS)
-        # Step 7. Extract the data (call xms::XmUGrid2dDataExtractor::extract_data).
+        # Step 7. Extract the data (call xms::UGrid2dDataExtractor::extract_data).
         extracted_data = extractor.extract_data()
 
         expectedData = [-999.0, 466.4, 685.0, 849.4, 1069.6, -999.0]
