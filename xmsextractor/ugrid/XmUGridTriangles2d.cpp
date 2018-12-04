@@ -534,7 +534,6 @@ XmUGridTriangles2d::~XmUGridTriangles2d()
 //------------------------------------------------------------------------------
 using namespace xms;
 #include <xmsextractor/ugrid/XmUGridTriangles2d.t.h>
-#include <xmsgrid/ugrid/XmUGrid.t.h>
 
 #include <xmscore/testing/TestTools.h>
 

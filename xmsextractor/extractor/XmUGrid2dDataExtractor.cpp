@@ -544,7 +544,6 @@ XmUGrid2dDataExtractor::~XmUGrid2dDataExtractor()
 //------------------------------------------------------------------------------
 using namespace xms;
 #include <xmsextractor/extractor/XmUGrid2dDataExtractor.t.h>
-#include <xmsgrid/ugrid/XmUGrid.t.h>
 
 #include <xmscore/testing/TestTools.h>
 

@@ -301,7 +301,6 @@ XmUGrid2dPolylineDataExtractor::~XmUGrid2dPolylineDataExtractor()
 //------------------------------------------------------------------------------
 using namespace xms;
 #include <xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.t.h>
-#include <xmsgrid/ugrid/XmUGrid.t.h>
 
 #include <xmscore/misc/xmstype.h>
 #include <xmscore/testing/TestTools.h>
