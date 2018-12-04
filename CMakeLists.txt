@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.1.2)
 cmake_policy(SET CMP0015 NEW) # Link Directory Pathing
 set(CMAKE_DEBUG_POSTFIX _d)
 
-project(xmsextractor C CXX)
+project(xmsextractorlib C CXX)
 
 if (APPLE)  
   set(CMAKE_POSITION_INDEPENDENT_CODE False)
@@ -155,26 +155,26 @@ endif()
 
 #Pybind11
 if(IS_PYTHON_BUILD)
-    pybind11_add_module(xmsextractor_py
+    pybind11_add_module(xmsextractor_
       ${xmsextractor_py} ${xmsextractor_py_headers}
     )
-    target_include_directories(xmsextractor_py
+    target_include_directories(xmsextractor
       PRIVATE
           ${EXT_LIBS}
           ${PYTHON_INCLUDE_DIRS}
     )
-    target_link_libraries(xmsextractor_py
+    target_link_libraries(xmsextractor
     PRIVATE
       ${EXT_LIBS}
       ${PROJECT_NAME}
   )
-    set_target_properties(xmsextractor_py PROPERTIES
+    set_target_properties(xmsextractor PROPERTIES
     LINKER_LANGUAGE CXX
   )
 
   # Install recipe
   install(
-      TARGETS xmsextractor_py
+      TARGETS xmsextractor
       ARCHIVE DESTINATION "site-packages"
       LIBRARY DESTINATION "site-packages"
   )
