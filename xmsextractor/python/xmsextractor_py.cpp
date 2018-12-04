@@ -14,16 +14,15 @@
 namespace py = pybind11;
 
 //----- Python Interface -------------------------------------------------------
-std::string version() {
-    return "1.0.0";
-}
+#ifndef XMS_VERSION
+  #define XMS_VERSION "99.99.99";
+#endif
 
 
 //------ Primary Module --------------------------------------------------------
 PYBIND11_MODULE(xmsextractor, m) {
     m.doc() = "Python bindings for xmsextractor"; // optional module docstring
-    m.def("version", &version,
-          "Get current version of xmsextractor Python bindings.");
+    m.attr("__version__") = XMS_VERSION;
 
     // Extractor module
     py::module modExtractor = m.def_submodule("extractor");
