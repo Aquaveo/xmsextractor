@@ -25,7 +25,7 @@ PYBIND11_DECLARE_HOLDER_TYPE(T, boost::shared_ptr<T>);
 void initXmUGrid2dDataExtractor(py::module &m) {
     py::class_<xms::XmUGrid2dDataExtractor, 
         boost::shared_ptr<xms::XmUGrid2dDataExtractor>> 
-        extractor(m, "XmUGrid2dDataExtractor");
+        extractor(m, "UGrid2dDataExtractor");
     // -------------------------------------------------------------------------
     // function: init
     // -------------------------------------------------------------------------

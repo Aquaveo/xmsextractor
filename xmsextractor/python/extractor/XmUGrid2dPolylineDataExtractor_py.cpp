@@ -26,7 +26,7 @@ PYBIND11_DECLARE_HOLDER_TYPE(T, boost::shared_ptr<T>);
 void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     py::class_<xms::XmUGrid2dPolylineDataExtractor, 
         boost::shared_ptr<xms::XmUGrid2dPolylineDataExtractor>> 
-        extractor(m, "XmUGrid2dPolylineDataExtractor");
+        extractor(m, "UGrid2dPolylineDataExtractor");
     // -------------------------------------------------------------------------
     // function: init
     // -------------------------------------------------------------------------
