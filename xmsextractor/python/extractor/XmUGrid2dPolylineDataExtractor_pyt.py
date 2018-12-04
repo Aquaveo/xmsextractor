@@ -1,9 +1,9 @@
-"""Test UGrid2dPolylineDataExtractor_py.cpp"""
+"""Test UGrid2dPolylineDataExtractor.cpp"""
 import unittest
-import xmsextractor_py
-from xmsgrid_py.ugrid import XmUGrid
-from xmsextractor_py.extractor import UGrid2dPolylineDataExtractor
-from xmsextractor_py.extractor import data_location_enum
+import xmsextractor
+from xmsgrid.ugrid import UGrid
+from xmsextractor.extractor import UGrid2dPolylineDataExtractor
+from xmsextractor.extractor import data_location_enum
 import numpy as np
 
 class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
@@ -20,8 +20,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -48,8 +48,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -76,8 +76,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -104,8 +104,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -132,8 +132,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -160,8 +160,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -190,8 +190,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -218,8 +218,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (2, 0, 0), (2, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3, XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 1, 4, 5, 2]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3, UGrid.ugrid_celltype_enum.QUAD, 4, 1, 4, 5, 2]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1, 4, 5]
@@ -248,8 +248,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0),
                             (2, 0, 0), (3, 0, 0), (3, 1, 0), (2, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3, XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 4, 5, 6, 7]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3, UGrid.ugrid_celltype_enum.QUAD, 4, 4, 5, 6, 7]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1, 4, 6, 7, 5]
@@ -278,8 +278,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -307,8 +307,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -335,8 +335,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -363,8 +363,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (2, 0, 0), (2, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3, XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 1, 4, 5, 2]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3, UGrid.ugrid_celltype_enum.QUAD, 4, 1, 4, 5, 2]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1, 4, 5]
@@ -392,8 +392,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (2, 0, 0), (2, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3, XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 1, 4, 5, 2]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3, UGrid.ugrid_celltype_enum.QUAD, 4, 1, 4, 5, 2]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1, 4, 5]
@@ -421,8 +421,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         point_scalars = [0, 2, 3, 1]
@@ -450,8 +450,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (2, 0, 0), (2, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3, XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 1, 4, 5, 2]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3, UGrid.ugrid_celltype_enum.QUAD, 4, 1, 4, 5, 2]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_CELLS)
 
         cellScalars = [1, 2]
@@ -478,15 +478,15 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
             (294050, 3895770, 0), (300050, 3895770, 0), (306050, 3895770, 0)
         ]
         cells = [
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 4, 5, 1,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 1, 5, 6, 2,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 2, 6, 7, 3,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 4, 8, 9, 5,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 5, 9, 10, 6,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 6, 10, 11, 7
+            UGrid.ugrid_celltype_enum.QUAD, 4, 0, 4, 5, 1,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 1, 5, 6, 2,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 2, 6, 7, 3,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 4, 8, 9, 5,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 5, 9, 10, 6,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 6, 10, 11, 7
         ]
-        ugrid = XmUGrid(points, cells)
-        # Step 1. Create an extractor for an XmUGrid giving the mapped location of the scalar values
+        ugrid = UGrid(points, cells)
+        # Step 1. Create an extractor for an UGrid giving the mapped location of the scalar values
         extractor = UGrid2dPolylineDataExtractor(ugrid, data_location_enum.LOC_POINTS)
 
         # Step 2. Optionally set the "no data" value.

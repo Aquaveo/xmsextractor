@@ -1,9 +1,9 @@
-"""Test UGrid2dDataExtractor_py.cpp"""
+"""Test UGrid2dDataExtractor.cpp"""
 import unittest
-import xmsextractor_py
-from xmsgrid_py.ugrid import XmUGrid
-from xmsextractor_py.extractor import UGrid2dDataExtractor
-from xmsextractor_py.extractor import data_location_enum
+import xmsextractor
+from xmsgrid.ugrid import UGrid
+from xmsextractor.extractor import UGrid2dDataExtractor
+from xmsextractor.extractor import data_location_enum
 import numpy as np
 
 class TestUGrid2dDataExtractor(unittest.TestCase):
@@ -19,9 +19,9 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  0----1
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2,
-                 XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2,
+                 UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
         extractor.set_no_data_value(-999.0)
@@ -44,8 +44,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  |/ 0 |
         #  0----1
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
@@ -77,15 +77,15 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             (0, 1, 0), (2, 1, 0), (3, 1, 0),  # row 2 of points
             (0, 2, 0), (1, 2, 0), (3, 2, 0)]  # row 3 of points
         cells = [
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 1, 4, 3,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 1, 2, 4,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 5, 4,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 4, 3,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 2, 4,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 5, 4,
 
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 3, 4, 7,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 4, 8, 7,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 4, 5, 8]
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 4, 7,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 8, 7,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 5, 8]
 
         point_scalars = [
         0, 0, 0,  # row 1
@@ -108,7 +108,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         0.25, -9999999.0, -9999999.0, -9999999.0,
         1.75, -9999999.0, -9999999.0, -9999999.0 ]
 
-        ugrid = XmUGrid(points, cells)
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
@@ -133,8 +133,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  |/ 0 |
         #  0----1
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
@@ -160,10 +160,10 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  0----1
         # \endverbatim
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
 
-        # Step 1. Create an extractor for an existing XmUGrid (call xms::UGrid2dDataExtractor).
+        # Step 1. Create an extractor for an existing UGrid (call xms::UGrid2dDataExtractor).
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
@@ -202,15 +202,15 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             (0, 1, 0), (2, 1, 0), (3, 1, 0),  # row 2 of points
             (0, 2, 0), (1, 2, 0), (3, 2, 0)]  # row 3 of points
         cells = [
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 1, 4, 3,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 1, 2, 4,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 5, 4,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 4, 3,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 2, 4,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 5, 4,
 
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 3, 4, 7,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 4, 8, 7,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 4, 5, 8]
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 4, 7,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 8, 7,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 5, 8]
 
         cellScalars = [
             2, 4, 6, 8,  # row 1
@@ -235,7 +235,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             -9999999.0, 6.0000, -9999999.0, 9.750   # row 2 cells
         ]
 
-        ugrid = XmUGrid(points, cells)
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
@@ -273,15 +273,15 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             (0, 1, 0), (2, 1, 0), (3, 1, 0),  # row 2 of points
             (0, 2, 0), (1, 2, 0), (3, 2, 0)]  # row 3 of points
         cells = [
-        XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 1, 4, 3,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 1, 2, 4,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 5, 4,
+        UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 4, 3,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 2, 4,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 5, 4,
 
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 3, 4, 7,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 4, 8, 7,
-            XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 4, 5, 8]
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 4, 7,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 8, 7,
+            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 5, 8]
 
         cellScalars = [
             2, 4, 6, 8,  # row 1
@@ -306,7 +306,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             3.5, 5.7303, 5.4652, 8.25     # row 2 cells
         ]
 
-        ugrid = XmUGrid(points, cells)
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
         extractor.set_use_idw_for_point_data(True)
@@ -332,8 +332,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  |/ 0 |
         #  0----1
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
@@ -360,8 +360,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  |/ 0 |
         #  0----1
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 0, 1, 2, XmUGrid.xmugrid_celltype_enum.XMU_TRIANGLE, 3, 2, 3, 0]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
@@ -380,12 +380,12 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         # build a grid with 3 cells in a row
         points = [(0, 1, 0), (1, 1, 0), (2, 1, 0), (3, 1, 0), (0, 0, 0), (1, 0, 0), (2, 0, 0), (3, 0, 0)]
         cells = [
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 4, 5, 1, # cell 0
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 1, 5, 6, 2, # cell 1
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 2, 6, 7, 3  # cell 2
+            UGrid.ugrid_celltype_enum.QUAD, 4, 0, 4, 5, 1, # cell 0
+            UGrid.ugrid_celltype_enum.QUAD, 4, 1, 5, 6, 2, # cell 1
+            UGrid.ugrid_celltype_enum.QUAD, 4, 2, 6, 7, 3  # cell 2
         ]
 
-        ugrid = XmUGrid(points, cells)
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
@@ -478,8 +478,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  |    |
         #  0----1
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 1, 2, 3]
-        ugrid = XmUGrid(points, cells)
+        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
+        ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
@@ -507,15 +507,15 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             (294050, 3895770, 0), (300050, 3895770, 0), (306050, 3895770, 0)
         ]
         cells = [
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 0, 4, 5, 1,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 1, 5, 6, 2,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 2, 6, 7, 3,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 4, 8, 9, 5,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 5, 9, 10, 6,
-            XmUGrid.xmugrid_celltype_enum.XMU_QUAD, 4, 6, 10, 11, 7
+            UGrid.ugrid_celltype_enum.QUAD, 4, 0, 4, 5, 1,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 1, 5, 6, 2,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 2, 6, 7, 3,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 4, 8, 9, 5,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 5, 9, 10, 6,
+            UGrid.ugrid_celltype_enum.QUAD, 4, 6, 10, 11, 7
         ]
-        ugrid = XmUGrid(points, cells)
-        # Step 1. Create an extractor for an XmUGrid (call UGrid2dDataExtractor).
+        ugrid = UGrid(points, cells)
+        # Step 1. Create an extractor for an UGrid (call UGrid2dDataExtractor).
         extractor = UGrid2dDataExtractor(ugrid)
 
         # Step 2. Set extract locations (call UGrid2dDataExtractor::set_extract_locations).
@@ -563,7 +563,7 @@ class TestDataLocationEnum(unittest.TestCase):
     """CellType enum tests"""
 
     def test_data_location_enum(self):
-        from xmsextractor_py.extractor import data_location_enum
+        from xmsextractor.extractor import data_location_enum
         self.assertEqual("data_location_enum.LOC_POINTS",
                          str(data_location_enum.LOC_POINTS))
         self.assertEqual("data_location_enum.LOC_CELLS",
