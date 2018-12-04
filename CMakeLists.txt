@@ -155,7 +155,7 @@ endif()
 
 #Pybind11
 if(IS_PYTHON_BUILD)
-    pybind11_add_module(xmsextractor_
+    pybind11_add_module(xmsextractor
       ${xmsextractor_py} ${xmsextractor_py_headers}
     )
     target_include_directories(xmsextractor
