@@ -20,7 +20,7 @@ std::string version() {
 
 
 //------ Primary Module --------------------------------------------------------
-PYBIND11_MODULE(xmsextractor_py, m) {
+PYBIND11_MODULE(xmsextractor, m) {
     m.doc() = "Python bindings for xmsextractor"; // optional module docstring
     m.def("version", &version,
           "Get current version of xmsextractor Python bindings.");
