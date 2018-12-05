@@ -61,7 +61,6 @@ public:
                                   DataLocationEnum a_activityLocation) override;
 
   virtual void SetExtractLocations(const VecPt3d& a_locations) override;
-  virtual const VecPt3d& GetExtractLocations() const override;
   virtual void ExtractData(VecFlt& a_outData) override;
   virtual float ExtractAtLocation(const Pt3d& a_location) override;
 
@@ -70,6 +69,22 @@ public:
 
   virtual void BuildTriangles(DataLocationEnum a_location) override;
   virtual const BSHP<XmUGridTriangles2d> GetUGridTriangles() const override;
+
+  /// \brief Gets the scalars
+  /// \return The scalars.
+  virtual const VecFlt& GetScalars() const override { return m_pointScalars; }
+  /// \brief Gets the location of the scalars (points or cells)
+  /// \return The location of the scalars.
+  virtual DataLocationEnum GetScalarLocation() const override { return m_triangleType; }
+  /// \brief Gets locations of points to extract interpolated scalar data from.
+  /// \return The locations.
+  virtual const VecPt3d& GetExtractLocations() const override { return m_extractLocations; }
+  /// \brief Gets the option for using IDW for point data
+  /// \return The option.
+  virtual bool GetUseIdwForPointData() const override { return m_useIdwForPointData; }
+  /// \brief Gets the no data value
+  /// \return The no data value.
+  virtual float GetNoDataValue() const override { return m_noDataValue; }
 
 private:
   void ApplyActivity(const DynBitset& a_activity,
@@ -186,14 +201,6 @@ void XmUGrid2dDataExtractorImpl::SetExtractLocations(const VecPt3d& a_locations)
 {
   m_extractLocations = a_locations;
 } // XmUGrid2dDataExtractorImpl::SetExtractLocations
-//------------------------------------------------------------------------------
-/// \brief Gets locations of points to extract interpolated scalar data from.
-/// \return The locations.
-//------------------------------------------------------------------------------
-const VecPt3d& XmUGrid2dDataExtractorImpl::GetExtractLocations() const
-{
-  return m_extractLocations;
-} // XmUGrid2dDataExtractorImpl::GetExtractLocations
 //------------------------------------------------------------------------------
 /// \brief Extract interpolated data for the previously set locations.
 /// \param[out] a_outData The interpolated scalars.
@@ -490,6 +497,7 @@ const BSHP<XmUGridTriangles2d> XmUGrid2dDataExtractorImpl::GetUGridTriangles() c
 {
   return m_triangles;
 } // XmUGrid2dDataExtractorImpl::GetUGridTriangles
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dDataExtractor
 /// \brief Provides ability to interpolate and extract the scalar values  points and along arcs

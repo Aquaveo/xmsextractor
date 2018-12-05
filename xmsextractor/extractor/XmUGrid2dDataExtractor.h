@@ -65,9 +65,6 @@ public:
   /// \brief Sets locations of points to extract interpolated scalar data from.
   /// \param[in] a_locations The locations.
   virtual void SetExtractLocations(const VecPt3d& a_locations) = 0;
-  /// \brief Gets locations of points to extract interpolated scalar data from.
-  /// \return The locations.
-  virtual const VecPt3d& GetExtractLocations() const = 0;
   /// \brief Extract interpolated data for the previously set locations.
   /// \param[out] a_outData The interpolated scalars.
   virtual void ExtractData(VecFlt& a_outData) = 0;
@@ -90,6 +87,22 @@ public:
   /// \brief Get the UGrid triangles.
   /// \return Shared pointer to triangles.
   virtual const BSHP<XmUGridTriangles2d> GetUGridTriangles() const = 0;
+
+  /// \brief Gets the scalars
+  /// \return The scalars.
+  virtual const VecFlt& GetScalars() const = 0;
+  /// \brief Gets the location of the scalars (points or cells)
+  /// \return The location of the scalars.
+  virtual DataLocationEnum GetScalarLocation() const = 0;
+  /// \brief Gets locations of points to extract interpolated scalar data from.
+  /// \return The locations.
+  virtual const VecPt3d& GetExtractLocations() const = 0;
+  /// \brief Gets the option for using IDW for point data
+  /// \return The option.
+  virtual bool GetUseIdwForPointData() const = 0;
+  /// \brief Gets the no data value
+  /// \return The no data value.
+  virtual float GetNoDataValue() const = 0;
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGrid2dDataExtractor)

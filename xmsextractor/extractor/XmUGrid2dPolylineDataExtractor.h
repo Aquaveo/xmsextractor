@@ -56,9 +56,6 @@ public:
   ///        crossing cell boundaries are computed along the polyline.
   /// \param[in] a_polyline The polyline.
   virtual void SetPolyline(const VecPt3d& a_polyline) = 0;
-  /// \brief Gets computed locations along polyline to extract interpolated scalar data from.
-  /// \return The locations.
-  virtual const VecPt3d& GetExtractLocations() const = 0;
   /// \brief Extract data at previously computed locations returned by GetExtractLocations.
   /// \param[out] a_extractedData The interpolated scalar data at the previously computed locations.
   virtual void ExtractData(VecFlt& a_extractedData) = 0;
@@ -78,6 +75,22 @@ public:
   ///        intersect with the grid.
   /// \param[in] a_noDataValue The no data value
   virtual void SetNoDataValue(float a_noDataValue) = 0;
+
+  /// \brief Gets the scalars
+  /// \return The scalars.
+  virtual const VecFlt& GetScalars() const = 0;
+  /// \brief Gets the location of the scalars (points or cells)
+  /// \return The location of the scalars.
+  virtual DataLocationEnum GetScalarLocation() const = 0;
+  /// \brief Gets computed locations along polyline to extract interpolated scalar data from.
+  /// \return The locations.
+  virtual const VecPt3d& GetExtractLocations() const = 0;
+  /// \brief Gets the option for using IDW for point data
+  /// \return The option.
+  virtual bool GetUseIdwForPointData() const = 0;
+  /// \brief Gets the no data value
+  /// \return The no data value.
+  virtual float GetNoDataValue() const = 0;
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGrid2dPolylineDataExtractor)

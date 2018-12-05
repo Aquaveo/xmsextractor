@@ -59,7 +59,6 @@ public:
                               DataLocationEnum a_activityLocation) override;
 
   virtual void SetPolyline(const VecPt3d& a_polyline) override;
-  virtual const VecPt3d& GetExtractLocations() const override;
   virtual void ExtractData(VecFlt& a_extractedData) override;
 
   virtual void ComputeLocationsAndExtractData(const VecPt3d& a_polyline,
@@ -68,6 +67,20 @@ public:
 
   virtual void SetUseIdwForPointData(bool a_useIdw) override;
   virtual void SetNoDataValue(float a_noDataValue) override;
+
+  /// \brief Gets the scalars
+  /// \return The scalars.
+  virtual const VecFlt& GetScalars() const override { return m_extractor->GetScalars(); }
+  /// \brief Gets the location of the scalars (points or cells)
+  /// \return The location of the scalars.
+  virtual DataLocationEnum GetScalarLocation() const override { return m_extractor->GetScalarLocation(); }
+  virtual const VecPt3d& GetExtractLocations() const override;
+  /// \brief Gets the option for using IDW for point data
+  /// \return The option.
+  virtual bool GetUseIdwForPointData() const override { return m_extractor->GetUseIdwForPointData(); }
+  /// \brief Gets the no data value
+  /// \return The no data value.
+  virtual float GetNoDataValue() const override { return m_extractor->GetNoDataValue(); }
 
 private:
   void ComputeExtractLocations(const VecPt3d& a_polyline, VecPt3d& a_locations);
