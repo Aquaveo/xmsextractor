@@ -106,9 +106,6 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memitem:adaa47cd57ffbb81c7d1f13fba6ceacf9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#adaa47cd57ffbb81c7d1f13fba6ceacf9">SetPolyline</a> (const VecPt3d &amp;a_polyline)=0</td></tr>
 <tr class="memdesc:adaa47cd57ffbb81c7d1f13fba6ceacf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the polyline along which to extract the scalar data. Locations crossing cell boundaries are computed along the polyline.  <a href="#adaa47cd57ffbb81c7d1f13fba6ceacf9">More...</a><br /></td></tr>
 <tr class="separator:adaa47cd57ffbb81c7d1f13fba6ceacf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a256c988ba68dae464f665c6887558e0b"><td class="memItemLeft" align="right" valign="top">virtual const VecPt3d &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#a256c988ba68dae464f665c6887558e0b">GetExtractLocations</a> () const =0</td></tr>
-<tr class="memdesc:a256c988ba68dae464f665c6887558e0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets computed locations along polyline to extract interpolated scalar data from.  <a href="#a256c988ba68dae464f665c6887558e0b">More...</a><br /></td></tr>
-<tr class="separator:a256c988ba68dae464f665c6887558e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac436fa359e4a15aa15c2f7dd37302785"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#ac436fa359e4a15aa15c2f7dd37302785">ExtractData</a> (VecFlt &amp;a_extractedData)=0</td></tr>
 <tr class="memdesc:ac436fa359e4a15aa15c2f7dd37302785"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract data at previously computed locations returned by GetExtractLocations.  <a href="#ac436fa359e4a15aa15c2f7dd37302785">More...</a><br /></td></tr>
 <tr class="separator:ac436fa359e4a15aa15c2f7dd37302785"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,6 +118,21 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memitem:ac85228233ff19b8e9a53f27d8319e1eb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#ac85228233ff19b8e9a53f27d8319e1eb">SetNoDataValue</a> (float a_noDataValue)=0</td></tr>
 <tr class="memdesc:ac85228233ff19b8e9a53f27d8319e1eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set value to use when extracted value is in inactive cell or doesn't intersect with the grid.  <a href="#ac85228233ff19b8e9a53f27d8319e1eb">More...</a><br /></td></tr>
 <tr class="separator:ac85228233ff19b8e9a53f27d8319e1eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7156867ad49bd430a5eb45078cda0722"><td class="memItemLeft" align="right" valign="top">virtual const VecFlt &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#a7156867ad49bd430a5eb45078cda0722">GetScalars</a> () const =0</td></tr>
+<tr class="memdesc:a7156867ad49bd430a5eb45078cda0722"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the scalars.  <a href="#a7156867ad49bd430a5eb45078cda0722">More...</a><br /></td></tr>
+<tr class="separator:a7156867ad49bd430a5eb45078cda0722"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98fc0b9e8d5a473905366849132f2461"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacexms.html#a7c43691aa00f663af1587d02c5d5260d">DataLocationEnum</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#a98fc0b9e8d5a473905366849132f2461">GetScalarLocation</a> () const =0</td></tr>
+<tr class="memdesc:a98fc0b9e8d5a473905366849132f2461"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the location of the scalars (points or cells)  <a href="#a98fc0b9e8d5a473905366849132f2461">More...</a><br /></td></tr>
+<tr class="separator:a98fc0b9e8d5a473905366849132f2461"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a256c988ba68dae464f665c6887558e0b"><td class="memItemLeft" align="right" valign="top">virtual const VecPt3d &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#a256c988ba68dae464f665c6887558e0b">GetExtractLocations</a> () const =0</td></tr>
+<tr class="memdesc:a256c988ba68dae464f665c6887558e0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets computed locations along polyline to extract interpolated scalar data from.  <a href="#a256c988ba68dae464f665c6887558e0b">More...</a><br /></td></tr>
+<tr class="separator:a256c988ba68dae464f665c6887558e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa82007dc2bc262ad961f29015cedb46e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#aa82007dc2bc262ad961f29015cedb46e">GetUseIdwForPointData</a> () const =0</td></tr>
+<tr class="memdesc:aa82007dc2bc262ad961f29015cedb46e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the option for using IDW for point data.  <a href="#aa82007dc2bc262ad961f29015cedb46e">More...</a><br /></td></tr>
+<tr class="separator:aa82007dc2bc262ad961f29015cedb46e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8ccb04b96efd23e9b68a91564c90105"><td class="memItemLeft" align="right" valign="top">virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#ad8ccb04b96efd23e9b68a91564c90105">GetNoDataValue</a> () const =0</td></tr>
+<tr class="memdesc:ad8ccb04b96efd23e9b68a91564c90105"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the no data value.  <a href="#ad8ccb04b96efd23e9b68a91564c90105">More...</a><br /></td></tr>
+<tr class="separator:ad8ccb04b96efd23e9b68a91564c90105"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -138,7 +150,7 @@ Protected Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Provides ability to interpolate and extract the scalar values along a polyline for an unstructured grid. </p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8h_source.html#l00040">40</a> of file <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8h_source.html">XmUGrid2dPolylineDataExtractor.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8h_source.html#l00039">39</a> of file <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8h_source.html">XmUGrid2dPolylineDataExtractor.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a98ab525141dedc65d8e5c24c2d6677d3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98ab525141dedc65d8e5c24c2d6677d3">&#9670;&nbsp;</a></span>ComputeLocationsAndExtractData()</h2>
@@ -254,6 +266,118 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="ad8ccb04b96efd23e9b68a91564c90105"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8ccb04b96efd23e9b68a91564c90105">&#9670;&nbsp;</a></span>GetNoDataValue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual float xms::XmUGrid2dPolylineDataExtractor::GetNoDataValue </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the no data value. </p>
+<dl class="section return"><dt>Returns</dt><dd>The no data value. </dd></dl>
+
+</div>
+</div>
+<a id="a98fc0b9e8d5a473905366849132f2461"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98fc0b9e8d5a473905366849132f2461">&#9670;&nbsp;</a></span>GetScalarLocation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="namespacexms.html#a7c43691aa00f663af1587d02c5d5260d">DataLocationEnum</a> xms::XmUGrid2dPolylineDataExtractor::GetScalarLocation </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the location of the scalars (points or cells) </p>
+<dl class="section return"><dt>Returns</dt><dd>The location of the scalars. </dd></dl>
+
+</div>
+</div>
+<a id="a7156867ad49bd430a5eb45078cda0722"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7156867ad49bd430a5eb45078cda0722">&#9670;&nbsp;</a></span>GetScalars()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const VecFlt&amp; xms::XmUGrid2dPolylineDataExtractor::GetScalars </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the scalars. </p>
+<dl class="section return"><dt>Returns</dt><dd>The scalars. </dd></dl>
+
+</div>
+</div>
+<a id="aa82007dc2bc262ad961f29015cedb46e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa82007dc2bc262ad961f29015cedb46e">&#9670;&nbsp;</a></span>GetUseIdwForPointData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool xms::XmUGrid2dPolylineDataExtractor::GetUseIdwForPointData </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the option for using IDW for point data. </p>
+<dl class="section return"><dt>Returns</dt><dd>The option. </dd></dl>
+
+</div>
+</div>
 <a id="a8a4bd48816cb3d251968eee4cc94e862"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8a4bd48816cb3d251968eee4cc94e862">&#9670;&nbsp;</a></span>New()</h2>
 
@@ -298,9 +422,9 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the new <a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html" title="Provides ability to interpolate and extract the scalar values along a polyline for an unstructured gr...">XmUGrid2dPolylineDataExtractor</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00276">276</a> of file <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html">XmUGrid2dPolylineDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00290">290</a> of file <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html">XmUGrid2dPolylineDataExtractor.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00794">XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00317">XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00538">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossCellIntoSecond()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00570">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossSplitCells()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00350">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00412">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllOutside()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00381">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00505">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentCrossCellPoint()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00443">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentOutToTouch()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00474">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentTouchToOut()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00762">XmUGrid2dPolylineDataExtractorUnitTests::testThreeSegmentsCrossOnBoundary()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00827">XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00604">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAcrossOneCell()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00636">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAllOutside()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00667">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsFirstExiting()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00698">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinInCell()</a>, and <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00730">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00807">XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00330">XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00551">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossCellIntoSecond()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00583">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossSplitCells()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00363">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00425">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllOutside()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00394">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00518">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentCrossCellPoint()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00456">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentOutToTouch()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00487">XmUGrid2dPolylineDataExtractorUnitTests::testSegmentTouchToOut()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00775">XmUGrid2dPolylineDataExtractorUnitTests::testThreeSegmentsCrossOnBoundary()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00840">XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00617">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAcrossOneCell()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00649">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAllOutside()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00680">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsFirstExiting()</a>, <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00711">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinInCell()</a>, and <a class="el" href="_xm_u_grid2d_polyline_data_extractor_8cpp_source.html#l00743">XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary()</a>.</p>
 
 </div>
 </div>
@@ -468,7 +592,7 @@ Protected Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacexms.html">xms</a></li><li class="navelem"><a class="el" href="classxms_1_1_xm_u_grid2d_polyline_data_extractor.html">XmUGrid2dPolylineDataExtractor</a></li>
-    <li class="footer">Generated on Mon Oct 15 2018 18:56:35 for xmsextractor by
+    <li class="footer">Generated on Fri Dec 7 2018 02:06:12 for xmsextractor by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

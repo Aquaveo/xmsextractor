@@ -170,13 +170,6 @@
       <arglist>(const VecPt3d &amp;a_locations)=0</arglist>
     </member>
     <member kind="function" virtualness="pure">
-      <type>virtual const VecPt3d &amp;</type>
-      <name>GetExtractLocations</name>
-      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
-      <anchor>ac3da3ac0adfb6b240b9c984270e4c798</anchor>
-      <arglist>() const =0</arglist>
-    </member>
-    <member kind="function" virtualness="pure">
       <type>virtual void</type>
       <name>ExtractData</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
@@ -216,6 +209,41 @@
       <name>GetUGridTriangles</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
       <anchor>a92c12206ec3d25711144716a669e897c</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual const VecFlt &amp;</type>
+      <name>GetScalars</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
+      <anchor>a4091816e6bf7a78585d8e1e24da39cc9</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual DataLocationEnum</type>
+      <name>GetScalarLocation</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
+      <anchor>ab99e189167de14f968f3851b9ab23b80</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual const VecPt3d &amp;</type>
+      <name>GetExtractLocations</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
+      <anchor>ac3da3ac0adfb6b240b9c984270e4c798</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual bool</type>
+      <name>GetUseIdwForPointData</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
+      <anchor>a863cc47e4ca65953ccfc560a39e2c473</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual float</type>
+      <name>GetNoDataValue</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
+      <anchor>a5fd2a9634c40f69d9a6f6f0940bca3f8</anchor>
       <arglist>() const =0</arglist>
     </member>
     <member kind="function" static="yes">
@@ -280,13 +308,6 @@
       <arglist>(const VecPt3d &amp;a_locations) override</arglist>
     </member>
     <member kind="function" virtualness="virtual">
-      <type>virtual const VecPt3d &amp;</type>
-      <name>GetExtractLocations</name>
-      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
-      <anchor>adf3ccb7736237faf95a8a6cfb1c61e80</anchor>
-      <arglist>() const override</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
       <type>virtual void</type>
       <name>ExtractData</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
@@ -326,6 +347,41 @@
       <name>GetUGridTriangles</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
       <anchor>a304725c38fa15821b9d62996fa87a370</anchor>
+      <arglist>() const override</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual const VecFlt &amp;</type>
+      <name>GetScalars</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
+      <anchor>a6f87ec5e4a57c43bb7078aec8d33e8e8</anchor>
+      <arglist>() const override</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual DataLocationEnum</type>
+      <name>GetScalarLocation</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
+      <anchor>ac27c7ce91f3b6465e0adb9e320a7e6e2</anchor>
+      <arglist>() const override</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual const VecPt3d &amp;</type>
+      <name>GetExtractLocations</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
+      <anchor>a736196f76954875e201d0c76dd1908fe</anchor>
+      <arglist>() const override</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual bool</type>
+      <name>GetUseIdwForPointData</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
+      <anchor>a4946847c2bcb04c77fddcff6587b8448</anchor>
+      <arglist>() const override</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual float</type>
+      <name>GetNoDataValue</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
+      <anchor>ad0ee02f52175263476c46eb951b5bb05</anchor>
       <arglist>() const override</arglist>
     </member>
     <member kind="function" protection="private">
@@ -540,13 +596,6 @@
       <arglist>(const VecPt3d &amp;a_polyline)=0</arglist>
     </member>
     <member kind="function" virtualness="pure">
-      <type>virtual const VecPt3d &amp;</type>
-      <name>GetExtractLocations</name>
-      <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
-      <anchor>a256c988ba68dae464f665c6887558e0b</anchor>
-      <arglist>() const =0</arglist>
-    </member>
-    <member kind="function" virtualness="pure">
       <type>virtual void</type>
       <name>ExtractData</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
@@ -573,6 +622,41 @@
       <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
       <anchor>ac85228233ff19b8e9a53f27d8319e1eb</anchor>
       <arglist>(float a_noDataValue)=0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual const VecFlt &amp;</type>
+      <name>GetScalars</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
+      <anchor>a7156867ad49bd430a5eb45078cda0722</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual DataLocationEnum</type>
+      <name>GetScalarLocation</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
+      <anchor>a98fc0b9e8d5a473905366849132f2461</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual const VecPt3d &amp;</type>
+      <name>GetExtractLocations</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
+      <anchor>a256c988ba68dae464f665c6887558e0b</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual bool</type>
+      <name>GetUseIdwForPointData</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
+      <anchor>aa82007dc2bc262ad961f29015cedb46e</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual float</type>
+      <name>GetNoDataValue</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
+      <anchor>ad8ccb04b96efd23e9b68a91564c90105</anchor>
+      <arglist>() const =0</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static BSHP&lt; XmUGrid2dPolylineDataExtractor &gt;</type>
