@@ -9,7 +9,7 @@ from conans.errors import ConanException
 class XmsextractorConan(ConanFile):
     """XMSExtractor Conanfile"""
     name = "xmsextractor"
-    version = None
+    # version = None  # This no longer worked after conan version 1.11
     license = "XMSNG Software License"
     url = "https://github.com/Aquaveo/xmsextractor"
     description = "Extractor library for XMS products"
