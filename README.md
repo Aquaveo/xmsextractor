@@ -18,4 +18,7 @@ See xmscore build [instructions](https://github.com/Aquaveo/xmscore/wiki/Buildin
 Documentation
 -------------
 
-See: [xmsextractor documentation](https://aquaveo.github.io/xmsextractor/)
+[C++ Documentation](https://aquaveo.github.io/xmsextractor/)
+
+[Python Documentation](https://aquaveo.github.io/xmsextractor/pydocs)
+
