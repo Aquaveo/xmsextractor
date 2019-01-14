@@ -11,9 +11,10 @@ XmsExtractor |version|
 
 The xmsextractor library is a extraction library for other aquaveo products.
 
-.. note::
+Examples
+========
 
-    Documentation coming soon!
+The examples for this library can be found in the examples folder in the `github repository <https://github.com/Aquaveo/xmsextractor>`_
 
 Contents
 ========
@@ -22,6 +23,7 @@ Contents
    :maxdepth: 1
 
    gettingstarted
+   modules
 
 Acknowledgements
 ================
