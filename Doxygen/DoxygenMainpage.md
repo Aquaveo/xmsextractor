@@ -19,7 +19,7 @@ xmsextractor is a cross-platform C++ software library written by [Aquaveo](http:
 License {#XmsextractorLicense}
 -------
 
-The code is distributed under the xmsextractor Software License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at [http://www.aquaveo.com/xmsng/LICENSE_1_0.txt](http://www.aquaveo.com/xmsng/LICENSE_1_0.txt)). 
+The code is distributed under FreeBSD License (See accompanying file LICENSE or [https://aquaveo.com/bsd/license.txt](https://aquaveo.com/bsd/license.txt)). 
 
 Python
 ------
