@@ -42,9 +42,10 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     )pydoc";
     extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> ugrid,
         xms::DataLocationEnum scalar_location) {
-            return boost::shared_ptr<xms::XmUGrid2dPolylineDataExtractor>
-                (xms::XmUGrid2dPolylineDataExtractor::New(
-                    ugrid, scalar_location));
+            boost::shared_ptr<xms::XmUGrid2dPolylineDataExtractor>
+                rval(xms::XmUGrid2dPolylineDataExtractor::New(ugrid, scalar_location));
+            rval->SetNoDataValue(std::numeric_limits<float>::quiet_NaN());
+            return rval;
         }),init_doc,py::arg("ugrid"),py::arg("scalar_location"));
     // ---------------------------------------------------------------------------
     // attribute: __repr__

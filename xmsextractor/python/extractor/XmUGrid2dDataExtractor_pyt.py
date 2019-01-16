@@ -55,7 +55,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         extractor.set_extract_locations([(0.25, 0.75, 100.0), (0.75, 0.25, -100.0), (-1.0, -1.0, 0.0)])
 
         interp_values = extractor.extract_data()
-        expected = [-9999999.0, 2.0, -9999999.0]
+        expected = [float('nan'), 2.0, float('nan')]
         np.testing.assert_array_equal(expected, interp_values)
 
     def test_point_scalar_point_activity(self):
@@ -105,15 +105,15 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         # expected results with point 4 inactive
         expected_interp_values = [
-        0.25, -9999999.0, -9999999.0, -9999999.0,
-        1.75, -9999999.0, -9999999.0, -9999999.0 ]
+        0.25, float('nan'), float('nan'), float('nan'),
+        1.75, float('nan'), float('nan'), float('nan') ]
 
         ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         # set point 4 inactive
-        # should cause all cells connected to point 4 to return -9999999.0
+        # should cause all cells connected to point 4 to return nan
         pointActivity = [True]*9
         pointActivity[4] = False
         extractor.set_grid_point_scalars(point_scalars, pointActivity, data_location_enum.LOC_POINTS)
@@ -146,7 +146,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         extractor.set_extract_locations(extract_locations)
 
         interp_values = extractor.extract_data()
-        expected = [1.0, -9999999.0]
+        expected = [1.0, float('nan')]
         np.testing.assert_array_equal(expected, interp_values)
 
     def test_cell_scalars_only(self):
@@ -180,7 +180,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         # Step 4. Extract the data (call xms::UGrid2dDataExtractor::extract_data).
         interp_values = extractor.extract_data()
-        expected = [1.5, 2.0, 1.5, 1.0, -9999999.0]
+        expected = [1.5, 2.0, 1.5, 1.0, float('nan')]
         np.testing.assert_array_equal(expected, interp_values)
 
     def test_cell_scalar_cell_activity(self):
@@ -231,8 +231,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         # expected results with point 4 inactive
         expected_interp_values = [
-            -9999999.0, 4.0000, -9999999.0, 8.2500, # row 1 cells
-            -9999999.0, 6.0000, -9999999.0, 9.750   # row 2 cells
+            float('nan'), 4.0000, float('nan'), 8.2500, # row 1 cells
+            float('nan'), 6.0000, float('nan'), 9.750   # row 2 cells
         ]
 
         ugrid = UGrid(points, cells)
@@ -240,7 +240,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         # set point 4 inactive
-        # should cause all cells connected to point 4 to return -9999999.0
+        # should cause all cells connected to point 4 to return nan
         cell_activity = [True]*8
         cell_activity[0] = False
         cell_activity[2] = False
@@ -302,7 +302,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         # expected results with point 4 inactive
         expected_interp_values = [
-            2.0, 3.4444, -9999999.0, 6.75, # row 1 cells
+            2.0, 3.4444, float('nan'), 6.75, # row 1 cells
             3.5, 5.7303, 5.4652, 8.25     # row 2 cells
         ]
 
@@ -312,7 +312,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         extractor.set_use_idw_for_point_data(True)
 
         # set point 4 inactive
-        # should cause all cells connected to point 4 to return -9999999.0
+        # should cause all cells connected to point 4 to return nan
         cell_activity = [True]*8
         cell_activity[2] = False
         extractor.set_grid_cell_scalars(cellScalars, cell_activity, data_location_enum.LOC_CELLS)
@@ -348,7 +348,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
                                         (-1.0, -1.0, 0.0)])
 
         interp_values = extractor.extract_data()
-        expected = [2.0, 2.0, 2.0, -9999999.0, -9999999.0]
+        expected = [2.0, 2.0, 2.0, float('nan'), float('nan')]
         np.testing.assert_array_equal(expected, interp_values)
 
     def test_invalid_cell_scalars_and_activity_size(self):
@@ -372,7 +372,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         extractor.set_extract_locations(extract_locations)
 
         interp_values = extractor.extract_data()
-        expected = [0.0, -9999999.0]
+        expected = [0.0, float('nan')]
         np.testing.assert_array_equal(expected, interp_values)
 
     def test_changing_scalars_and_activity(self):
@@ -414,7 +414,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         extractor.set_extract_locations(extract_locations)
 
         extracted_values = extractor.extract_data()
-        expected_values = [2, -9999999.0, 4]
+        expected_values = [2, float('nan'), 4]
         np.testing.assert_array_equal(expected_values, extracted_values)
 
         # timestep 3
@@ -446,7 +446,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         extractor.set_extract_locations(extract_locations)
 
         extracted_values = extractor.extract_data()
-        expected_values = [-9999999.0, 4.0, 4.5]
+        expected_values = [float('nan'), 4.0, 4.5]
         np.testing.assert_array_equal(expected_values, extracted_values)
 
         # timestep 3
@@ -457,7 +457,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         extractor.set_extract_locations(extract_locations)
 
         extracted_values = extractor.extract_data()
-        expected_values = [-9999999.0, -9999999.0, 5.5]
+        expected_values = [float('nan'), float('nan'), 5.5]
         np.testing.assert_array_equal(expected_values, extracted_values)
 
         # timestep 4

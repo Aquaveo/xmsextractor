@@ -32,7 +32,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, 0.5, 1.5, 2.5, -9999999.0]
+        expected_data = [float('nan'), 0.5, 1.5, 2.5, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [(-1, 0.5, 0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (2, 0.5, 0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
@@ -88,7 +88,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, 1.0, 3.0, -9999999.0]
+        expected_data = [float('nan'), 1.0, 3.0, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [(-0.5, 1.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0), (1.55, 1.0, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
@@ -116,7 +116,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, -9999999.0]
+        expected_data = [float('nan'), float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations =  [(-0.5, 0.5, 0.0), (-0.25, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
@@ -144,7 +144,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, 0.5]
+        expected_data = [float('nan'), 0.5]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations =  [(-0.5, 0.5, 0.0), (0.0, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
@@ -172,7 +172,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [2.5, -9999999.0]
+        expected_data = [2.5, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations =  [(1.0, 0.5, 0.0), (1.5, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
@@ -202,7 +202,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, 1.0, -9999999.0]
+        expected_data = [float('nan'), 1.0, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations =  [(-0.5, 0.5, 0.0), (0.0, 1.0, 0.0), (0.5, 1.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
@@ -230,7 +230,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, 0.5, 1.5, 2.5, 3.5]
+        expected_data = [float('nan'), 0.5, 1.5, 2.5, 3.5]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations =  [(-0.5, 0.5, 0.0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0),
             (1.0, 0.5, 0.0), (1.5, 0.5, 0.0)]
@@ -260,7 +260,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, 0.5, 1.5, 2.5, -9999999.0, 4.5, 5.5]
+        expected_data = [float('nan'), 0.5, 1.5, 2.5, float('nan'), 4.5, 5.5]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [(-1.0, 0.5, 0.0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0),
                                        (1.0, 0.5, 0.0), (1.5, 0.5, 0.0), (2.0, 0.5, 0.0),
@@ -290,7 +290,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, 0.5, 1.5, 2.5, -9999999.0]
+        expected_data = [float('nan'), 0.5, 1.5, 2.5, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [
             (-1.0, 0.5, 0.0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (2.0, 0.5, 0.0)]
@@ -319,7 +319,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, -9999999.0, -9999999.0]
+        expected_data = [float('nan'), float('nan'), float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [(2.0, 0.5, 0), (3.0, 0.5, 0.0), (4.0, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
@@ -347,7 +347,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [1.5, 2.5, -9999999.0, -9999999.0]
+        expected_data = [1.5, 2.5, float('nan'), float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [(0.5, 0.5, 0), (1.0, 0.5, 0), (3.0, 0.5, 0.0), (4.0, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
@@ -375,7 +375,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [1.5, 2.5, 3.5, 4.5, -9999999.0]
+        expected_data = [1.5, 2.5, 3.5, 4.5, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations =  [(0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (1.5, 0.5, 0.0),
             (2.0, 0.5, 0.0), (2.5, 0.5, 0.0)]
@@ -404,7 +404,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [1.5, 2.5, 3.5, 4.5, -9999999.0]
+        expected_data = [1.5, 2.5, 3.5, 4.5, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations =  [(0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (1.5, 0.5, 0.0),
             (2.0, 0.5, 0.0), (2.5, 0.5, 0.0)]
@@ -433,7 +433,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [1.5, 2.5, -9999999.0, -9999999.0, 2.5, 2.25, 2.0]
+        expected_data = [1.5, 2.5, float('nan'), float('nan'), 2.5, 2.25, 2.0]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [(0.5, 0.5, 0), (1.0, 0.5, 0), (1.5, 0.5, 0.0),
             (1.5, 0.0, 0.0), (1.0, 0.5, 0), (0.75, 0.75, 0.0), (0.5, 1.0, 0.0)]
@@ -462,7 +462,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         extracted_locations = extractor.get_extract_locations()
         extracted_data = extractor.extract_data()
 
-        expected_data = [-9999999.0, 1.0, 1.0, 1.25, 1.5, 1.75, 1.875]
+        expected_data = [float('nan'), 1.0, 1.0, 1.25, 1.5, 1.75, 1.875]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations =  [(-0.5, 0.75, 0.0), (0.0, 0.75, 0.0), (0.25, 0.75, 0.0),
             (0.75, 0.75, 0.0), (1., 0.75, 0.0), (1.25, 0.75, 0.0), (1.5, 0.75, 0.0)]
