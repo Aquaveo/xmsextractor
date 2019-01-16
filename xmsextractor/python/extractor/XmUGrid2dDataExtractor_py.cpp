@@ -39,8 +39,10 @@ void initXmUGrid2dDataExtractor(py::module &m) {
             ugrid (XmUGrid): A ugrid
     )pydoc";
     extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> ugrid) {
-            return boost::shared_ptr<xms::XmUGrid2dDataExtractor>
-                (xms::XmUGrid2dDataExtractor::New(ugrid));
+            boost::shared_ptr<xms::XmUGrid2dDataExtractor>
+              rval(xms::XmUGrid2dDataExtractor::New(ugrid));
+            rval->SetNoDataValue(std::numeric_limits<float>::quiet_NaN());
+            return rval;
             }), init_doc, py::arg("ugrid"));
     // -------------------------------------------------------------------------
     // function: init
