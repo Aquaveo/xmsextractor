@@ -47,7 +47,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     // -------------------------------------------------------------------------
     // function: init
     // -------------------------------------------------------------------------
-    const char* init_doc2 = R"pydoc(
+    const char* init_doc_copy = R"pydoc(
         Copy construct a new XmUGrid2dDataExtractor.
 
         Args:
@@ -57,7 +57,7 @@ void initXmUGrid2dDataExtractor(py::module &m) {
         [](boost::shared_ptr<xms::XmUGrid2dDataExtractor> extractor) {
             return boost::shared_ptr<xms::XmUGrid2dDataExtractor>
                 (xms::XmUGrid2dDataExtractor::New(extractor));
-        }), init_doc2, py::arg("extractor"));
+        }), init_doc_copy, py::arg("extractor"));
     // ---------------------------------------------------------------------------
     // attribute: __repr__
     // ---------------------------------------------------------------------------
