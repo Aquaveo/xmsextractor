@@ -17,33 +17,35 @@
   
 
   
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="UGrid2dDataExtractor" href="UGrid2dDataExtractor.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -55,6 +57,10 @@
 
           
             
+            
+              <div class="version">
+                2.0.3
+              </div>
             
           
 
@@ -77,16 +83,15 @@
               
             
             
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../gettingstarted.html">Getting Started</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../modules.html">Modules</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../modules.html#module-xmsextractor.extractor">Meshing</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="UGrid2dDataExtractor.html">UGrid2dDataExtractor</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">UGrid2dPolylineDataExtractor</a></li>
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html#usage">Usage</a></li>
 </ul>
-</li>
-</ul>
-</li>
+<p class="caption"><span class="caption-text">User Interface</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="UGrid2dDataExtractor.html">UGrid2dDataExtractor</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">UGrid2dPolylineDataExtractor</a></li>
 </ul>
 
             
@@ -132,8 +137,6 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../modules.html">Modules</a> &raquo;</li>
-        
       <li>UGrid2dPolylineDataExtractor</li>
     
     
@@ -159,68 +162,115 @@
 <dt id="xmsextractor.extractor.UGrid2dPolylineDataExtractor">
 <em class="property">class </em><code class="descclassname">xmsextractor.extractor.</code><code class="descname">UGrid2dPolylineDataExtractor</code><a class="headerlink" href="#xmsextractor.extractor.UGrid2dPolylineDataExtractor" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
+<dt id="xmsextractor.extractor.UGrid2dPolylineDataExtractor.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>self: xmsextractor.extractor.UGrid2dPolylineDataExtractor</em>, <em>ugrid: xms::XmUGrid</em>, <em>scalar_location: xmsextractor.extractor.data_location_enum</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#xmsextractor.extractor.UGrid2dPolylineDataExtractor.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new XmUGrid2dPolylineDataExtractor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ugrid</strong> (<em>XmUGrid</em>) – The UGrid</li>
+<li><strong>scalar_location</strong> (<em>data_location_enum</em>) – Location</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="xmsextractor.extractor.UGrid2dPolylineDataExtractor.extract_data">
 <code class="descname">extract_data</code><span class="sig-paren">(</span><em>self: xmsextractor.extractor.UGrid2dPolylineDataExtractor</em><span class="sig-paren">)</span> &#x2192; iterable<a class="headerlink" href="#xmsextractor.extractor.UGrid2dPolylineDataExtractor.extract_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts the data from the Grid</p>
-<dl class="docutils">
-<dt>Returns:</dt>
-<dd>iterable: The extracted values interpolated from the scalar values.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The extracted values interpolated from the scalar values.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">iterable</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="xmsextractor.extractor.UGrid2dPolylineDataExtractor.get_extract_locations">
 <code class="descname">get_extract_locations</code><span class="sig-paren">(</span><em>self: xmsextractor.extractor.UGrid2dPolylineDataExtractor</em><span class="sig-paren">)</span> &#x2192; iterable<a class="headerlink" href="#xmsextractor.extractor.UGrid2dPolylineDataExtractor.get_extract_locations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the extract locations.</p>
-<dl class="docutils">
-<dt>Returns:</dt>
-<dd>iterable: The locations.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The locations.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">iterable</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="xmsextractor.extractor.UGrid2dPolylineDataExtractor.set_grid_scalars">
 <code class="descname">set_grid_scalars</code><span class="sig-paren">(</span><em>self: xmsextractor.extractor.UGrid2dPolylineDataExtractor</em>, <em>scalars: iterable</em>, <em>activity: iterable</em>, <em>activity_type: xmsextractor.extractor.data_location_enum</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#xmsextractor.extractor.UGrid2dPolylineDataExtractor.set_grid_scalars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the grid scalars</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><p class="first">a_scalars (iterable): The cell or point scalars.
-a_activity (iterable): The activity of the points or cells.
-a_activityType (data_location_enum): The location of the activity</p>
-<blockquote class="last">
-<div>(points or cells).</div></blockquote>
-</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>a_scalars</strong> (<em>iterable</em>) – The cell or point scalars.</li>
+<li><strong>a_activity</strong> (<em>iterable</em>) – The activity of the points or cells.</li>
+<li><strong>a_activityType</strong> (<em>data_location_enum</em>) – The location of the activity
+(points or cells).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="xmsextractor.extractor.UGrid2dPolylineDataExtractor.set_no_data_value">
 <code class="descname">set_no_data_value</code><span class="sig-paren">(</span><em>self: xmsextractor.extractor.UGrid2dPolylineDataExtractor</em>, <em>no_data_value: float</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#xmsextractor.extractor.UGrid2dPolylineDataExtractor.set_no_data_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the no data value</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>no_data_value (float): The no data value</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>no_data_value</strong> (<em>float</em>) – The no data value</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="xmsextractor.extractor.UGrid2dPolylineDataExtractor.set_polyline">
 <code class="descname">set_polyline</code><span class="sig-paren">(</span><em>self: xmsextractor.extractor.UGrid2dPolylineDataExtractor</em>, <em>polyline: iterable</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#xmsextractor.extractor.UGrid2dPolylineDataExtractor.set_polyline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a polyline</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>a_polyline (iterable): The polyline.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a_polyline</strong> (<em>iterable</em>) – The polyline.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="xmsextractor.extractor.UGrid2dPolylineDataExtractor.set_use_idw_for_point_data">
 <code class="descname">set_use_idw_for_point_data</code><span class="sig-paren">(</span><em>self: xmsextractor.extractor.UGrid2dPolylineDataExtractor</em>, <em>use_idw: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#xmsextractor.extractor.UGrid2dPolylineDataExtractor.set_use_idw_for_point_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set to use IDW to calculate point scalar values from cell scalars.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd>use_idw (bool): Whether to turn IDW on or off.</dd>
-</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>use_idw</strong> (<em>bool</em>) – Whether to turn IDW on or off.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -236,7 +286,7 @@ a_activityType (data_location_enum): The location of the activity</p>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="UGrid2dDataExtractor.html" class="btn btn-neutral" title="UGrid2dDataExtractor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="UGrid2dDataExtractor.html" class="btn btn-neutral float-left" title="UGrid2dDataExtractor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -262,26 +312,16 @@ a_activityType (data_location_enum): The location of the activity</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
