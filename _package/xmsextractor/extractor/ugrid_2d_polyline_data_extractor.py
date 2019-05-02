@@ -9,15 +9,17 @@ class UGrid2dPolylineDataExtractor(object):
         'unknown': extractor.data_location_enum.LOC_UNKNOWN,
     }
 
-    def __init__(self, ugrid=None, scalar_locations=None, **kwargs):
+    def __init__(self, ugrid=None, scalar_location=None, **kwargs):
         if 'instance' in kwargs:
             self._instance = kwargs['instance']
         else:
             if ugrid is None:
                 raise ValueError("ugrid is a required argument")
-            if scalar_locations is None:
-                raise ValueError("scalar_locations is a required argument")
-            self._instance = extractor.UGrid2dPolylineDataExtractor(ugrid, scalar_locations)
+            if scalar_location is None:
+                raise ValueError("scalar_location is a required argument")
+            self._check_data_locations(scalar_location)
+            data_location = self.data_locations[scalar_location]
+            self._instance = extractor.UGrid2dPolylineDataExtractor(ugrid._instance, data_location)
 
     def _check_data_locations(self, location_str):
         if location_str not in self.data_locations.keys():

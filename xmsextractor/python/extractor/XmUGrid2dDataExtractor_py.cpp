@@ -74,14 +74,6 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     });
 
     // -------------------------------------------------------------------------
-    // function: GetExtractLocations
-    // -------------------------------------------------------------------------
-    extractor.def("GetExtractLocations", [](xms::XmUGrid2dDataExtractor &self) -> py::iterable {
-      xms::VecPt3d locations = self.GetExtractLocations();
-      return xms::PyIterFromVecPt3d(locations);
-    });
-
-    // -------------------------------------------------------------------------
     // function: ExtractData
     // -------------------------------------------------------------------------
     extractor.def("ExtractData", [](xms::XmUGrid2dDataExtractor &self) -> py::iterable {

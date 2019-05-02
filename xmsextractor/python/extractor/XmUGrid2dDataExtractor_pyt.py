@@ -3,7 +3,6 @@ import unittest
 import xmsextractor
 from xmsgrid.ugrid import UGrid
 from xmsextractor.extractor import UGrid2dDataExtractor
-from xmsextractor.extractor import data_location_enum
 import numpy as np
 
 class TestUGrid2dDataExtractor(unittest.TestCase):
@@ -19,17 +18,17 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  0----1
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2,
-                 UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2,
+                 UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
         ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
-        extractor.set_no_data_value(-999.0)
+        extractor.no_data_value = -999.0
 
         point_scalars = np.array((1, 2, 3, 2))
-        extractor.set_grid_point_scalars(point_scalars, [], data_location_enum.LOC_POINTS)
+        extractor.set_grid_point_scalars(point_scalars, [], 'points')
         extract_locations = [(0, 0, 0), (0.25, 0.75, 100), (0.5, 0.5, 0), (0.75, 0.25, -100), (-1, -1, 0)]
-        extractor.set_extract_locations(extract_locations)
+        extractor.extract_locations = extract_locations
 
         interp_values = extractor.extract_data()
         expected = [1, 2, 2, 2, -999]
@@ -44,15 +43,15 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  |/ 0 |
         #  0----1
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
         ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         point_scalars = [1, 2, 3, 2]
         cell_activity = [True, False]
-        extractor.set_grid_point_scalars(point_scalars, cell_activity, data_location_enum.LOC_CELLS)
-        extractor.set_extract_locations([(0.25, 0.75, 100.0), (0.75, 0.25, -100.0), (-1.0, -1.0, 0.0)])
+        extractor.set_grid_point_scalars(point_scalars, cell_activity, 'cells')
+        extractor.extract_locations = [(0.25, 0.75, 100.0), (0.75, 0.25, -100.0), (-1.0, -1.0, 0.0)]
 
         interp_values = extractor.extract_data()
         expected = [float('nan'), 2.0, float('nan')]
@@ -77,15 +76,15 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             (0, 1, 0), (2, 1, 0), (3, 1, 0),  # row 2 of points
             (0, 2, 0), (1, 2, 0), (3, 2, 0)]  # row 3 of points
         cells = [
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 4, 3,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 2, 4,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 5, 4,
+            UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
+            UGrid.cell_type_enum.TRIANGLE, 3, 1, 4, 3,
+            UGrid.cell_type_enum.TRIANGLE, 3, 1, 2, 4,
+            UGrid.cell_type_enum.TRIANGLE, 3, 2, 5, 4,
 
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 4, 7,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 8, 7,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 5, 8]
+            UGrid.cell_type_enum.TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
+            UGrid.cell_type_enum.TRIANGLE, 3, 3, 4, 7,
+            UGrid.cell_type_enum.TRIANGLE, 3, 4, 8, 7,
+            UGrid.cell_type_enum.TRIANGLE, 3, 4, 5, 8]
 
         point_scalars = [
         0, 0, 0,  # row 1
@@ -116,10 +115,10 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         # should cause all cells connected to point 4 to return nan
         pointActivity = [True]*9
         pointActivity[4] = False
-        extractor.set_grid_point_scalars(point_scalars, pointActivity, data_location_enum.LOC_POINTS)
+        extractor.set_grid_point_scalars(point_scalars, pointActivity, 'points')
 
         # extract interpolated scalar for each cell
-        extractor.set_extract_locations(extract_locations)
+        extractor.extract_locations = extract_locations
 
         interp_values = extractor.extract_data()
         np.testing.assert_array_equal(expected_interp_values, interp_values)
@@ -133,17 +132,17 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  |/ 0 |
         #  0----1
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
         ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         point_scalars = [1, 2, 3]
         activity = [True, False]
-        extractor.set_grid_point_scalars(point_scalars, activity, data_location_enum.LOC_POINTS)
+        extractor.set_grid_point_scalars(point_scalars, activity, 'points')
 
         extract_locations = [(0.25, 0.75, 100.0), (0.75, 0.25, 0.0)]
-        extractor.set_extract_locations(extract_locations)
+        extractor.extract_locations = extract_locations
 
         interp_values = extractor.extract_data()
         expected = [1.0, float('nan')]
@@ -160,7 +159,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  0----1
         # \endverbatim
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
         ugrid = UGrid(points, cells)
 
         # Step 1. Create an extractor for an existing UGrid (call xms::UGrid2dDataExtractor).
@@ -169,14 +168,14 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         # Step 2. Set scalar and activity values (call xms::UGrid2dDataExtractor::set_grid_cell_scalars or UGrid2dDataExtractor::set_point_cell_scalars).
         cellScalars = [1, 2]
-        extractor.set_grid_cell_scalars(cellScalars, [], data_location_enum.LOC_CELLS)
+        extractor.set_grid_cell_scalars(cellScalars, [], 'cells')
 
         # Step 3. Set extract locations (call UGrid2dDataExtractor::set_extract_locations).
-        extractor.set_extract_locations([(0.0, 0.0, 0.0),
+        extractor.extract_locations = [(0.0, 0.0, 0.0),
                                         (0.25, 0.75, 100.0),
                                         (0.5, 0.5, 0.0),
                                         (0.75, 0.25, -100.0),
-                                        (-0.1, -0.1, 0.0)])
+                                        (-0.1, -0.1, 0.0)]
 
         # Step 4. Extract the data (call xms::UGrid2dDataExtractor::extract_data).
         interp_values = extractor.extract_data()
@@ -202,15 +201,15 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             (0, 1, 0), (2, 1, 0), (3, 1, 0),  # row 2 of points
             (0, 2, 0), (1, 2, 0), (3, 2, 0)]  # row 3 of points
         cells = [
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 4, 3,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 2, 4,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 5, 4,
+            UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
+            UGrid.cell_type_enum.TRIANGLE, 3, 1, 4, 3,
+            UGrid.cell_type_enum.TRIANGLE, 3, 1, 2, 4,
+            UGrid.cell_type_enum.TRIANGLE, 3, 2, 5, 4,
 
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 4, 7,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 8, 7,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 5, 8]
+            UGrid.cell_type_enum.TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
+            UGrid.cell_type_enum.TRIANGLE, 3, 3, 4, 7,
+            UGrid.cell_type_enum.TRIANGLE, 3, 4, 8, 7,
+            UGrid.cell_type_enum.TRIANGLE, 3, 4, 5, 8]
 
         cellScalars = [
             2, 4, 6, 8,  # row 1
@@ -246,10 +245,10 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         cell_activity[2] = False
         cell_activity[4] = False
         cell_activity[6] = False
-        extractor.set_grid_cell_scalars(cellScalars, cell_activity, data_location_enum.LOC_CELLS)
+        extractor.set_grid_cell_scalars(cellScalars, cell_activity, 'cells')
 
         # extract interpolated scalar for each cell
-        extractor.set_extract_locations(extract_locations)
+        extractor.extract_locations = extract_locations
 
         interp_values = extractor.extract_data()
         np.testing.assert_array_equal(expected_interp_values, interp_values)
@@ -273,15 +272,15 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             (0, 1, 0), (2, 1, 0), (3, 1, 0),  # row 2 of points
             (0, 2, 0), (1, 2, 0), (3, 2, 0)]  # row 3 of points
         cells = [
-        UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 4, 3,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 1, 2, 4,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 5, 4,
+        UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 3, # row 1 of triangles
+            UGrid.cell_type_enum.TRIANGLE, 3, 1, 4, 3,
+            UGrid.cell_type_enum.TRIANGLE, 3, 1, 2, 4,
+            UGrid.cell_type_enum.TRIANGLE, 3, 2, 5, 4,
 
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 3, 4, 7,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 8, 7,
-            UGrid.ugrid_celltype_enum.TRIANGLE, 3, 4, 5, 8]
+            UGrid.cell_type_enum.TRIANGLE, 3, 3, 7, 6, # row 2 of triangles
+            UGrid.cell_type_enum.TRIANGLE, 3, 3, 4, 7,
+            UGrid.cell_type_enum.TRIANGLE, 3, 4, 8, 7,
+            UGrid.cell_type_enum.TRIANGLE, 3, 4, 5, 8]
 
         cellScalars = [
             2, 4, 6, 8,  # row 1
@@ -309,16 +308,16 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
-        extractor.set_use_idw_for_point_data(True)
+        extractor.use_idw_for_point_data = True
 
         # set point 4 inactive
         # should cause all cells connected to point 4 to return nan
         cell_activity = [True]*8
         cell_activity[2] = False
-        extractor.set_grid_cell_scalars(cellScalars, cell_activity, data_location_enum.LOC_CELLS)
+        extractor.set_grid_cell_scalars(cellScalars, cell_activity, 'cells')
 
         # extract interpolated scalar for each cell
-        extractor.set_extract_locations(extract_locations)
+        extractor.extract_locations = extract_locations
 
         interp_values = extractor.extract_data()
         np.testing.assert_allclose(expected_interp_values, interp_values, atol=0.001)
@@ -332,7 +331,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  |/ 0 |
         #  0----1
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
         ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
@@ -340,12 +339,12 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         pointActivity = [True]*4
         pointActivity[1] = False
         cellScalars = [1, 2]
-        extractor.set_grid_cell_scalars(cellScalars, pointActivity, data_location_enum.LOC_POINTS)
-        extractor.set_extract_locations([(0.0, 0.0, 0.0),
+        extractor.set_grid_cell_scalars(cellScalars, pointActivity, 'points')
+        extractor.extract_locations = [(0.0, 0.0, 0.0),
                                         (0.25, 0.75, 100.0),
                                         (0.5, 0.5, 0.0),
                                         (0.75, 0.25, -100.0),
-                                        (-1.0, -1.0, 0.0)])
+                                        (-1.0, -1.0, 0.0)]
 
         interp_values = extractor.extract_data()
         expected = [2.0, 2.0, 2.0, float('nan'), float('nan')]
@@ -360,16 +359,16 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         #  |/ 0 |
         #  0----1
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [UGrid.ugrid_celltype_enum.TRIANGLE, 3, 0, 1, 2, UGrid.ugrid_celltype_enum.TRIANGLE, 3, 2, 3, 0]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
         ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
         cellScalars = [1]
         activity = [False]
-        extractor.set_grid_cell_scalars(cellScalars, activity, data_location_enum.LOC_CELLS)
+        extractor.set_grid_cell_scalars(cellScalars, activity, 'cells')
         extract_locations = [(0.25, 0.75, 100.0), (0.75, 0.25, 0.0)]
-        extractor.set_extract_locations(extract_locations)
+        extractor.extract_locations = extract_locations
 
         interp_values = extractor.extract_data()
         expected = [0.0, float('nan')]
@@ -380,9 +379,9 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         # build a grid with 3 cells in a row
         points = [(0, 1, 0), (1, 1, 0), (2, 1, 0), (3, 1, 0), (0, 0, 0), (1, 0, 0), (2, 0, 0), (3, 0, 0)]
         cells = [
-            UGrid.ugrid_celltype_enum.QUAD, 4, 0, 4, 5, 1, # cell 0
-            UGrid.ugrid_celltype_enum.QUAD, 4, 1, 5, 6, 2, # cell 1
-            UGrid.ugrid_celltype_enum.QUAD, 4, 2, 6, 7, 3  # cell 2
+            UGrid.cell_type_enum.QUAD, 4, 0, 4, 5, 1, # cell 0
+            UGrid.cell_type_enum.QUAD, 4, 1, 5, 6, 2, # cell 1
+            UGrid.cell_type_enum.QUAD, 4, 2, 6, 7, 3  # cell 2
         ]
 
         ugrid = UGrid(points, cells)
@@ -399,8 +398,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         scalars = [1, 2, 3]
         # empty activity means all are enabled
         activity = []
-        extractor.set_grid_cell_scalars(scalars, activity, data_location_enum.LOC_CELLS)
-        extractor.set_extract_locations(extract_locations)
+        extractor.set_grid_cell_scalars(scalars, activity, 'cells')
+        extractor.extract_locations = extract_locations
 
         extracted_values = extractor.extract_data()
         expected_values = [1.25, 2.0, 2.75]
@@ -410,8 +409,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         scalars = [2, 3, 4]
         activity = [True]*3
         activity[1] = False
-        extractor.set_grid_cell_scalars(scalars, activity, data_location_enum.LOC_CELLS)
-        extractor.set_extract_locations(extract_locations)
+        extractor.set_grid_cell_scalars(scalars, activity, 'cells')
+        extractor.extract_locations = extract_locations
 
         extracted_values = extractor.extract_data()
         expected_values = [2, float('nan'), 4]
@@ -420,8 +419,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         # timestep 3
         scalars = [3, 4, 5]
         activity = []
-        extractor.set_grid_cell_scalars(scalars, activity, data_location_enum.LOC_CELLS)
-        extractor.set_extract_locations(extract_locations)
+        extractor.set_grid_cell_scalars(scalars, activity, 'cells')
+        extractor.extract_locations = extract_locations
 
         extracted_values = extractor.extract_data()
         expected_values = [3.25, 4.0, 4.75]
@@ -431,8 +430,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         # timestep 1
         scalars = [1, 2, 3, 4, 2, 3, 4, 5]
         # empty activity means all are enabled
-        extractor.set_grid_point_scalars(scalars, activity, data_location_enum.LOC_POINTS)
-        extractor.set_extract_locations(extract_locations)
+        extractor.set_grid_point_scalars(scalars, activity, 'points')
+        extractor.extract_locations = extract_locations
 
         extracted_values = extractor.extract_data()
         expected_values = [2.5, 3.0, 3.5]
@@ -442,8 +441,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         scalars = [2, 3, 4, 5, 3, 4, 5, 6]
         activity = [True]*8
         activity[0] = False
-        extractor.set_grid_point_scalars(scalars, activity, data_location_enum.LOC_POINTS)
-        extractor.set_extract_locations(extract_locations)
+        extractor.set_grid_point_scalars(scalars, activity, 'points')
+        extractor.extract_locations = extract_locations
 
         extracted_values = extractor.extract_data()
         expected_values = [float('nan'), 4.0, 4.5]
@@ -453,8 +452,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         scalars = [3, 4, 5, 6, 4, 5, 6, 7]
         activity = [True]*8
         activity[1] = False
-        extractor.set_grid_point_scalars(scalars, activity, data_location_enum.LOC_POINTS)
-        extractor.set_extract_locations(extract_locations)
+        extractor.set_grid_point_scalars(scalars, activity, 'points')
+        extractor.extract_locations = extract_locations
 
         extracted_values = extractor.extract_data()
         expected_values = [float('nan'), float('nan'), 5.5]
@@ -462,40 +461,12 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         # timestep 4
         activity = []
-        extractor.set_grid_point_scalars(scalars, activity, data_location_enum.LOC_POINTS)
-        extractor.set_extract_locations(extract_locations)
+        extractor.set_grid_point_scalars(scalars, activity, 'points')
+        extractor.extract_locations = extract_locations
 
         extracted_values = extractor.extract_data()
         expected_values = [4.5, 5, 5.5]
         np.testing.assert_array_equal(expected_values, extracted_values)
-
-    def test_copied_extractor(self):
-        """Test extractor built by copying triangles."""
-        #  3----2
-        #  |    |
-        #  |    |
-        #  |    |
-        #  |    |
-        #  0----1
-        points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        cells = [UGrid.ugrid_celltype_enum.QUAD, 4, 0, 1, 2, 3]
-        ugrid = UGrid(points, cells)
-        extractor = UGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, UGrid2dDataExtractor)
-
-        point_scalars = [1, 2, 3, 4]
-        extractor.set_grid_point_scalars(point_scalars, [], data_location_enum.LOC_POINTS)
-        extract_locations = [(0.5, 0.5, 0.0)]
-        extractor.set_extract_locations(extract_locations)
-        interp_values = extractor.extract_data()
-        expected = [2.0]
-        np.testing.assert_array_equal(expected, interp_values)
-
-        extractor2 = UGrid2dDataExtractor(extractor)
-        extractor2.set_grid_point_scalars(point_scalars, [], data_location_enum.LOC_POINTS)
-        extractor2.set_extract_locations(extract_locations)
-        interp_values = extractor2.extract_data()
-        np.testing.assert_array_equal(expected, interp_values)
 
     def test_tutorial(self):
         """Test UGrid2dDataExtractor for tutorial."""
@@ -507,12 +478,12 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             (294050, 3895770, 0), (300050, 3895770, 0), (306050, 3895770, 0)
         ]
         cells = [
-            UGrid.ugrid_celltype_enum.QUAD, 4, 0, 4, 5, 1,
-            UGrid.ugrid_celltype_enum.QUAD, 4, 1, 5, 6, 2,
-            UGrid.ugrid_celltype_enum.QUAD, 4, 2, 6, 7, 3,
-            UGrid.ugrid_celltype_enum.QUAD, 4, 4, 8, 9, 5,
-            UGrid.ugrid_celltype_enum.QUAD, 4, 5, 9, 10, 6,
-            UGrid.ugrid_celltype_enum.QUAD, 4, 6, 10, 11, 7
+            UGrid.cell_type_enum.QUAD, 4, 0, 4, 5, 1,
+            UGrid.cell_type_enum.QUAD, 4, 1, 5, 6, 2,
+            UGrid.cell_type_enum.QUAD, 4, 2, 6, 7, 3,
+            UGrid.cell_type_enum.QUAD, 4, 4, 8, 9, 5,
+            UGrid.cell_type_enum.QUAD, 4, 5, 9, 10, 6,
+            UGrid.cell_type_enum.QUAD, 4, 6, 10, 11, 7
         ]
         ugrid = UGrid(points, cells)
         # Step 1. Create an extractor for an UGrid (call UGrid2dDataExtractor).
@@ -527,19 +498,19 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
             (296330, 3906180, 0),
             (307395, 3901463, 0)
         ]
-        extractor.set_extract_locations(extract_locations)
-        retrieved_locations = extractor.get_extract_locations()
+        extractor.extract_locations = extract_locations
+        retrieved_locations = extractor.extract_locations
         np.testing.assert_array_equal(extract_locations, retrieved_locations)
 
         # Step 3. Optionally set the "no data" value for output interpolated values
         #         (UGrid2dDataExtractor::set_no_data_value).
-        extractor.set_no_data_value(-999.0)
+        extractor.no_data_value = -999.0
 
         # time step 1
         # Step 4. Set the point scalars for the first time step (UGrid2dDataExtractor::set_grid_point_scalars).
         point_scalars = [730.787, 1214.54, 1057.145, 629.2069, 351.1153, 631.6649, 1244.366,
         449.9133, 64.04247, 240.9716, 680.0491, 294.9547]
-        extractor.set_grid_point_scalars(point_scalars, [], data_location_enum.LOC_CELLS)
+        extractor.set_grid_point_scalars(point_scalars, [], 'cells')
         # Step 5. Extract the data (call xms::UGrid2dDataExtractor::extract_data).
         extracted_data = extractor.extract_data()
 
@@ -549,25 +520,11 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         # time step 2
         # Step 6. Continue using steps 4 and 5 for remaining time steps.
         point_scalars = [-999.0, 1220.5, 1057.1, 613.2, 380.1, 625.6, 722.2, 449.9, 51.0, 240.9, 609.0, 294.9]
-        cell_activity = [True]*ugrid.get_cell_count()
+        cell_activity = [True]*ugrid.cell_count
         cell_activity[0] = False
-        extractor.set_grid_point_scalars(point_scalars, cell_activity, data_location_enum.LOC_CELLS)
+        extractor.set_grid_point_scalars(point_scalars, cell_activity, 'cells')
         # Step 7. Extract the data (call xms::UGrid2dDataExtractor::extract_data).
         extracted_data = extractor.extract_data()
 
         expectedData = [-999.0, 466.4, 685.0, 849.4, 1069.6, -999.0]
         np.testing.assert_allclose(expectedData, extracted_data, atol=0.2)
-
-
-class TestDataLocationEnum(unittest.TestCase):
-    """CellType enum tests"""
-
-    def test_data_location_enum(self):
-        from xmsextractor.extractor import data_location_enum
-        self.assertEqual("data_location_enum.LOC_POINTS",
-                         str(data_location_enum.LOC_POINTS))
-        self.assertEqual("data_location_enum.LOC_CELLS",
-                         str(data_location_enum.LOC_CELLS))
-        self.assertEqual("data_location_enum.LOC_UNKNOWN",
-                         str(data_location_enum.LOC_UNKNOWN))
-        self.assertEqual(3, len(data_location_enum.__members__))
