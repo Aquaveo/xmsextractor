@@ -175,8 +175,8 @@ if(IS_PYTHON_BUILD)
     # Install recipe
     install(
       TARGETS _xmsextractor
-      ARCHIVE DESTINATION "_package/xmsinterp"
-      LIBRARY DESTINATION "_package/xmsinterp"
+      ARCHIVE DESTINATION "_package/xmsextractor"
+      LIBRARY DESTINATION "_package/xmsextractor"
     )
 
     install(DIRECTORY "_package/" DESTINATION "_package"
