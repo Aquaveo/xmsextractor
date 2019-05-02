@@ -19,7 +19,7 @@ namespace py = pybind11;
 
 
 //------ Primary Module --------------------------------------------------------
-PYBIND11_MODULE(xmsextractor, m) {
+PYBIND11_MODULE(_xmsextractor, m) {
     m.doc() = "Python bindings for xmsextractor"; // optional module docstring
     m.attr("__version__") = XMS_VERSION;
 

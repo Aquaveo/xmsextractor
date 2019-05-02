@@ -22,8 +22,8 @@
 // 5. Shared code headers
 #include <xmscore/misc/XmError.h>
 #include <xmscore/misc/XmLog.h>
-#include <xmsinterp/geometry/geoms.h>
-#include <xmsinterp/geometry/GmTriSearch.h>
+#include <xmsgrid/geometry/geoms.h>
+#include <xmsgrid/geometry/GmTriSearch.h>
 #include <xmsgrid/ugrid/XmUGrid.h>
 
 // 6. Non-shared code headers
