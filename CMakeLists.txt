@@ -172,12 +172,15 @@ if(IS_PYTHON_BUILD)
     LINKER_LANGUAGE CXX
   )
 
-  # Install recipe
-  install(
+    # Install recipe
+    install(
       TARGETS _xmsextractor
-      ARCHIVE DESTINATION "site-packages"
-      LIBRARY DESTINATION "site-packages"
-  )
+      ARCHIVE DESTINATION "_package/xmsinterp"
+      LIBRARY DESTINATION "_package/xmsinterp"
+    )
+
+    install(DIRECTORY "_package/" DESTINATION "_package"
+             FILES_MATCHING PATTERN "*.py")
 
 endif()
 
