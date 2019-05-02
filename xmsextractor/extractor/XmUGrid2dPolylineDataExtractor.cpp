@@ -22,8 +22,8 @@
 #include <xmsextractor/extractor/XmUGrid2dDataExtractor.h>
 #include <xmsextractor/ugrid/XmUGridTriangles2d.h>
 #include <xmsgrid/ugrid/XmUGrid.h>
-#include <xmsinterp/geometry/GmMultiPolyIntersector.h>
-#include <xmsinterp/geometry/GmMultiPolyIntersectionSorterTerse.h>
+#include <xmsgrid/geometry/GmMultiPolyIntersector.h>
+#include <xmsgrid/geometry/GmMultiPolyIntersectionSorterTerse.h>
 
 // 6. Non-shared code headers
 
@@ -318,7 +318,7 @@ using namespace xms;
 
 #include <xmscore/misc/xmstype.h>
 #include <xmscore/testing/TestTools.h>
-#include <xmsinterp/geometry/geoms.h>
+#include <xmsgrid/geometry/geoms.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGrid2dPolylineDataExtractorUnitTests

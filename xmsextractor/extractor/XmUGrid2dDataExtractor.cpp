@@ -23,8 +23,8 @@
 #include <xmscore/misc/xmstype.h>
 #include <xmsextractor/ugrid/XmUGridTriangles2d.h>
 #include <xmsgrid/ugrid/XmUGrid.h>
-#include <xmsinterp/geometry/geoms.h>
-#include <xmsinterp/geometry/GmTriSearch.h>
+#include <xmsgrid/geometry/geoms.h>
+#include <xmsgrid/geometry/GmTriSearch.h>
 #include <xmsinterp/interpolate/InterpUtil.h>
 
 // 6. Non-shared code headers
