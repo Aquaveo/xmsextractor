@@ -51,8 +51,8 @@ namespace xms
 class XmUGrid2dDataExtractorImpl : public XmUGrid2dDataExtractor
 {
 public:
-  XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid);
-  XmUGrid2dDataExtractorImpl(BSHP<XmUGrid2dDataExtractorImpl> a_extractor);
+  XmUGrid2dDataExtractorImpl(std::shared_ptr<XmUGrid> a_ugrid);
+  XmUGrid2dDataExtractorImpl(std::shared_ptr<XmUGrid2dDataExtractorImpl> a_extractor);
 
   virtual void SetGridPointScalars(const VecFlt& a_pointScalars,
                                    const DynBitset& a_activity,
@@ -69,7 +69,7 @@ public:
   virtual void SetNoDataValue(float a_value) override;
 
   virtual void BuildTriangles(DataLocationEnum a_location) override;
-  virtual const BSHP<XmUGridTriangles2d> GetUGridTriangles() const override;
+  virtual const std::shared_ptr<XmUGridTriangles2d> GetUGridTriangles() const override;
 
   /// \brief Gets the scalars
   /// \return The scalars.
@@ -103,13 +103,14 @@ private:
                             const VecFlt& a_cellScalars,
                             const DynBitset& a_cellActivity);
 
-  BSHP<XmUGrid> m_ugrid;                ///< UGrid for dataset
-  DataLocationEnum m_triangleType;      ///< if triangles been generated for points or cells
-  BSHP<XmUGridTriangles2d> m_triangles; ///< triangles generated from UGrid to use for data extraction
-  VecPt3d m_extractLocations;           ///< output locations for interpolated values
-  VecFlt m_pointScalars;                ///< scalars to interpolate from
-  bool m_useIdwForPointData;            ///< use IDW to calculate point data from cell data
-  float m_noDataValue;                  ///< value to use for inactive result
+  std::shared_ptr<XmUGrid> m_ugrid; ///< UGrid for dataset
+  DataLocationEnum m_triangleType;  ///< if triangles been generated for points or cells
+  std::shared_ptr<XmUGridTriangles2d>
+    m_triangles;              ///< triangles generated from UGrid to use for data extraction
+  VecPt3d m_extractLocations; ///< output locations for interpolated values
+  VecFlt m_pointScalars;      ///< scalars to interpolate from
+  bool m_useIdwForPointData;  ///< use IDW to calculate point data from cell data
+  float m_noDataValue;        ///< value to use for inactive result
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +122,7 @@ private:
 /// \brief Construct from a UGrid.
 /// \param[in] a_ugrid The UGrid to construct an extractor for.
 //------------------------------------------------------------------------------
-XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
+XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(std::shared_ptr<XmUGrid> a_ugrid)
 : m_ugrid(a_ugrid)
 , m_triangleType(LOC_UNKNOWN)
 , m_triangles(XmUGridTriangles2d::New())
@@ -137,7 +138,8 @@ XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid> a_ugrid)
 /// \param[in] a_extractor The extractor to shallow copy
 /// \return the new XmUGrid2dDataExtractorImpl.
 //------------------------------------------------------------------------------
-XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid2dDataExtractorImpl> a_extractor)
+XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(
+  std::shared_ptr<XmUGrid2dDataExtractorImpl> a_extractor)
 : m_ugrid(a_extractor->m_ugrid)
 , m_triangleType(a_extractor->m_triangleType)
 , m_triangles(a_extractor->m_triangles)
@@ -494,7 +496,7 @@ void XmUGrid2dDataExtractorImpl::BuildTriangles(DataLocationEnum a_location)
 /// \brief Get the UGrid triangles.
 /// \return The UGrid triangles.
 //------------------------------------------------------------------------------
-const BSHP<XmUGridTriangles2d> XmUGrid2dDataExtractorImpl::GetUGridTriangles() const
+const std::shared_ptr<XmUGridTriangles2d> XmUGrid2dDataExtractorImpl::GetUGridTriangles() const
 {
   return m_triangles;
 } // XmUGrid2dDataExtractorImpl::GetUGridTriangles
@@ -509,9 +511,10 @@ const BSHP<XmUGridTriangles2d> XmUGrid2dDataExtractorImpl::GetUGridTriangles() c
 /// \param[in] a_ugrid The UGrid geometry to use to extract values from
 /// \return the new XmUGrid2dDataExtractor
 //------------------------------------------------------------------------------
-BSHP<XmUGrid2dDataExtractor> XmUGrid2dDataExtractor::New(BSHP<XmUGrid> a_ugrid)
+std::shared_ptr<XmUGrid2dDataExtractor> XmUGrid2dDataExtractor::New(
+  std::shared_ptr<XmUGrid> a_ugrid)
 {
-  BSHP<XmUGrid2dDataExtractor> extractor(new XmUGrid2dDataExtractorImpl(a_ugrid));
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor(new XmUGrid2dDataExtractorImpl(a_ugrid));
   return extractor;
 } // XmUGrid2dDataExtractor::New
 //------------------------------------------------------------------------------
@@ -520,12 +523,14 @@ BSHP<XmUGrid2dDataExtractor> XmUGrid2dDataExtractor::New(BSHP<XmUGrid> a_ugrid)
 /// \param[in] a_extractor The extractor to shallow copy
 /// \return the new XmUGrid2dDataExtractor.
 //------------------------------------------------------------------------------
-BSHP<XmUGrid2dDataExtractor> XmUGrid2dDataExtractor::New(BSHP<XmUGrid2dDataExtractor> a_extractor)
+std::shared_ptr<XmUGrid2dDataExtractor> XmUGrid2dDataExtractor::New(
+  std::shared_ptr<XmUGrid2dDataExtractor> a_extractor)
 {
-  BSHP<XmUGrid2dDataExtractorImpl> copied = BDPC<XmUGrid2dDataExtractorImpl>(a_extractor);
+  std::shared_ptr<XmUGrid2dDataExtractorImpl> copied =
+    std::dynamic_pointer_cast<XmUGrid2dDataExtractorImpl>(a_extractor);
   if (copied)
   {
-    BSHP<XmUGrid2dDataExtractor> extractor(new XmUGrid2dDataExtractorImpl(copied));
+    std::shared_ptr<XmUGrid2dDataExtractor> extractor(new XmUGrid2dDataExtractorImpl(copied));
     return extractor;
   }
 
@@ -573,8 +578,8 @@ void XmUGrid2dDataExtractorUnitTests::testPointScalarsOnly()
   //  0----1
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
   extractor->SetNoDataValue(-999.0);
 
@@ -602,8 +607,8 @@ void XmUGrid2dDataExtractorUnitTests::testPointScalarCellActivity()
   //  0----1
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
   VecFlt pointScalars = {1, 2, 3, 2};
@@ -674,8 +679,8 @@ void XmUGrid2dDataExtractorUnitTests::testPointScalarPointActivity()
     1.75, XM_NODATA, XM_NODATA, XM_NODATA };
   // clang-format on
 
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
   // set point 4 inactive
@@ -705,8 +710,8 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize()
   //  0----1
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
   VecFlt pointScalars = {1, 2, 3};
@@ -739,13 +744,14 @@ void XmUGrid2dDataExtractorUnitTests::testCellScalarsOnly()
 {
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
 
   // Step 1. Create an extractor for an existing XmUGrid (call xms::XmUGrid2dDataExtractor).
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
-  // Step 2. Set scalar and activity values (call xms::XmUGrid2dDataExtractor::SetGridCellScalars or XmUGrid2dDataExtractor::SetPointCellScalars).
+  // Step 2. Set scalar and activity values (call xms::XmUGrid2dDataExtractor::SetGridCellScalars or
+  // XmUGrid2dDataExtractor::SetPointCellScalars).
   VecFlt cellScalars = {1, 2};
   extractor->SetGridCellScalars(cellScalars, DynBitset(), LOC_CELLS);
 
@@ -820,8 +826,8 @@ void XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivity()
   };
   // clang-format on
 
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
   // set point 4 inactive
@@ -898,8 +904,8 @@ void XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivityIdw()
   };
   // clang-format on
 
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
   extractor->SetUseIdwForPointData(true);
 
@@ -930,8 +936,8 @@ void XmUGrid2dDataExtractorUnitTests::testCellScalarPointActivity()
   //  0----1
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
   DynBitset pointActivity;
@@ -963,8 +969,8 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize()
   //  0----1
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
   VecFlt cellScalars = {1};
@@ -993,8 +999,8 @@ void XmUGrid2dDataExtractorUnitTests::testChangingScalarsAndActivity()
     XMU_QUAD, 4, 2, 6, 7, 3  // cell 2
   };
 
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
   VecFlt scalars;
@@ -1092,8 +1098,8 @@ void XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()
   //  0----1
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
   TS_ASSERT(extractor);
 
   VecFlt pointScalars = {1, 2, 3, 4};
@@ -1104,7 +1110,7 @@ void XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()
   VecFlt expected = {2.0};
   TS_ASSERT_EQUALS(expected, interpValues);
 
-  BSHP<XmUGrid2dDataExtractor> extractor2 = XmUGrid2dDataExtractor::New(extractor);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor2 = XmUGrid2dDataExtractor::New(extractor);
   extractor2->SetGridPointScalars(pointScalars, DynBitset(), LOC_POINTS);
   extractor2->SetExtractLocations({{0.5, 0.5, 0.0}});
   extractor2->ExtractData(interpValues);
@@ -1117,33 +1123,19 @@ void XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()
 void XmUGrid2dDataExtractorUnitTests::testTutorial()
 {
   // build 2x3 grid
-  VecPt3d points = {
-    {288050, 3907770, 0}, {294050, 3907770, 0}, {300050, 3907770, 0},
-    {306050, 3907770, 0}, {288050, 3901770, 0}, {294050, 3901770, 0},
-    {300050, 3901770, 0}, {306050, 3901770, 0}, {288050, 3895770, 0},
-    {294050, 3895770, 0}, {300050, 3895770, 0}, {306050, 3895770, 0}
-  };
-  VecInt cells = {
-    XMU_QUAD, 4, 0, 4, 5, 1,
-    XMU_QUAD, 4, 1, 5, 6, 2,
-    XMU_QUAD, 4, 2, 6, 7, 3,
-    XMU_QUAD, 4, 4, 8, 9, 5,
-    XMU_QUAD, 4, 5, 9, 10, 6,
-    XMU_QUAD, 4, 6, 10, 11, 7
-  };
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  VecPt3d points = {{288050, 3907770, 0}, {294050, 3907770, 0}, {300050, 3907770, 0},
+                    {306050, 3907770, 0}, {288050, 3901770, 0}, {294050, 3901770, 0},
+                    {300050, 3901770, 0}, {306050, 3901770, 0}, {288050, 3895770, 0},
+                    {294050, 3895770, 0}, {300050, 3895770, 0}, {306050, 3895770, 0}};
+  VecInt cells = {XMU_QUAD, 4, 0, 4, 5, 1, XMU_QUAD, 4, 1, 5, 6,  2, XMU_QUAD, 4, 2, 6,  7,  3,
+                  XMU_QUAD, 4, 4, 8, 9, 5, XMU_QUAD, 4, 5, 9, 10, 6, XMU_QUAD, 4, 6, 10, 11, 7};
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   // Step 1. Create an extractor for an XmUGrid (call XmUGrid2dDataExtractor::New).
-  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+  std::shared_ptr<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
 
   // Step 2. Set extract locations (call XmUGrid2dDataExtractor::SetExtractLocations).
-  VecPt3d extractLocations = {
-    {289780, 3906220, 0},
-    {293780, 3899460, 0},
-    {298900, 3900780, 0},
-    {301170, 3904960, 0},
-    {296330, 3906180, 0},
-    {307395, 3901463, 0}
-  };
+  VecPt3d extractLocations = {{289780, 3906220, 0}, {293780, 3899460, 0}, {298900, 3900780, 0},
+                              {301170, 3904960, 0}, {296330, 3906180, 0}, {307395, 3901463, 0}};
   extractor->SetExtractLocations(extractLocations);
   VecFlt extractedData;
   VecPt3d retrievedLocations = extractor->GetExtractLocations();
@@ -1154,9 +1146,10 @@ void XmUGrid2dDataExtractorUnitTests::testTutorial()
   extractor->SetNoDataValue(-999.0);
 
   // time step 1
-  // Step 4. Set the point scalars for the first time step (XmUGrid2dDataExtractor::SetGridPointScalars).
-  VecFlt pointScalars = {730.787f, 1214.54f, 1057.145f, 629.2069f, 351.1153f, 631.6649f, 1244.366f,
-    449.9133f, 64.04247f, 240.9716f, 680.0491f, 294.9547f};
+  // Step 4. Set the point scalars for the first time step
+  // (XmUGrid2dDataExtractor::SetGridPointScalars).
+  VecFlt pointScalars = {730.787f,  1214.54f,  1057.145f, 629.2069f, 351.1153f, 631.6649f,
+                         1244.366f, 449.9133f, 64.04247f, 240.9716f, 680.0491f, 294.9547f};
   extractor->SetGridPointScalars(pointScalars, DynBitset(), LOC_CELLS);
   // Step 5. Extract the data (call xms::XmUGrid2dDataExtractor::ExtractData).
   extractor->ExtractData(extractedData);
@@ -1166,7 +1159,8 @@ void XmUGrid2dDataExtractorUnitTests::testTutorial()
 
   // time step 2
   // Step 6. Continue using steps 4 and 5 for remaining time steps.
-  pointScalars = {-999.0f, 1220.5f, 1057.1f, 613.2f, 380.1f, 625.6f, 722.2f, 449.9f, 51.0f, 240.9f, 609.0f, 294.9f};
+  pointScalars = {-999.0f, 1220.5f, 1057.1f, 613.2f, 380.1f, 625.6f,
+                  722.2f,  449.9f,  51.0f,   240.9f, 609.0f, 294.9f};
   DynBitset cellActivity;
   cellActivity.resize(ugrid->GetCellCount(), true);
   cellActivity[0] = false;

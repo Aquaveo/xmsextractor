@@ -23,17 +23,15 @@
 namespace py = pybind11;
 
 //----- Python Interface -------------------------------------------------------
-PYBIND11_DECLARE_HOLDER_TYPE(T, boost::shared_ptr<T>);
 
 void initXmUGrid2dDataExtractor(py::module &m) {
-    py::class_<xms::XmUGrid2dDataExtractor, boost::shared_ptr<xms::XmUGrid2dDataExtractor>> extractor(m, "UGrid2dDataExtractor");
+    py::class_<xms::XmUGrid2dDataExtractor, std::shared_ptr<xms::XmUGrid2dDataExtractor>> extractor(m, "UGrid2dDataExtractor");
 
     // -------------------------------------------------------------------------
     // function: init
     // -------------------------------------------------------------------------
-    extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> ugrid) {
-      boost::shared_ptr<xms::XmUGrid2dDataExtractor>
-      rval(xms::XmUGrid2dDataExtractor::New(ugrid));
+    extractor.def(py::init([](std::shared_ptr<xms::XmUGrid> ugrid) -> std::shared_ptr<xms::XmUGrid2dDataExtractor> {
+      std::shared_ptr<xms::XmUGrid2dDataExtractor> rval(xms::XmUGrid2dDataExtractor::New(ugrid));
       rval->SetNoDataValue(std::numeric_limits<float>::quiet_NaN());
       return rval;
     }), py::arg("ugrid"));

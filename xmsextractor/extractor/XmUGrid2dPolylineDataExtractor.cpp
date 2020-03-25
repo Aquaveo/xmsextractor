@@ -46,13 +46,12 @@ namespace xms
 
 namespace
 {
-
 ////////////////////////////////////////////////////////////////////////////////
 /// Implementation for XmUGrid2dPolylineDataExtractor
 class XmUGrid2dPolylineDataExtractorImpl : public XmUGrid2dPolylineDataExtractor
 {
 public:
-  XmUGrid2dPolylineDataExtractorImpl(BSHP<XmUGrid> a_ugrid,
+  XmUGrid2dPolylineDataExtractorImpl(std::shared_ptr<XmUGrid> a_ugrid,
                                      DataLocationEnum a_scalarLocation);
 
   virtual void SetGridScalars(const VecFlt& a_pointScalars,
@@ -74,24 +73,31 @@ public:
   virtual const VecFlt& GetScalars() const override { return m_extractor->GetScalars(); }
   /// \brief Gets the location of the scalars (points or cells)
   /// \return The location of the scalars.
-  virtual DataLocationEnum GetScalarLocation() const override { return m_extractor->GetScalarLocation(); }
+  virtual DataLocationEnum GetScalarLocation() const override
+  {
+    return m_extractor->GetScalarLocation();
+  }
   virtual const VecPt3d& GetExtractLocations() const override;
   /// \brief Gets the option for using IDW for point data
   /// \return The option.
-  virtual bool GetUseIdwForPointData() const override { return m_extractor->GetUseIdwForPointData(); }
+  virtual bool GetUseIdwForPointData() const override
+  {
+    return m_extractor->GetUseIdwForPointData();
+  }
   /// \brief Gets the no data value
   /// \return The no data value.
   virtual float GetNoDataValue() const override { return m_extractor->GetNoDataValue(); }
 
 private:
   void ComputeExtractLocations(const VecPt3d& a_polyline, VecPt3d& a_locations);
-  DataLocationEnum m_scalarLocation;        ///< The location of the scalars (points or cells).
-  BSHP<XmUGrid> m_ugrid;                    ///< The ugrid which holds the points and the grid.
-  
-  BSHP<XmUGrid2dDataExtractor> m_extractor; ///< The data extractor.
-  mutable BSHP<GmMultiPolyIntersector> m_multiPolyIntersector; ///< The intersection tool used from
-                                                       ///   xmsinterp to find the intersections
-                                                       ///   with the polyline.
+  DataLocationEnum m_scalarLocation; ///< The location of the scalars (points or cells).
+  std::shared_ptr<XmUGrid> m_ugrid;  ///< The ugrid which holds the points and the grid.
+
+  std::shared_ptr<XmUGrid2dDataExtractor> m_extractor; ///< The data extractor.
+  mutable BSHP<GmMultiPolyIntersector>
+    m_multiPolyIntersector; ///< The intersection tool used from
+                            ///   xmsinterp to find the intersections
+                            ///   with the polyline.
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,8 +110,9 @@ private:
 /// \param[in] a_ugrid The UGrid to construct an extractor for.
 /// \param[in] a_scalarLocation The location of the scalars (points or cells).
 //------------------------------------------------------------------------------
-XmUGrid2dPolylineDataExtractorImpl::XmUGrid2dPolylineDataExtractorImpl(BSHP<XmUGrid> a_ugrid,
-                                                                       DataLocationEnum a_scalarLocation)
+XmUGrid2dPolylineDataExtractorImpl::XmUGrid2dPolylineDataExtractorImpl(
+  std::shared_ptr<XmUGrid> a_ugrid,
+  DataLocationEnum a_scalarLocation)
 : m_ugrid(a_ugrid)
 , m_scalarLocation(a_scalarLocation)
 , m_extractor(XmUGrid2dDataExtractor::New(a_ugrid))
@@ -170,9 +177,10 @@ void XmUGrid2dPolylineDataExtractorImpl::ExtractData(VecFlt& a_extractedData)
 /// \param[out] a_extractedLocations The locations of the extracted data values.
 ///             The polyline will get split up into locations across the UGrid.
 //------------------------------------------------------------------------------
-void XmUGrid2dPolylineDataExtractorImpl::ComputeLocationsAndExtractData(const VecPt3d& a_polyline,
-                                                                     VecFlt& a_extractedData,
-                                                                     VecPt3d& a_extractedLocations)
+void XmUGrid2dPolylineDataExtractorImpl::ComputeLocationsAndExtractData(
+  const VecPt3d& a_polyline,
+  VecFlt& a_extractedData,
+  VecPt3d& a_extractedLocations)
 {
   SetPolyline(a_polyline);
   ExtractData(a_extractedData);
@@ -222,9 +230,9 @@ void XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations(const VecPt3d& 
     const VecInt& triangles = m_extractor->GetUGridTriangles()->GetTriangles();
     VecInt2d polygons;
     VecInt triangle;
-    for (size_t triangleIdx = 0; triangleIdx <triangles.size(); triangleIdx += 3)
+    for (size_t triangleIdx = 0; triangleIdx < triangles.size(); triangleIdx += 3)
     {
-      triangle = { triangles[triangleIdx], triangles[triangleIdx+1], triangles[triangleIdx+2] };
+      triangle = {triangles[triangleIdx], triangles[triangleIdx + 1], triangles[triangleIdx + 2]};
       polygons.push_back(triangle);
     }
 
@@ -259,7 +267,7 @@ void XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations(const VecPt3d& 
       {
         if (i != 0 && intersectIdxs[i - 1] == -1)
         {
-          a_locations.push_back((currPoint + lastPoint)/2.0);
+          a_locations.push_back((currPoint + lastPoint) / 2.0);
         }
         a_locations.push_back(currPoint);
         lastPoint = currPoint;
@@ -287,11 +295,12 @@ void XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations(const VecPt3d& 
 /// \param[in] a_scalarLocation The location of the scalars (points or cells).
 /// \return the new XmUGrid2dPolylineDataExtractor
 //------------------------------------------------------------------------------
-BSHP<XmUGrid2dPolylineDataExtractor> XmUGrid2dPolylineDataExtractor::New(BSHP<XmUGrid> a_ugrid,
-                                                                 DataLocationEnum a_scalarLocation)
+std::shared_ptr<XmUGrid2dPolylineDataExtractor> XmUGrid2dPolylineDataExtractor::New(
+  std::shared_ptr<XmUGrid> a_ugrid,
+  DataLocationEnum a_scalarLocation)
 {
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor(new XmUGrid2dPolylineDataExtractorImpl(a_ugrid,
-    a_scalarLocation));
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor(
+    new XmUGrid2dPolylineDataExtractorImpl(a_ugrid, a_scalarLocation));
   return extractor;
 } // XmUGrid2dPolylineDataExtractor::New
 //------------------------------------------------------------------------------
@@ -339,8 +348,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -354,7 +364,8 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment()
 
   VecFlt expectedData = {XM_NODATA, 0.5, 1.5, 2.5, XM_NODATA};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations = {{-1, 0.5, 0}, {0.0, 0.5, 0.0}, {0.5, 0.5, 0.0}, {1.0, 0.5, 0.0}, {2, 0.5, 0}};
+  VecPt3d expectedLocations = {
+    {-1, 0.5, 0}, {0.0, 0.5, 0.0}, {0.5, 0.5, 0.0}, {1.0, 0.5, 0.0}, {2, 0.5, 0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment
 //------------------------------------------------------------------------------
@@ -372,8 +383,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -403,8 +415,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -416,7 +429,8 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge()
 
   VecFlt expectedData = {XM_NODATA, 1.0, 3.0, XM_NODATA};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations = {{-0.5, 1.0, 0.0}, {0.0, 1.0, 0.0}, {1.0, 1.0, 0.0}, {1.55, 1.0, 0.0}};
+  VecPt3d expectedLocations = {
+    {-0.5, 1.0, 0.0}, {0.0, 1.0, 0.0}, {1.0, 1.0, 0.0}, {1.55, 1.0, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge
 //------------------------------------------------------------------------------
@@ -434,8 +448,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllOutside()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -447,7 +462,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllOutside()
 
   VecFlt expectedData = {XM_NODATA, XM_NODATA};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations =  {{-0.5, 0.5, 0.0}, {-0.25, 0.5, 0.0}};
+  VecPt3d expectedLocations = {{-0.5, 0.5, 0.0}, {-0.25, 0.5, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllOutside
 //------------------------------------------------------------------------------
@@ -465,8 +480,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentOutToTouch()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -478,7 +494,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentOutToTouch()
 
   VecFlt expectedData = {XM_NODATA, 0.5};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations =  {{-0.5, 0.5, 0.0}, {0.0, 0.5, 0.0}};
+  VecPt3d expectedLocations = {{-0.5, 0.5, 0.0}, {0.0, 0.5, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentOutToTouch
 //------------------------------------------------------------------------------
@@ -496,8 +512,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentTouchToOut()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -509,7 +526,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentTouchToOut()
 
   VecFlt expectedData = {2.5, XM_NODATA};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations =  {{1.0, 0.5, 0.0}, {1.5, 0.5, 0.0}};
+  VecPt3d expectedLocations = {{1.0, 0.5, 0.0}, {1.5, 0.5, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentTouchToOut
 //------------------------------------------------------------------------------
@@ -529,8 +546,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentCrossCellPoint()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -542,7 +560,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentCrossCellPoint()
 
   VecFlt expectedData = {XM_NODATA, 1.0, XM_NODATA};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations =  {{-0.5, 0.5, 0.0}, {0.0, 1.0, 0.0}, {0.5, 1.5, 0.0}};
+  VecPt3d expectedLocations = {{-0.5, 0.5, 0.0}, {0.0, 1.0, 0.0}, {0.5, 1.5, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentCrossCellPoint
 //------------------------------------------------------------------------------
@@ -560,8 +578,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossCellIntoSecond()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {2, 0, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 1, 4, 5, 2};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1, 4, 5};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -573,8 +592,8 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossCellIntoSecond()
 
   VecFlt expectedData = {XM_NODATA, 0.5, 1.5, 2.5, 3.5};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations =  {{-0.5, 0.5, 0.0}, {0.0, 0.5, 0.0}, {0.5, 0.5, 0.0},
-    {1.0, 0.5, 0.0}, {1.5, 0.5, 0.0}};
+  VecPt3d expectedLocations = {
+    {-0.5, 0.5, 0.0}, {0.0, 0.5, 0.0}, {0.5, 0.5, 0.0}, {1.0, 0.5, 0.0}, {1.5, 0.5, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossCellIntoSecond
 //------------------------------------------------------------------------------
@@ -593,8 +612,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossSplitCells()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0},
                     {2, 0, 0}, {3, 0, 0}, {3, 1, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 4, 5, 6, 7};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1, 4, 6, 7, 5};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -606,9 +626,8 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossSplitCells()
 
   VecFlt expectedData = {XM_NODATA, 0.5, 1.5, 2.5, XM_NODATA, 4.5, 5.5};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations = {{-1.0, 0.5, 0.0}, {0.0, 0.5, 0.0}, {0.5, 0.5, 0.0},
-                               {1.0, 0.5, 0.0}, {1.5, 0.5, 0.0}, {2.0, 0.5, 0.0},
-                               {2.5, 0.5, 0.0}};
+  VecPt3d expectedLocations = {{-1.0, 0.5, 0.0}, {0.0, 0.5, 0.0}, {0.5, 0.5, 0.0}, {1.0, 0.5, 0.0},
+                               {1.5, 0.5, 0.0},  {2.0, 0.5, 0.0}, {2.5, 0.5, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossSplitCells
 //------------------------------------------------------------------------------
@@ -626,8 +645,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAcrossOneCell()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -658,8 +678,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAllOutside()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -689,8 +710,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsFirstExiting()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -720,8 +742,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinInCell()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {2, 0, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 1, 4, 5, 2};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1, 4, 5};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -733,8 +756,8 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinInCell()
 
   VecFlt expectedData = {1.5, 2.5, 3.5, 4.5, XM_NODATA};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations =  {{0.5, 0.5, 0.0}, {1.0, 0.5, 0.0}, {1.5, 0.5, 0.0},
-    {2.0, 0.5, 0.0}, {2.5, 0.5, 0.0}};
+  VecPt3d expectedLocations = {
+    {0.5, 0.5, 0.0}, {1.0, 0.5, 0.0}, {1.5, 0.5, 0.0}, {2.0, 0.5, 0.0}, {2.5, 0.5, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinInCell
 //------------------------------------------------------------------------------
@@ -752,8 +775,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {2, 0, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 1, 4, 5, 2};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1, 4, 5};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -765,8 +789,8 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary()
 
   VecFlt expectedData = {1.5, 2.5, 3.5, 4.5, XM_NODATA};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations =  {{0.5, 0.5, 0.0}, {1.0, 0.5, 0.0}, {1.5, 0.5, 0.0},
-    {2.0, 0.5, 0.0}, {2.5, 0.5, 0.0}};
+  VecPt3d expectedLocations = {
+    {0.5, 0.5, 0.0}, {1.0, 0.5, 0.0}, {1.5, 0.5, 0.0}, {2.0, 0.5, 0.0}, {2.5, 0.5, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary
 //------------------------------------------------------------------------------
@@ -784,8 +808,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testThreeSegmentsCrossOnBoundary()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_POINTS);
@@ -797,8 +822,8 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testThreeSegmentsCrossOnBoundary()
 
   VecFlt expectedData = {1.5, 2.5, XM_NODATA, XM_NODATA, 2.5, 2.25, 2.0};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations = {{0.5, 0.5, 0}, {1.0, 0.5, 0}, {1.5, 0.5, 0.0},
-    {1.5, 0.0, 0.0}, {1.0, 0.5, 0}, {0.75, 0.75, 0.0}, {0.5, 1.0, 0.0}};
+  VecPt3d expectedLocations = {{0.5, 0.5, 0}, {1.0, 0.5, 0},     {1.5, 0.5, 0.0}, {1.5, 0.0, 0.0},
+                               {1.0, 0.5, 0}, {0.75, 0.75, 0.0}, {0.5, 1.0, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary
 //------------------------------------------------------------------------------
@@ -816,8 +841,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars()
 
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {2, 0, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 1, 4, 5, 2};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_CELLS);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_CELLS);
 
   VecFlt cellScalars = {1, 2};
   extractor->SetGridScalars(cellScalars, DynBitset(), LOC_CELLS);
@@ -829,8 +855,9 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars()
 
   VecFlt expectedData = {XM_NODATA, 1.0, 1.0, 1.25, 1.5, 1.75, 1.875};
   TS_ASSERT_EQUALS(expectedData, extractedData);
-  VecPt3d expectedLocations =  {{-0.5, 0.75, 0.0}, {0.0, 0.75, 0.0}, {0.25, 0.75, 0.0},
-    {0.75, 0.75, 0.0}, {1., 0.75, 0.0}, {1.25, 0.75, 0.0}, {1.5, 0.75, 0.0}};
+  VecPt3d expectedLocations = {{-0.5, 0.75, 0.0}, {0.0, 0.75, 0.0}, {0.25, 0.75, 0.0},
+                               {0.75, 0.75, 0.0}, {1., 0.75, 0.0},  {1.25, 0.75, 0.0},
+                               {1.5, 0.75, 0.0}};
   TS_ASSERT_EQUALS(expectedLocations, extractedLocations);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars
 //------------------------------------------------------------------------------
@@ -840,23 +867,16 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars()
 void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
 {
   // build 2x3 grid
-  VecPt3d points = {
-    {288050, 3907770, 0}, {294050, 3907770, 0}, {300050, 3907770, 0},
-    {306050, 3907770, 0}, {288050, 3901770, 0}, {294050, 3901770, 0},
-    {300050, 3901770, 0}, {306050, 3901770, 0}, {288050, 3895770, 0},
-    {294050, 3895770, 0}, {300050, 3895770, 0}, {306050, 3895770, 0}
-  };
-  VecInt cells = {
-    XMU_QUAD, 4, 0, 4, 5, 1,
-    XMU_QUAD, 4, 1, 5, 6, 2,
-    XMU_QUAD, 4, 2, 6, 7, 3,
-    XMU_QUAD, 4, 4, 8, 9, 5,
-    XMU_QUAD, 4, 5, 9, 10, 6,
-    XMU_QUAD, 4, 6, 10, 11, 7
-  };
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  VecPt3d points = {{288050, 3907770, 0}, {294050, 3907770, 0}, {300050, 3907770, 0},
+                    {306050, 3907770, 0}, {288050, 3901770, 0}, {294050, 3901770, 0},
+                    {300050, 3901770, 0}, {306050, 3901770, 0}, {288050, 3895770, 0},
+                    {294050, 3895770, 0}, {300050, 3895770, 0}, {306050, 3895770, 0}};
+  VecInt cells = {XMU_QUAD, 4, 0, 4, 5, 1, XMU_QUAD, 4, 1, 5, 6,  2, XMU_QUAD, 4, 2, 6,  7,  3,
+                  XMU_QUAD, 4, 4, 8, 9, 5, XMU_QUAD, 4, 5, 9, 10, 6, XMU_QUAD, 4, 6, 10, 11, 7};
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   // Step 1. Create an extractor for an XmUGrid giving the mapped location of the scalar values
-  BSHP<XmUGrid2dPolylineDataExtractor> extractor = XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
+  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+    XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   // Step 2. Optionally set the "no data" value.
   extractor->SetNoDataValue(-999.0);
@@ -864,26 +884,16 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
   // Step 3. Set the polyline to be extracted along.
   VecPt3d extractedLocations;
   VecPt3d polyline = {
-    {290764, 3895106, 0}, {291122, 3909108, 0},
-    {302772, 3909130, 0}, {302794, 3895775, 0}
-  };
+    {290764, 3895106, 0}, {291122, 3909108, 0}, {302772, 3909130, 0}, {302794, 3895775, 0}};
   extractor->SetPolyline(polyline);
 
   // Step 4. Optionally get the locations used for extraction along the polyline.
   extractedLocations = extractor->GetExtractLocations();
   VecPt3d expectedLocations = {
-    {290764.0, 3895106.0, 0.0},
-    {290780.9, 3895770.0, 0.0},
-    {290862.4, 3898957.5, 0.0},
-    {290934.3, 3901770.0, 0.0},
-    {291012.0, 3904807.9, 0.0},
-    {291087.7, 3907770.0, 0.0},
-    {291122.0, 3909108.0, 0.0},
-    {302772.0, 3909130.0, 0.0},
-    {302774.2, 3907770.0, 0.0},
-    {302778.7, 3905041.2, 0.0},
-    {302784.1, 3901770.0, 0.0},
-    {302788.6, 3899031.3, 0.0},
+    {290764.0, 3895106.0, 0.0}, {290780.9, 3895770.0, 0.0}, {290862.4, 3898957.5, 0.0},
+    {290934.3, 3901770.0, 0.0}, {291012.0, 3904807.9, 0.0}, {291087.7, 3907770.0, 0.0},
+    {291122.0, 3909108.0, 0.0}, {302772.0, 3909130.0, 0.0}, {302774.2, 3907770.0, 0.0},
+    {302778.7, 3905041.2, 0.0}, {302784.1, 3901770.0, 0.0}, {302788.6, 3899031.3, 0.0},
     {302794.0, 3895775.0, 0.0},
   };
   TS_ASSERT_DELTA_VECPT3D(expectedLocations, extractedLocations, 0.15);
@@ -892,26 +902,23 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
 
   // time step 1
   // Step 5. Set the point scalars for the first time step.
-  VecFlt pointScalars = {
-    730.787f, 1214.54f, 1057.145f, 629.2069f, 351.1153f, 631.6649f,
-    1244.366f, 449.9133f, 64.04247f, 240.9716f, 680.0491f, 294.9547f
-  };
+  VecFlt pointScalars = {730.787f,  1214.54f,  1057.145f, 629.2069f, 351.1153f, 631.6649f,
+                         1244.366f, 449.9133f, 64.04247f, 240.9716f, 680.0491f, 294.9547f};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_CELLS);
   // Step 6. Extract the data.
   extractor->ExtractData(extractedData);
-  VecFlt expectedData = {-999.0f, 144.5f, 299.4f, 485.9f, 681.8f,
-                         975.7f, -999.0f, -999.0f, 862.8f, 780.9f,
-                         882.3f, 811.0f, 504.4f};
+  VecFlt expectedData = {-999.0f, 144.5f, 299.4f, 485.9f, 681.8f, 975.7f, -999.0f,
+                         -999.0f, 862.8f, 780.9f, 882.3f, 811.0f, 504.4f};
   TS_ASSERT_DELTA_VEC(expectedData, extractedData, 0.2);
 
   // time step 2
   // Step 7. Continue using steps 5 and 6 for remaining time steps.
-  pointScalars = {-999.0f, 1220.5f, 1057.1f, 613.2f, 380.1f, 625.6f, 722.2f, 449.9f, 51.0f, 240.9f,
-                  609.0f, 294.9f};
+  pointScalars = {-999.0f, 1220.5f, 1057.1f, 613.2f, 380.1f, 625.6f,
+                  722.2f,  449.9f,  51.0f,   240.9f, 609.0f, 294.9f};
   extractor->SetGridScalars(pointScalars, DynBitset(), LOC_CELLS);
   extractor->ExtractData(extractedData);
-  expectedData = {-999.0f, 137.4f, 314.8f, 498.1f, -196.9f, 124.7f, -999.0f, -999.0f, 855.5f,
-    780.9f, 598.1f, 527.1f, 465.4f};
+  expectedData = {-999.0f, 137.4f, 314.8f, 498.1f, -196.9f, 124.7f, -999.0f,
+                  -999.0f, 855.5f, 780.9f, 598.1f, 527.1f,  465.4f};
   TS_ASSERT_DELTA_VEC(expectedData, extractedData, 0.2);
 } // XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial
 //! [snip_test_Example_TransientPolylineExtractor]
