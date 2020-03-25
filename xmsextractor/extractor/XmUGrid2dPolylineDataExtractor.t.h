@@ -44,7 +44,7 @@ public:
   void testThreeSegmentsCrossOnBoundary();
 
   void testCellScalars();
-  
+
   void testTransientTutorial();
 }; // XmUGrid2dPolylineDataExtractorUnitTests
 

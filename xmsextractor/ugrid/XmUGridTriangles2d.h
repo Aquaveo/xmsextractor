@@ -38,7 +38,7 @@ class XmUGrid;
 class XmUGridTriangles2d
 {
 public:
-  static BSHP<XmUGridTriangles2d> New();
+  static std::shared_ptr<XmUGridTriangles2d> New();
   virtual ~XmUGridTriangles2d();
 
   /// \brief Generate triangles for the UGrid.

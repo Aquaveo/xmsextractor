@@ -1,7 +1,7 @@
 """Test UGrid2dPolylineDataExtractor.cpp"""
 import unittest
 import xmsextractor
-from xmsgrid.ugrid import UGrid
+from xms.grid.ugrid import UGrid
 from xmsextractor.extractor import UGrid2dPolylineDataExtractor
 import numpy as np
 

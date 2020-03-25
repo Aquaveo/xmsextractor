@@ -24,17 +24,16 @@
 namespace py = pybind11;
 
 //----- Python Interface -------------------------------------------------------
-PYBIND11_DECLARE_HOLDER_TYPE(T, boost::shared_ptr<T>);
 
 void initXmUGrid2dPolylineDataExtractor(py::module &m) {
-    py::class_<xms::XmUGrid2dPolylineDataExtractor, boost::shared_ptr<xms::XmUGrid2dPolylineDataExtractor>> 
+    py::class_<xms::XmUGrid2dPolylineDataExtractor, std::shared_ptr<xms::XmUGrid2dPolylineDataExtractor>> 
         extractor(m, "UGrid2dPolylineDataExtractor");
 
     // -------------------------------------------------------------------------
     // function: init
     // -------------------------------------------------------------------------
-    extractor.def(py::init([](boost::shared_ptr<xms::XmUGrid> ugrid, xms::DataLocationEnum scalar_location) {
-            boost::shared_ptr<xms::XmUGrid2dPolylineDataExtractor> rval(xms::XmUGrid2dPolylineDataExtractor::New(ugrid, scalar_location));
+    extractor.def(py::init([](std::shared_ptr<xms::XmUGrid> ugrid, xms::DataLocationEnum scalar_location) {
+            std::shared_ptr<xms::XmUGrid2dPolylineDataExtractor> rval(xms::XmUGrid2dPolylineDataExtractor::New(ugrid, scalar_location));
             rval->SetNoDataValue(std::numeric_limits<float>::quiet_NaN());
             return rval;
         }),py::arg("ugrid"),py::arg("scalar_location"));

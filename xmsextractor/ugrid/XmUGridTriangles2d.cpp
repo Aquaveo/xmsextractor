@@ -47,10 +47,11 @@ namespace xms
 
 namespace
 {
-
-typedef std::tuple<int, int, int> Triangle;     ///< three consecutive polygon points for triangle
-typedef boost::container::flat_map<Triangle, double> RatioCache;  ///< ratio cache to speed up earcut calculation
-typedef boost::container::flat_map<Triangle, bool> ValidCache;    ///< valid cache to speed up earcut calculation
+typedef std::tuple<int, int, int> Triangle; ///< three consecutive polygon points for triangle
+typedef boost::container::flat_map<Triangle, double>
+  RatioCache; ///< ratio cache to speed up earcut calculation
+typedef boost::container::flat_map<Triangle, bool>
+  ValidCache; ///< valid cache to speed up earcut calculation
 
 class XmUGridTriangles2dImpl : public XmUGridTriangles2d
 {
@@ -104,7 +105,10 @@ double iMagnitude(const Pt3d& a_vec)
 /// \return The ratio, -1.0 for an inverted triangle, or -2.0 for a zero area
 ///         triangle
 //------------------------------------------------------------------------------
-double iGetEarcutTriangleRatio(const VecPt3d& a_points, int a_idx1, int a_idx2, int a_idx3,
+double iGetEarcutTriangleRatio(const VecPt3d& a_points,
+                               int a_idx1,
+                               int a_idx2,
+                               int a_idx3,
                                RatioCache& a_ratioCache)
 {
   Triangle triangle(a_idx1, a_idx2, a_idx3);
@@ -160,7 +164,7 @@ bool iValidTriangle(const VecPt3d& a_points,
   auto validIter = a_validCache.find(triangle);
   if (validIter != a_validCache.end())
     return validIter->second;
-  
+
   const Pt3d& pt1 = a_points[a_idx1];
   const Pt3d& pt2 = a_points[a_idx2];
   const Pt3d& pt3 = a_points[a_idx3];
@@ -460,7 +464,9 @@ int XmUGridTriangles2dImpl::GetCellCentroid(int a_cellIdx) const
 /// \param[out] a_weights The interpolation weights.
 /// \return The cell intersected by the point or -1 if outside of the UGrid.
 //------------------------------------------------------------------------------
-int XmUGridTriangles2dImpl::GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights)
+int XmUGridTriangles2dImpl::GetIntersectedCell(const Pt3d& a_point,
+                                               VecInt& a_idxs,
+                                               VecDbl& a_weights)
 {
   if (!m_triSearch)
     GetTriSearch();
@@ -509,9 +515,9 @@ BSHP<GmTriSearch> XmUGridTriangles2dImpl::GetTriSearch()
 /// \brief Build an instance of XmUGridTriangles2d
 /// \return The new instance.
 //------------------------------------------------------------------------------
-BSHP<XmUGridTriangles2d> XmUGridTriangles2d::New()
+std::shared_ptr<XmUGridTriangles2d> XmUGridTriangles2d::New()
 {
-  BSHP<XmUGridTriangles2d> triangles(new XmUGridTriangles2dImpl);
+  std::shared_ptr<XmUGridTriangles2d> triangles(new XmUGridTriangles2dImpl);
   return triangles;
 } // XmUGridTriangles2d::New
 //------------------------------------------------------------------------------
@@ -549,7 +555,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
 {
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {0.5, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   TS_REQUIRE_NOT_NULL(ugrid);
   XmUGridTriangles2dImpl triangles;
 
@@ -615,7 +621,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnQuad()
 {
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   TS_REQUIRE_NOT_NULL(ugrid);
   XmUGridTriangles2dImpl triangles;
   triangles.BuildTriangles(*ugrid, true);
@@ -659,7 +665,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTriangles2dCellTypes()
                             (int)XMU_POLYGON, 6, 3, 4, 8, 13, 12, 7}; // 3
   // clang-format on
 
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   TS_REQUIRE_NOT_NULL(ugrid);
   XmUGridTriangles2dImpl triangles;
   triangles.BuildTriangles(*ugrid, true);
@@ -722,7 +728,7 @@ void XmUGridTriangles2dUnitTests::testBuildEarcutTriangles()
     };
     // clang-format on
 
-    BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+    std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
     XmUGridTriangles2dImpl ugridTris;
 
     ugridTris.BuildTriangles(*ugrid, true);
@@ -750,7 +756,7 @@ void XmUGridTriangles2dUnitTests::testBuildEarcutTriangles()
     std::vector<int> cells = {(int)XMU_POLYGON, 5, 0, 1, 2, 3, 4};
     // clang-format on
 
-    BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+    std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
     XmUGridTriangles2dImpl ugridTris;
     ugridTris.BuildEarcutTriangles(*ugrid);
 
@@ -800,7 +806,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidAndEarcutTriangles()
   };
   // clang-format on
 
-  BSHP<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   XmUGridTriangles2dImpl ugridTris;
 
   ugridTris.BuildTriangles(*ugrid, true);
