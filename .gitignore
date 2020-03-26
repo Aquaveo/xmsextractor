@@ -3,8 +3,8 @@
 *~
 *.pyc
 build/
-build-xcode/
 test_package/build/
+test_files/3d_grid_linear.xmugrid
 
 # IDE Files
 .*.swp
@@ -12,6 +12,8 @@ test_package/build/
 .lvimrc
 .idea
 .vscode
+cmake-build-debug/
+cmake-build-release/
 
 # Prerequisites
 *.d
@@ -64,3 +66,4 @@ sphinx_warnings.log
 # Build Folders
 build/*
 pybuild/*
+build_py/*

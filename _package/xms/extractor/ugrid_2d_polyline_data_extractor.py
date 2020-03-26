@@ -7,7 +7,7 @@
 * License: BSD 2-Clause
 ********************************************************************************
 """
-from .._xmsextractor import extractor
+from ._xmsextractor import extractor
 
 
 class UGrid2dPolylineDataExtractor(object):

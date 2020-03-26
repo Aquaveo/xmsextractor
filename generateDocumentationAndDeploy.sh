@@ -31,7 +31,7 @@ __AUTHOR__="Aquaveo"
 # the gh-pages branch of a repository specified by GH_REPO_REF.
 # Before this script is used there should already be a gh-pages branch in the
 # repository.
-# 
+#
 ################################################################################
 
 ################################################################################
@@ -70,7 +70,9 @@ echo "" > .nojekyll
 
 #install doxygen
 sudo apt-get update
-sudo apt-get install -y doxygen doxygen-doc doxygen-latex doxygen-gui graphviz
+wget http://utils.aquaveo.com/doxygen-1.8.14-aquaveo.deb
+sudo apt-get install libedit2 libllvm5.0 libclang1-5.0 libxapian30
+sudo dpkg -i doxygen-1.8.14-aquaveo.deb
 
 ################################################################################
 ##### Generate the Doxygen code documentation and log the output.          #####
@@ -90,7 +92,7 @@ ls ./html/examples
 if [ -s 'doxy_warn.log' ]; then cat doxy_warn.log && exit 1; fi;
 
 # Back out if this is not a tag so we don't post - We can only build python docs
-# on tags because we won't have a python package until it is tagged with a 
+# on tags because we won't have a python package until it is tagged with a
 # specific version.
 if [ -z "${TRAVIS_TAG}" ]; then
   echo "Build not tagged. No Documentation will be uploaded"
@@ -126,7 +128,7 @@ sphinx-build -b html . $(dirname $DOXYFILE)/html/pydocs
 ##### Upload the documentation to the gh-pages branch of the repository.   #####
 # Only upload if Doxygen and Sphinx successfully created the documentation
 # Check this by verifying that the html directory, the file html/index.html,
-# and the html/pydocs/index.html all exist. This is a good indication that 
+# and the html/pydocs/index.html all exist. This is a good indication that
 # Doxygen and Sphinx did their work.
 cd $(dirname $DOXYFILE)
 if [ -d "html" ] && [ -f "html/index.html" ] && [ -f "html/pydocs/index.html" ]; then
@@ -153,4 +155,4 @@ else
     echo 'Warning: No documentation (html) files have been found!' >&2
     echo 'Warning: Not going to push the documentation to GitHub!' >&2
     exit 1
-fi 
+fi

@@ -14,9 +14,19 @@
 #
 import os
 import sys
+from unittest.mock import MagicMock
 sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'build_py', 'lib')))
+sys.path.insert(0, os.path.abspath(os.path.join('..', '..', '_package')))
+#sys.path.insert(0, os.path.abspath(os.path.join('..', '..', 'build_py', 'install', '_package')))
 
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+MOCK_MODULES = ['xms.extractor._xmsextractor', 'xms.extractor._xmsextractor.extractor']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # -- Project information -----------------------------------------------------
 
@@ -25,8 +35,8 @@ copyright = '2018, aquaveo'
 author = 'aquaveo'
 
 # The short X.Y version
-import xmsextractor
-version = xmsextractor.__version__
+from xms.extractor import __version__
+version = __version__
 # The full version, including alpha/beta/rc tags
 release = ''
 

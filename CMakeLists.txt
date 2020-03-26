@@ -3,13 +3,13 @@ cmake_minimum_required(VERSION 3.1.2)
 cmake_policy(SET CMP0015 NEW) # Link Directory Pathing
 set(CMAKE_DEBUG_POSTFIX _d)
 
-project(xmsextractorlib C CXX)
-
-if (APPLE)  
+if (APPLE)
   set(CMAKE_POSITION_INDEPENDENT_CODE False)
 else()
   set(CMAKE_POSITION_INDEPENDENT_CODE True)
 endif()
+
+project(xmsextractorlib C CXX)
 
 set(BUILD_TESTING NO CACHE BOOL "Enable/Disable testing")
 set(IS_CONDA_BUILD NO CACHE BOOL "Set this if you want to make a conda package.")
@@ -41,17 +41,7 @@ else() # If we are not using conda, we are using conan
   set(EXT_LIBS ${CONAN_LIBS})
 endif(IS_CONDA_BUILD)
 
-#Pybind11
 if(IS_PYTHON_BUILD)
-      # linux and mac builds for conan (on TRAVISCI) use a docker that has python
-    # 2.7 as system python. We do not have control over that docker image so we
-    # can't change this and it is fine for building conan packages and checking
-    # that we don't have errors in the python wrapping. We have conda recipes
-    # for building python packages that target other versions of python.
-    find_package(PythonLibs ${PYTHON_TARGET_VERSION} EXACT REQUIRED)
-    
-    message("PYTHON_INCLUDE: ${PYTHON_INCLUDE_DIRS}")
-    message("PYTHON_LIBS: ${PYTHON_LIBRARIES}")
 
     # Pybind11 module
     if(IS_CONDA_BUILD)
@@ -68,7 +58,17 @@ if(IS_PYTHON_BUILD)
         include("${CONAN_PYBIND11_ROOT}/share/cmake/pybind11/pybind11ConfigVersion.cmake")
         include("${CONAN_PYBIND11_ROOT}/share/cmake/pybind11/pybind11Tools.cmake")
     endif()
-    list(APPEND EXT_LIB_DIRS
+
+    list(APPEND EXT_INCLUDE_DIRS
+        ${pybind11_INCLUDE_DIR}
+    )
+
+    find_package(PythonLibsNew ${PYTHON_TARGET_VERSION} EXACT REQUIRED)
+
+    message("PYTHON_INCLUDE: ${PYTHON_INCLUDE_DIRS}")
+    message("PYTHON_LIBS: ${PYTHON_LIBRARIES}")
+
+    list(APPEND EXT_INCLUDE_DIRS
       ${PYTHON_INCLUDE_DIRS}
     )
 endif()
@@ -81,7 +81,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR})
 include_directories(${EXT_INCLUDE_DIRS})
 link_directories(${EXT_LIB_DIRS})
 
-# Sources
+# Static library sources
 set(xmsextractor_sources
   xmsextractor/extractor/XmUGrid2dDataExtractor.cpp
   xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.cpp
@@ -153,7 +153,6 @@ if(UNIX AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} rt)
 endif()
 
-#Pybind11
 if(IS_PYTHON_BUILD)
     pybind11_add_module(_xmsextractor
       ${xmsextractor_py} ${xmsextractor_py_headers}
@@ -175,12 +174,13 @@ if(IS_PYTHON_BUILD)
     # Install recipe
     install(
       TARGETS _xmsextractor
-      ARCHIVE DESTINATION "_package/xmsextractor"
-      LIBRARY DESTINATION "_package/xmsextractor"
+      ARCHIVE DESTINATION "_package/xms/extractor"
+      LIBRARY DESTINATION "_package/xms/extractor"
     )
 
     install(DIRECTORY "_package/" DESTINATION "_package"
-             FILES_MATCHING PATTERN "*.py")
+             FILES_MATCHING PATTERN "*.py"
+             PATTERN "_package/tests" EXCLUDE)
 
 endif()
 
