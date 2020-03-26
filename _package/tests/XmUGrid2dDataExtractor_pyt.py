@@ -2,7 +2,7 @@
 import unittest
 import xmsextractor
 from xms.grid.ugrid import UGrid
-from xmsextractor.extractor import UGrid2dDataExtractor
+from xms.extractor import UGrid2dDataExtractor
 import numpy as np
 
 class TestUGrid2dDataExtractor(unittest.TestCase):

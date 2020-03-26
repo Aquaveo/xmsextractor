@@ -8,27 +8,35 @@
 ********************************************************************************
 """
 import os
-from setuptools import setup, find_packages
+from xms.extractor import __version__
+from setuptools import setup
 
 
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 requires = [
-    'numpy', 'xmscore', 'xmsgrid'
+    'numpy',
+    'xmscore',
+    'xmsgrid',
+    'xmsinterp',
 ]
 
-version = '3.0.0'
+version = __version__
 
 setup(
-    python_requires='==3.6.*',
+    python_requires='>=3.6',
     name='xmsextractor',
     version=version,
-    packages=find_packages(),
+    packages=['xms.extractor'],
     include_package_data=True,
     license='BSD 2-Clause License',
     description='',
     author='Aquaveo',
     install_requires=requires,
-    package_data={'': ['*.pyd']},
+    package_data={'': ['*.pyd', '*.so']},
+    test_suite='tests',
+    dependency_links=[
+        'https://public.aquapi.aquaveo.com/aquaveo/stable'
+    ],
 )

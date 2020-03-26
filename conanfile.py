@@ -10,7 +10,7 @@ class XmsextractorConan(ConanFile):
     """XMSExtractor Conanfile"""
     name = "xmsextractor"
     # version = None  # This no longer worked after conan version 1.11
-    license = "XMSNG Software License"
+    license = "BSD2"
     url = "https://github.com/Aquaveo/xmsextractor"
     description = "Extractor library for XMS products"
     settings = "os", "compiler", "build_type", "arch"
@@ -37,11 +37,11 @@ class XmsextractorConan(ConanFile):
         self.options['xmscore'].xms = self.options.xms
         self.options['xmscore'].pybind = self.options.pybind
         self.options['xmscore'].testing = self.options.testing
-		
+
         self.options['xmsinterp'].xms = self.options.xms
         self.options['xmsinterp'].pybind = self.options.pybind
         self.options['xmsinterp'].testing = self.options.testing
-		
+
         self.options['xmsgrid'].xms = self.options.xms
         self.options['xmsgrid'].pybind = self.options.pybind
         self.options['xmsgrid'].testing = self.options.testing
@@ -59,6 +59,7 @@ class XmsextractorConan(ConanFile):
         # If building for XMS, use the older, custom boost
         if self.options.xms and self.settings.compiler.version == "12":
             self.requires("boost/1.60.0@aquaveo/testing")
+            self.requires("zlib/1.2.11@conan/stable")
         else:
             self.requires("boost/1.66.0@conan/stable")
         # Pybind if not Visual studio 2013
@@ -67,7 +68,6 @@ class XmsextractorConan(ConanFile):
                 and self.options.pybind:
             self.requires("pybind11/2.2.2@aquaveo/stable")
 
-        # Use the dev version of XMSCore, XMSInterp, and XMSGrid
         self.requires("xmscore/[>=3.1.0,<4.0.0]@aquaveo/stable")
         self.requires("xmsinterp/[>=3.1.0,<4.0.0]@aquaveo/stable")
         self.requires("xmsgrid/[>=4.0.0,<5.0.0]@aquaveo/stable")
@@ -108,18 +108,27 @@ class XmsextractorConan(ConanFile):
         elif self.options.pybind:
             with tools.pythonpath(self):
                 if not self.settings.os == "Macos":
-                  self.run('pip install --user numpy')
+                  self.run('pip install --user numpy twine wheel')
                 else:
-                  self.run('pip install numpy')
-                self.run('python -m unittest discover -v -p *_pyt.py -s {}/xmsextractor/python'.format(
+                  self.run('pip install numpy twine wheel')
+                self.run('python -m unittest discover -v -p *_pyt.py -s {}/_package/tests'.format(
                     os.path.join(self.build_folder)), cwd=os.path.join(self.package_folder, "_package"))
                 # Create and upload wheel to PyPi if release and windows
                 is_release = self.env.get("RELEASE_PYTHON", 'False')
-                if self.settings.os == "Windows" and is_release == 'True' and \
-                        str(self.settings.compiler.runtime) == "MD":
-                    self.run('python setup.py bdist_wheel --plat-name=win_amd64 --dist-dir {}'.format(
+                if is_release == 'True' and ((self.settings.os == "Macos" or self.settings.os == "Linux")
+                                             or (self.settings.os == "Windows" and
+                                             str(self.settings.compiler.runtime) == "MD")):
+                    devpi_url = self.env.get("AQUAPI_URL", 'NO_URL')
+                    devpi_username = self.env.get("AQUAPI_USERNAME", 'NO_USERNAME')
+                    devpi_password = self.env.get("AQUAPI_PASSWORD", 'NO_PASSWORD')
+                    self.run('devpi use {}'.format(devpi_url))
+                    self.run('devpi login {} --password {}'.format(devpi_username, devpi_password))
+                    plat_names = {'Windows': 'win_amd64', 'Linux': 'linux_x86_64', "Macos": 'macosx-10.6-intel'}
+                    self.run('python setup.py bdist_wheel --plat-name={} --dist-dir {}'.format(
+                        plat_names[str(self.settings.os)],
                         os.path.join(self.build_folder, "dist")), cwd=os.path.join(self.package_folder, "_package"))
-                    self.run('twine upload dist/*', cwd=".")
+                    self.run('devpi upload --from-dir {}'.format(os.path.join(self.build_folder, "dist")), cwd=".")
+
 
     def package(self):
         self.copy("license", dst="licenses", ignore_case=True, keep_path=False)
