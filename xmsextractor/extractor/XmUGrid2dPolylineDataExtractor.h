@@ -39,8 +39,8 @@ class XmUGrid;
 class XmUGrid2dPolylineDataExtractor
 {
 public:
-  static std::shared_ptr<XmUGrid2dPolylineDataExtractor> New(std::shared_ptr<XmUGrid> a_ugrid,
-                                                             DataLocationEnum a_scalarLocation);
+  static BSHP<XmUGrid2dPolylineDataExtractor> New(std::shared_ptr<XmUGrid> a_ugrid,
+                                                  DataLocationEnum a_scalarLocation);
   virtual ~XmUGrid2dPolylineDataExtractor();
 
   /// \brief Setup point scalars to be used to extract interpolated data.

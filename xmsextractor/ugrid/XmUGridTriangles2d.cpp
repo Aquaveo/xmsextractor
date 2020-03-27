@@ -515,9 +515,9 @@ BSHP<GmTriSearch> XmUGridTriangles2dImpl::GetTriSearch()
 /// \brief Build an instance of XmUGridTriangles2d
 /// \return The new instance.
 //------------------------------------------------------------------------------
-std::shared_ptr<XmUGridTriangles2d> XmUGridTriangles2d::New()
+BSHP<XmUGridTriangles2d> XmUGridTriangles2d::New()
 {
-  std::shared_ptr<XmUGridTriangles2d> triangles(new XmUGridTriangles2dImpl);
+  BSHP<XmUGridTriangles2d> triangles(new XmUGridTriangles2dImpl);
   return triangles;
 } // XmUGridTriangles2d::New
 //------------------------------------------------------------------------------

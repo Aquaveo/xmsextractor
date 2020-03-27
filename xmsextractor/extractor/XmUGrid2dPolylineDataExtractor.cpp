@@ -93,7 +93,7 @@ private:
   DataLocationEnum m_scalarLocation; ///< The location of the scalars (points or cells).
   std::shared_ptr<XmUGrid> m_ugrid;  ///< The ugrid which holds the points and the grid.
 
-  std::shared_ptr<XmUGrid2dDataExtractor> m_extractor; ///< The data extractor.
+  BSHP<XmUGrid2dDataExtractor> m_extractor; ///< The data extractor.
   mutable BSHP<GmMultiPolyIntersector>
     m_multiPolyIntersector; ///< The intersection tool used from
                             ///   xmsinterp to find the intersections
@@ -295,11 +295,11 @@ void XmUGrid2dPolylineDataExtractorImpl::ComputeExtractLocations(const VecPt3d& 
 /// \param[in] a_scalarLocation The location of the scalars (points or cells).
 /// \return the new XmUGrid2dPolylineDataExtractor
 //------------------------------------------------------------------------------
-std::shared_ptr<XmUGrid2dPolylineDataExtractor> XmUGrid2dPolylineDataExtractor::New(
+BSHP<XmUGrid2dPolylineDataExtractor> XmUGrid2dPolylineDataExtractor::New(
   std::shared_ptr<XmUGrid> a_ugrid,
   DataLocationEnum a_scalarLocation)
 {
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor(
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor(
     new XmUGrid2dPolylineDataExtractorImpl(a_ugrid, a_scalarLocation));
   return extractor;
 } // XmUGrid2dPolylineDataExtractor::New
@@ -349,7 +349,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testOneCellOneSegment()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -384,7 +384,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllInCell()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -416,7 +416,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAlongEdge()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -449,7 +449,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAllOutside()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -481,7 +481,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentOutToTouch()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -513,7 +513,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentTouchToOut()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -547,7 +547,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentCrossCellPoint()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -579,7 +579,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossCellIntoSecond()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {2, 0, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 1, 4, 5, 2};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1, 4, 5};
@@ -613,7 +613,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testSegmentAcrossSplitCells()
                     {2, 0, 0}, {3, 0, 0}, {3, 1, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 4, 5, 6, 7};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1, 4, 6, 7, 5};
@@ -646,7 +646,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAcrossOneCell()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -679,7 +679,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsAllOutside()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -711,7 +711,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsFirstExiting()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -743,7 +743,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinInCell()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {2, 0, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 1, 4, 5, 2};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1, 4, 5};
@@ -776,7 +776,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTwoSegmentsJoinOnBoundary()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {2, 0, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 1, 4, 5, 2};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1, 4, 5};
@@ -809,7 +809,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testThreeSegmentsCrossOnBoundary()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   VecFlt pointScalars = {0, 2, 3, 1};
@@ -842,7 +842,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testCellScalars()
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}, {2, 0, 0}, {2, 1, 0}};
   VecInt cells = {XMU_QUAD, 4, 0, 1, 2, 3, XMU_QUAD, 4, 1, 4, 5, 2};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_CELLS);
 
   VecFlt cellScalars = {1, 2};
@@ -875,7 +875,7 @@ void XmUGrid2dPolylineDataExtractorUnitTests::testTransientTutorial()
                   XMU_QUAD, 4, 4, 8, 9, 5, XMU_QUAD, 4, 5, 9, 10, 6, XMU_QUAD, 4, 6, 10, 11, 7};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   // Step 1. Create an extractor for an XmUGrid giving the mapped location of the scalar values
-  std::shared_ptr<XmUGrid2dPolylineDataExtractor> extractor =
+  BSHP<XmUGrid2dPolylineDataExtractor> extractor =
     XmUGrid2dPolylineDataExtractor::New(ugrid, LOC_POINTS);
 
   // Step 2. Optionally set the "no data" value.
