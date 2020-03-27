@@ -42,9 +42,8 @@ enum DataLocationEnum { LOC_POINTS, LOC_CELLS, LOC_UNKNOWN };
 class XmUGrid2dDataExtractor
 {
 public:
-  static std::shared_ptr<XmUGrid2dDataExtractor> New(std::shared_ptr<XmUGrid> a_ugrid);
-  static std::shared_ptr<XmUGrid2dDataExtractor> New(
-    std::shared_ptr<XmUGrid2dDataExtractor> a_extractor);
+  static BSHP<XmUGrid2dDataExtractor> New(std::shared_ptr<XmUGrid> a_ugrid);
+  static BSHP<XmUGrid2dDataExtractor> New(BSHP<XmUGrid2dDataExtractor> a_extractor);
   virtual ~XmUGrid2dDataExtractor();
 
   /// \brief Setup point scalars to be used to extract interpolated data.
@@ -86,7 +85,7 @@ public:
   virtual void BuildTriangles(DataLocationEnum a_location) = 0;
   /// \brief Get the UGrid triangles.
   /// \return Shared pointer to triangles.
-  virtual const std::shared_ptr<XmUGridTriangles2d> GetUGridTriangles() const = 0;
+  virtual const BSHP<XmUGridTriangles2d> GetUGridTriangles() const = 0;
 
   /// \brief Gets the scalars
   /// \return The scalars.
