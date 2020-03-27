@@ -47,10 +47,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable" protection="private">
-      <type>BSHP&lt; XmUGrid &gt;</type>
+      <type>std::shared_ptr&lt; XmUGrid &gt;</type>
       <name>m_ugrid</name>
       <anchorfile>_xm_u_grid2d_polyline_data_extractor_8cpp.html</anchorfile>
-      <anchor>aaf22002695497230e40601db32e50798</anchor>
+      <anchor>a5a0ccb20c019644900690c23cca3842d</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable" protection="private">
@@ -250,8 +250,8 @@
       <type>static BSHP&lt; XmUGrid2dDataExtractor &gt;</type>
       <name>New</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
-      <anchor>a46e7ca92d258af018a2b4ec28bf9f5c2</anchor>
-      <arglist>(BSHP&lt; XmUGrid &gt; a_ugrid)</arglist>
+      <anchor>a1d5729c24ab03c5d04ad7801acabaf95</anchor>
+      <arglist>(std::shared_ptr&lt; XmUGrid &gt; a_ugrid)</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static BSHP&lt; XmUGrid2dDataExtractor &gt;</type>
@@ -276,8 +276,8 @@
       <type></type>
       <name>XmUGrid2dDataExtractorImpl</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
-      <anchor>acdf30ca801722f44c6f6160e171e575f</anchor>
-      <arglist>(BSHP&lt; XmUGrid &gt; a_ugrid)</arglist>
+      <anchor>a3453d18b11429e2c55f80e6cc637ff48</anchor>
+      <arglist>(std::shared_ptr&lt; XmUGrid &gt; a_ugrid)</arglist>
     </member>
     <member kind="function">
       <type></type>
@@ -434,10 +434,10 @@
       <arglist>(int a_pointIdx, const VecInt &amp;a_cellIdxs, const VecFlt &amp;a_cellScalars, const DynBitset &amp;a_cellActivity)</arglist>
     </member>
     <member kind="variable" protection="private">
-      <type>BSHP&lt; XmUGrid &gt;</type>
+      <type>std::shared_ptr&lt; XmUGrid &gt;</type>
       <name>m_ugrid</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
-      <anchor>a6f0f19d349242c2cdb4f6b6e9bb8c278</anchor>
+      <anchor>ac05bcd2dc3774f0696692885b562a49b</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable" protection="private">
@@ -662,8 +662,8 @@
       <type>static BSHP&lt; XmUGrid2dPolylineDataExtractor &gt;</type>
       <name>New</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
-      <anchor>a8a4bd48816cb3d251968eee4cc94e862</anchor>
-      <arglist>(BSHP&lt; XmUGrid &gt; a_ugrid, DataLocationEnum a_scalarLocation)</arglist>
+      <anchor>a89f97d180f2f448691037f0ed62c2b6c</anchor>
+      <arglist>(std::shared_ptr&lt; XmUGrid &gt; a_ugrid, DataLocationEnum a_scalarLocation)</arglist>
     </member>
     <member kind="function" protection="protected">
       <type></type>

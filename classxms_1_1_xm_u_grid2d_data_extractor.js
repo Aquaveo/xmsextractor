@@ -11,7 +11,7 @@ var classxms_1_1_xm_u_grid2d_data_extractor =
     [ "GetScalars", "classxms_1_1_xm_u_grid2d_data_extractor.html#a4091816e6bf7a78585d8e1e24da39cc9", null ],
     [ "GetUGridTriangles", "classxms_1_1_xm_u_grid2d_data_extractor.html#a92c12206ec3d25711144716a669e897c", null ],
     [ "GetUseIdwForPointData", "classxms_1_1_xm_u_grid2d_data_extractor.html#a863cc47e4ca65953ccfc560a39e2c473", null ],
-    [ "New", "classxms_1_1_xm_u_grid2d_data_extractor.html#a46e7ca92d258af018a2b4ec28bf9f5c2", null ],
+    [ "New", "classxms_1_1_xm_u_grid2d_data_extractor.html#a1d5729c24ab03c5d04ad7801acabaf95", null ],
     [ "New", "classxms_1_1_xm_u_grid2d_data_extractor.html#ad685d4c9e255e3ef4dc10dc756346aac", null ],
     [ "SetExtractLocations", "classxms_1_1_xm_u_grid2d_data_extractor.html#aa7a65fb2b6d6892f33ef3d6b1fcf4417", null ],
     [ "SetGridCellScalars", "classxms_1_1_xm_u_grid2d_data_extractor.html#a342f4176c48479be61f6da312b8f56a2", null ],

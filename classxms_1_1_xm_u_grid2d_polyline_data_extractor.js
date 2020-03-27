@@ -9,7 +9,7 @@ var classxms_1_1_xm_u_grid2d_polyline_data_extractor =
     [ "GetScalarLocation", "classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#a98fc0b9e8d5a473905366849132f2461", null ],
     [ "GetScalars", "classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#a7156867ad49bd430a5eb45078cda0722", null ],
     [ "GetUseIdwForPointData", "classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#aa82007dc2bc262ad961f29015cedb46e", null ],
-    [ "New", "classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#a8a4bd48816cb3d251968eee4cc94e862", null ],
+    [ "New", "classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#a89f97d180f2f448691037f0ed62c2b6c", null ],
     [ "SetGridScalars", "classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#aaf8f73088f81fc35027e3736250acf98", null ],
     [ "SetNoDataValue", "classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#ac85228233ff19b8e9a53f27d8319e1eb", null ],
     [ "SetPolyline", "classxms_1_1_xm_u_grid2d_polyline_data_extractor.html#adaa47cd57ffbb81c7d1f13fba6ceacf9", null ],
