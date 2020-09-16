@@ -43,6 +43,11 @@ public:
                                                   DataLocationEnum a_scalarLocation);
   virtual ~XmUGrid2dPolylineDataExtractor();
 
+  /// \brief Gets the underlying data extractor. Convenience so a user would not have to
+  /// create a new if this one existed.
+  /// \return shared pointer to a data extractor
+  virtual BSHP<XmUGrid2dDataExtractor> GetDataExtractor() const = 0;
+
   /// \brief Setup point scalars to be used to extract interpolated data.
   /// \param[in] a_scalars The cell or point scalars.
   /// \param[in] a_activity The activity of the cells.
@@ -84,6 +89,9 @@ public:
   /// \brief Gets computed locations along polyline to extract interpolated scalar data from.
   /// \return The locations.
   virtual const VecPt3d& GetExtractLocations() const = 0;
+  /// \brief Gets cell indexes associated with the extract location points.
+  /// \return The cell indexes.
+  virtual const VecInt& GetCellIndexes() const = 0;
   /// \brief Gets the option for using IDW for point data
   /// \return The option.
   virtual bool GetUseIdwForPointData() const = 0;
