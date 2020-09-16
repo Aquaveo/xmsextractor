@@ -28,6 +28,7 @@
 #include <xmsinterp/interpolate/InterpUtil.h>
 
 // 6. Non-shared code headers
+#include <xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.h>
 
 //----- Forward declarations ---------------------------------------------------
 
@@ -80,6 +81,9 @@ public:
   /// \brief Gets locations of points to extract interpolated scalar data from.
   /// \return The locations.
   virtual const VecPt3d& GetExtractLocations() const override { return m_extractLocations; }
+  /// \brief Gets cell indexes associated with the extract location points.
+  /// \return The cell indexes.
+  virtual const VecInt& GetCellIndexes() const { return m_cellIdxs; }
   /// \brief Gets the option for using IDW for point data
   /// \return The option.
   virtual bool GetUseIdwForPointData() const override { return m_useIdwForPointData; }
@@ -109,6 +113,7 @@ private:
     m_triangles;              ///< triangles generated from UGrid to use for data extraction
   VecPt3d m_extractLocations; ///< output locations for interpolated values
   VecFlt m_pointScalars;      ///< scalars to interpolate from
+  VecInt m_cellIdxs;          ///< ugrid cell indexes
   bool m_useIdwForPointData;  ///< use IDW to calculate point data from cell data
   float m_noDataValue;        ///< value to use for inactive result
 };
@@ -128,6 +133,7 @@ XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(std::shared_ptr<XmUGrid> 
 , m_triangles(XmUGridTriangles2d::New())
 , m_extractLocations()
 , m_pointScalars()
+, m_cellIdxs()
 , m_useIdwForPointData(false)
 , m_noDataValue(XM_NODATA)
 {
@@ -144,6 +150,7 @@ XmUGrid2dDataExtractorImpl::XmUGrid2dDataExtractorImpl(BSHP<XmUGrid2dDataExtract
 , m_triangles(a_extractor->m_triangles)
 , m_extractLocations()
 , m_pointScalars()
+, m_cellIdxs()
 , m_useIdwForPointData(a_extractor->m_useIdwForPointData)
 , m_noDataValue(a_extractor->m_noDataValue)
 {
@@ -212,11 +219,15 @@ void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
   a_outData.clear();
 
   a_outData.reserve(m_extractLocations.size());
+  m_cellIdxs.assign(m_extractLocations.size(), -1);
+  int cnt(0);
   VecInt interpIdxs;
   VecDbl interpWeights;
   for (const auto& pt : m_extractLocations)
   {
     int cellIdx = m_triangles->GetIntersectedCell(pt, interpIdxs, interpWeights);
+    m_cellIdxs[cnt] = cellIdx;
+    cnt++;
     if (cellIdx >= 0)
     {
       double interpValue = 0.0;

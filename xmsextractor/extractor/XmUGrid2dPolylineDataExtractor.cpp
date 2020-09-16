@@ -53,7 +53,10 @@ class XmUGrid2dPolylineDataExtractorImpl : public XmUGrid2dPolylineDataExtractor
 public:
   XmUGrid2dPolylineDataExtractorImpl(std::shared_ptr<XmUGrid> a_ugrid,
                                      DataLocationEnum a_scalarLocation);
-
+  /// \brief Gets the underlying data extractor. Convenience so a user would not have to
+  /// create a new if this one existed.
+  /// \return shared pointer to a data extractor
+  virtual BSHP<XmUGrid2dDataExtractor> GetDataExtractor() const override { return m_extractor; }
   virtual void SetGridScalars(const VecFlt& a_pointScalars,
                               const DynBitset& a_activity,
                               DataLocationEnum a_activityLocation) override;
@@ -78,6 +81,9 @@ public:
     return m_extractor->GetScalarLocation();
   }
   virtual const VecPt3d& GetExtractLocations() const override;
+  /// \brief Gets cell indexes associated with the extract location points.
+  /// \return The cell indexes.
+  virtual const VecInt& GetCellIndexes() const { return m_extractor->GetCellIndexes(); }
   /// \brief Gets the option for using IDW for point data
   /// \return The option.
   virtual bool GetUseIdwForPointData() const override
@@ -90,8 +96,6 @@ public:
 
 private:
   void ComputeExtractLocations(const VecPt3d& a_polyline, VecPt3d& a_locations);
-  DataLocationEnum m_scalarLocation; ///< The location of the scalars (points or cells).
-  std::shared_ptr<XmUGrid> m_ugrid;  ///< The ugrid which holds the points and the grid.
 
   BSHP<XmUGrid2dDataExtractor> m_extractor; ///< The data extractor.
   mutable BSHP<GmMultiPolyIntersector>
@@ -113,14 +117,25 @@ private:
 XmUGrid2dPolylineDataExtractorImpl::XmUGrid2dPolylineDataExtractorImpl(
   std::shared_ptr<XmUGrid> a_ugrid,
   DataLocationEnum a_scalarLocation)
-: m_ugrid(a_ugrid)
-, m_scalarLocation(a_scalarLocation)
-, m_extractor(XmUGrid2dDataExtractor::New(a_ugrid))
+: m_extractor(XmUGrid2dDataExtractor::New(a_ugrid))
 {
   if (a_scalarLocation == LOC_UNKNOWN)
   {
     XM_LOG(xmlog::error, "Scalar locations are unknown in polyline extractor.");
-    m_scalarLocation = LOC_POINTS;
+    a_scalarLocation = LOC_POINTS;
+  }
+
+  if (a_scalarLocation == LOC_POINTS)
+  {
+    VecFlt v(a_ugrid->GetPointCount(), 0.0);
+    DynBitset act;
+    m_extractor->SetGridPointScalars(v, act, LOC_POINTS);
+  }
+  else if (a_scalarLocation == LOC_CELLS)
+  {
+    VecFlt v(a_ugrid->GetCellCount(), 0.0);
+    DynBitset act;
+    m_extractor->SetGridCellScalars(v, act, LOC_CELLS);
   }
 } // XmUGrid2dPolylineDataExtractorImpl::XmUGrid2dPolylineDataExtractorImpl
 //------------------------------------------------------------------------------
@@ -133,9 +148,9 @@ void XmUGrid2dPolylineDataExtractorImpl::SetGridScalars(const VecFlt& a_scalars,
                                                         const DynBitset& a_activity,
                                                         DataLocationEnum a_activityLocation)
 {
-  if (m_scalarLocation == LOC_POINTS)
+  if (m_extractor->GetScalarLocation() == LOC_POINTS)
     m_extractor->SetGridPointScalars(a_scalars, a_activity, a_activityLocation);
-  else if (m_scalarLocation == LOC_CELLS)
+  else if (m_extractor->GetScalarLocation() == LOC_CELLS)
     m_extractor->SetGridCellScalars(a_scalars, a_activity, a_activityLocation);
 } // XmUGrid2dPolylineDataExtractorImpl::SetGridScalars
 //------------------------------------------------------------------------------
@@ -145,7 +160,7 @@ void XmUGrid2dPolylineDataExtractorImpl::SetGridScalars(const VecFlt& a_scalars,
 //------------------------------------------------------------------------------
 void XmUGrid2dPolylineDataExtractorImpl::SetPolyline(const VecPt3d& a_polyline)
 {
-  m_extractor->BuildTriangles(m_scalarLocation);
+  m_extractor->BuildTriangles(m_extractor->GetScalarLocation());
   VecPt3d locations;
   ComputeExtractLocations(a_polyline, locations);
   m_extractor->SetExtractLocations(locations);

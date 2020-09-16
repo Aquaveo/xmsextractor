@@ -40,6 +40,14 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
         }),py::arg("ugrid"),py::arg("scalar_location"));
 
     // -------------------------------------------------------------------------
+    // function: GetDataExtractor
+    // -------------------------------------------------------------------------
+    extractor.def("GetDataExtractor", [](xms::XmUGrid2dPolylineDataExtractor &self) {
+      BSHP<xms::XmUGrid2dDataExtractor> rval(self.GetDataExtractor());
+      return rval;
+    });
+
+    // -------------------------------------------------------------------------
     // function: SetGridScalars
     // -------------------------------------------------------------------------
     extractor.def("SetGridScalars", [](xms::XmUGrid2dPolylineDataExtractor &self,
@@ -63,6 +71,13 @@ void initXmUGrid2dPolylineDataExtractor(py::module &m) {
     extractor.def("GetExtractLocations", [](xms::XmUGrid2dPolylineDataExtractor &self) -> py::iterable {
       xms::VecPt3d locations = self.GetExtractLocations();
       return xms::PyIterFromVecPt3d(locations);
+    });
+
+    // -------------------------------------------------------------------------
+    // function: GetCellIndexes
+    // -------------------------------------------------------------------------
+    extractor.def("GetCellIndexes", [](xms::XmUGrid2dPolylineDataExtractor &self) -> py::iterable {
+      return xms::PyIterFromVecInt(self.GetCellIndexes());
     });
 
     // -------------------------------------------------------------------------

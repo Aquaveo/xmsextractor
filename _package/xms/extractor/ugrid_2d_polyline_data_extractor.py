@@ -36,6 +36,17 @@ class UGrid2dPolylineDataExtractor(object):
                 ", ".join(self.data_locations.keys()), location_str
             ))
 
+    def get_data_extractor(self):
+        """Get an instance of a UGrid2dDataExtractor class from this instance.
+
+        Returns:
+            (UGrid2dDataExtractor): instance of the UGrid2dDataExtractor class
+        """
+        instance = self._instance.GetDataExtractor()
+        from .ugrid_2d_data_extractor import UGrid2dDataExtractor
+        rval = UGrid2dDataExtractor(instance=instance)
+        return rval
+
     def set_grid_scalars(self, scalars, activity, scalar_location):
         """
         Setup cell scalars to be used to extract interpolated data.
@@ -85,6 +96,11 @@ class UGrid2dPolylineDataExtractor(object):
     def extract_locations(self):
         """Locations of points to extract interpolated scalar data from."""
         return self._instance.GetExtractLocations()
+
+    @property
+    def cell_indexes(self):
+        """Cell indexes for the extract location."""
+        return self._instance.GetCellIndexes()
 
     @property
     def use_idw_for_point_data(self):

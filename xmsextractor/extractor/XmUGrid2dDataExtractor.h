@@ -30,6 +30,7 @@ namespace xms
 class GmMultiPolyIntersector;
 class XmUGrid;
 class XmUGridTriangles2d;
+class XmUGrid2dPolylineDataExtractor;
 
 //----- Constants / Enumerations -----------------------------------------------
 
@@ -96,6 +97,9 @@ public:
   /// \brief Gets locations of points to extract interpolated scalar data from.
   /// \return The locations.
   virtual const VecPt3d& GetExtractLocations() const = 0;
+  /// \brief Gets cell indexes associated with the extract location points.
+  /// \return The cell indexes.
+  virtual const VecInt& GetCellIndexes() const = 0;
   /// \brief Gets the option for using IDW for point data
   /// \return The option.
   virtual bool GetUseIdwForPointData() const = 0;

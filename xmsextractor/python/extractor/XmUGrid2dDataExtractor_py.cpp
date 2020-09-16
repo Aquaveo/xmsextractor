@@ -66,10 +66,17 @@ void initXmUGrid2dDataExtractor(py::module &m) {
     }, py::arg("locations"));
 
     // -------------------------------------------------------------------------
-    // function: SetExtractLocations
+    // function: GetExtractLocations
     // -------------------------------------------------------------------------
     extractor.def("GetExtractLocations", [](xms::XmUGrid2dDataExtractor &self) {
       return xms::PyIterFromVecPt3d(self.GetExtractLocations());
+    });
+
+    // -------------------------------------------------------------------------
+    // function: GetCellIndexes
+    // -------------------------------------------------------------------------
+    extractor.def("GetCellIndexes", [](xms::XmUGrid2dDataExtractor &self) {
+      return xms::PyIterFromVecInt(self.GetCellIndexes());
     });
 
     // -------------------------------------------------------------------------

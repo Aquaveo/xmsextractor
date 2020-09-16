@@ -79,7 +79,7 @@ class UGrid2dDataExtractor(object):
         Returns:
             The interpolated value.
         """
-        return self._instance.ExtractAtLocaction(location)
+        return self._instance.ExtractAtLocation(location)
 
     @property
     def extract_locations(self):
@@ -89,6 +89,11 @@ class UGrid2dDataExtractor(object):
     @extract_locations.setter
     def extract_locations(self, value):
         self._instance.SetExtractLocations(value)
+
+    @property
+    def cell_indexes(self):
+        """Cell indexes for the extract location."""
+        return self._instance.GetCellIndexes()
 
     @property
     def use_idw_for_point_data(self):
