@@ -5,6 +5,7 @@ var classxms_1_1_xm_u_grid2d_data_extractor =
     [ "BuildTriangles", "classxms_1_1_xm_u_grid2d_data_extractor.html#a56b86773f747a14bff08e78a75f97b17", null ],
     [ "ExtractAtLocation", "classxms_1_1_xm_u_grid2d_data_extractor.html#a7212643d2783e9d99b4efeb397f05bb8", null ],
     [ "ExtractData", "classxms_1_1_xm_u_grid2d_data_extractor.html#a2fa7c4efd25bfda5bd8d5a634dae9689", null ],
+    [ "GetCellIndexes", "classxms_1_1_xm_u_grid2d_data_extractor.html#a2f858c0ab4382221403059e16f2e5944", null ],
     [ "GetExtractLocations", "classxms_1_1_xm_u_grid2d_data_extractor.html#ac3da3ac0adfb6b240b9c984270e4c798", null ],
     [ "GetNoDataValue", "classxms_1_1_xm_u_grid2d_data_extractor.html#a5fd2a9634c40f69d9a6f6f0940bca3f8", null ],
     [ "GetScalarLocation", "classxms_1_1_xm_u_grid2d_data_extractor.html#ab99e189167de14f968f3851b9ab23b80", null ],

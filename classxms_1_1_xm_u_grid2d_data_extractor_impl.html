@@ -153,6 +153,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a736196f76954875e201d0c76dd1908fe"><td class="memItemLeft" align="right" valign="top">virtual const VecPt3d &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html#a736196f76954875e201d0c76dd1908fe">GetExtractLocations</a> () const override</td></tr>
 <tr class="memdesc:a736196f76954875e201d0c76dd1908fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets locations of points to extract interpolated scalar data from.  <a href="#a736196f76954875e201d0c76dd1908fe">More...</a><br /></td></tr>
 <tr class="separator:a736196f76954875e201d0c76dd1908fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32c4b6447d001d7b41d9d159934b9ca1"><td class="memItemLeft" align="right" valign="top">virtual const VecInt &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html#a32c4b6447d001d7b41d9d159934b9ca1">GetCellIndexes</a> () const</td></tr>
+<tr class="memdesc:a32c4b6447d001d7b41d9d159934b9ca1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets cell indexes associated with the extract location points.  <a href="#a32c4b6447d001d7b41d9d159934b9ca1">More...</a><br /></td></tr>
+<tr class="separator:a32c4b6447d001d7b41d9d159934b9ca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4946847c2bcb04c77fddcff6587b8448"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html#a4946847c2bcb04c77fddcff6587b8448">GetUseIdwForPointData</a> () const override</td></tr>
 <tr class="memdesc:a4946847c2bcb04c77fddcff6587b8448"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the option for using IDW for point data.  <a href="#a4946847c2bcb04c77fddcff6587b8448">More...</a><br /></td></tr>
 <tr class="separator:a4946847c2bcb04c77fddcff6587b8448"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -211,6 +214,10 @@ VecPt3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 VecFlt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html#a8129ddcb859d261355155d6a6b8b42d1">m_pointScalars</a></td></tr>
 <tr class="memdesc:a8129ddcb859d261355155d6a6b8b42d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">scalars to interpolate from <br /></td></tr>
 <tr class="separator:a8129ddcb859d261355155d6a6b8b42d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b044258750bc25c57cbb97add368927"><td class="memItemLeft" align="right" valign="top"><a id="a5b044258750bc25c57cbb97add368927"></a>
+VecInt&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html#a5b044258750bc25c57cbb97add368927">m_cellIdxs</a></td></tr>
+<tr class="memdesc:a5b044258750bc25c57cbb97add368927"><td class="mdescLeft">&#160;</td><td class="mdescRight">ugrid cell indexes <br /></td></tr>
+<tr class="separator:a5b044258750bc25c57cbb97add368927"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d07cf6b9b82f04ab6432b37f3e789a5"><td class="memItemLeft" align="right" valign="top"><a id="a6d07cf6b9b82f04ab6432b37f3e789a5"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html#a6d07cf6b9b82f04ab6432b37f3e789a5">m_useIdwForPointData</a></td></tr>
 <tr class="memdesc:a6d07cf6b9b82f04ab6432b37f3e789a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">use IDW to calculate point data from cell data <br /></td></tr>
@@ -239,7 +246,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p>Implementation for <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html" title="Provides ability to interpolate and extract the scalar values points and along arcs for an unstructur...">XmUGrid2dDataExtractor</a>. </p>
 <p>Implementation for <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html" title="Provides ability to interpolate and extract the scalar values points and along arcs for an unstructur...">XmUGrid2dDataExtractor</a> which provides ability to extract dataset values at points for an unstructured grid. </p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00051">51</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00052">52</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3453d18b11429e2c55f80e6cc637ff48"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3453d18b11429e2c55f80e6cc637ff48">&#9670;&nbsp;</a></span>XmUGrid2dDataExtractorImpl() <span class="overload">[1/2]</span></h2>
@@ -265,7 +272,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00125">125</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00130">130</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
 </div>
 </div>
@@ -294,7 +301,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the new <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html" title="Implementation for XmUGrid2dDataExtractor. ">XmUGrid2dDataExtractorImpl</a>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00141">141</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00147">147</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
 </div>
 </div>
@@ -349,11 +356,11 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00274">274</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00285">285</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00339">SetGridCellActivity()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00303">SetGridPointActivity()</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00350">SetGridCellActivity()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00314">SetGridPointActivity()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00182">SetGridCellScalars()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00158">SetGridPointScalars()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00189">SetGridCellScalars()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00165">SetGridPointScalars()</a>.</p>
 
 </div>
 </div>
@@ -391,11 +398,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a56b86773f747a14bff08e78a75f97b17">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00485">485</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00496">496</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00109">m_triangles</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00107">m_triangleType</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00106">m_ugrid</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_triangles</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00111">m_triangleType</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_ugrid</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00182">SetGridCellScalars()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00158">SetGridPointScalars()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00189">SetGridCellScalars()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00165">SetGridPointScalars()</a>.</p>
 
 </div>
 </div>
@@ -450,11 +457,11 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Average of active surrounding cell scalars. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00416">416</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00427">427</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_noDataValue</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00118">m_noDataValue</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00445">CalculatePointByIdw()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00381">PushCellDataToTrianglePoints()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00456">CalculatePointByIdw()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00392">PushCellDataToTrianglePoints()</a>.</p>
 
 </div>
 </div>
@@ -516,11 +523,11 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>IDW interpolated value of active surrounding cell scalars. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00445">445</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00456">456</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00416">CalculatePointByAverage()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00109">m_triangles</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00106">m_ugrid</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00427">CalculatePointByAverage()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_triangles</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_ugrid</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00381">PushCellDataToTrianglePoints()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00392">PushCellDataToTrianglePoints()</a>.</p>
 
 </div>
 </div>
@@ -559,9 +566,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a7212643d2783e9d99b4efeb397f05bb8">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00243">243</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00254">254</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00210">ExtractData()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00202">SetExtractLocations()</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00217">ExtractData()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00209">SetExtractLocations()</a>.</p>
 
 </div>
 </div>
@@ -599,11 +606,45 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a2fa7c4efd25bfda5bd8d5a634dae9689">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00210">210</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00217">217</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_extractLocations</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_noDataValue</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00111">m_pointScalars</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00109">m_triangles</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00116">m_cellIdxs</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00114">m_extractLocations</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00118">m_noDataValue</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00115">m_pointScalars</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_triangles</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00243">ExtractAtLocation()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00254">ExtractAtLocation()</a>.</p>
+
+</div>
+</div>
+<a id="a32c4b6447d001d7b41d9d159934b9ca1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32c4b6447d001d7b41d9d159934b9ca1">&#9670;&nbsp;</a></span>GetCellIndexes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const VecInt&amp; xms::XmUGrid2dDataExtractorImpl::GetCellIndexes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets cell indexes associated with the extract location points. </p>
+<dl class="section return"><dt>Returns</dt><dd>The cell indexes. </dd></dl>
+
+<p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a2f858c0ab4382221403059e16f2e5944">xms::XmUGrid2dDataExtractor</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00086">86</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00116">m_cellIdxs</a>.</p>
 
 </div>
 </div>
@@ -635,9 +676,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#ac3da3ac0adfb6b240b9c984270e4c798">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00082">82</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00083">83</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_extractLocations</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00114">m_extractLocations</a>.</p>
 
 </div>
 </div>
@@ -669,9 +710,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a5fd2a9634c40f69d9a6f6f0940bca3f8">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00088">88</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00092">92</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_noDataValue</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00118">m_noDataValue</a>.</p>
 
 </div>
 </div>
@@ -703,9 +744,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#ab99e189167de14f968f3851b9ab23b80">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00079">79</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00080">80</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00107">m_triangleType</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00111">m_triangleType</a>.</p>
 
 </div>
 </div>
@@ -737,9 +778,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a4091816e6bf7a78585d8e1e24da39cc9">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00076">76</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00077">77</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00111">m_pointScalars</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00115">m_pointScalars</a>.</p>
 
 </div>
 </div>
@@ -771,9 +812,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a92c12206ec3d25711144716a669e897c">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00498">498</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00509">509</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00109">m_triangles</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_triangles</a>.</p>
 
 </div>
 </div>
@@ -805,9 +846,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a863cc47e4ca65953ccfc560a39e2c473">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00085">85</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00089">89</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00112">m_useIdwForPointData</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00117">m_useIdwForPointData</a>.</p>
 
 </div>
 </div>
@@ -854,11 +895,11 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00381">381</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00392">392</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00416">CalculatePointByAverage()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00445">CalculatePointByIdw()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00111">m_pointScalars</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00109">m_triangles</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00106">m_ugrid</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00112">m_useIdwForPointData</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00427">CalculatePointByAverage()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00456">CalculatePointByIdw()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00115">m_pointScalars</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_triangles</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_ugrid</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00117">m_useIdwForPointData</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00182">SetGridCellScalars()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00189">SetGridCellScalars()</a>.</p>
 
 </div>
 </div>
@@ -894,11 +935,11 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00351">351</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00362">362</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00111">m_pointScalars</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00109">m_triangles</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00106">m_ugrid</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00115">m_pointScalars</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_triangles</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_ugrid</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00158">SetGridPointScalars()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00165">SetGridPointScalars()</a>.</p>
 
 </div>
 </div>
@@ -936,11 +977,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#aa7a65fb2b6d6892f33ef3d6b1fcf4417">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00202">202</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00209">209</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_extractLocations</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00114">m_extractLocations</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00243">ExtractAtLocation()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00254">ExtractAtLocation()</a>.</p>
 
 </div>
 </div>
@@ -976,11 +1017,11 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00339">339</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00350">350</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00109">m_triangles</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00106">m_ugrid</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_triangles</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_ugrid</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00274">ApplyActivity()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00285">ApplyActivity()</a>.</p>
 
 </div>
 </div>
@@ -1036,9 +1077,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a342f4176c48479be61f6da312b8f56a2">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00182">182</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00189">189</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00274">ApplyActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00485">BuildTriangles()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00106">m_ugrid</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00381">PushCellDataToTrianglePoints()</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00285">ApplyActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00496">BuildTriangles()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_ugrid</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00392">PushCellDataToTrianglePoints()</a>.</p>
 
 </div>
 </div>
@@ -1085,11 +1126,11 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00303">303</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00314">314</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00109">m_triangles</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00106">m_ugrid</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_triangles</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_ugrid</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00274">ApplyActivity()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00285">ApplyActivity()</a>.</p>
 
 </div>
 </div>
@@ -1145,9 +1186,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#ac62db70dcc9b182ef8fe9cfc4d08f491">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00158">158</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00165">165</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00274">ApplyActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00485">BuildTriangles()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00111">m_pointScalars</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00106">m_ugrid</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00351">PushPointDataToCentroids()</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00285">ApplyActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00496">BuildTriangles()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00115">m_pointScalars</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00110">m_ugrid</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00362">PushPointDataToCentroids()</a>.</p>
 
 </div>
 </div>
@@ -1185,9 +1226,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a6f52d0b2fa995083792030922d175002">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00264">264</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00275">275</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00113">m_noDataValue</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00118">m_noDataValue</a>.</p>
 
 </div>
 </div>
@@ -1225,9 +1266,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a08e3e573932038b6a555f6714e904a62">xms::XmUGrid2dDataExtractor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00255">255</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00266">266</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00112">m_useIdwForPointData</a>.</p>
+<p class="reference">References <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00117">m_useIdwForPointData</a>.</p>
 
 </div>
 </div>
@@ -1240,7 +1281,7 @@ Additional Inherited Members</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacexms.html">xms</a></li><li class="navelem"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html">XmUGrid2dDataExtractorImpl</a></li>
-    <li class="footer">Generated on Thu Mar 26 2020 20:56:40 for xmsextractor by
+    <li class="footer">Generated on Thu Sep 17 2020 10:20:15 for xmsextractor by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

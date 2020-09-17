@@ -151,6 +151,9 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c
 <tr class="memitem:ac3da3ac0adfb6b240b9c984270e4c798"><td class="memItemLeft" align="right" valign="top">virtual const VecPt3d &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#ac3da3ac0adfb6b240b9c984270e4c798">GetExtractLocations</a> () const =0</td></tr>
 <tr class="memdesc:ac3da3ac0adfb6b240b9c984270e4c798"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets locations of points to extract interpolated scalar data from.  <a href="#ac3da3ac0adfb6b240b9c984270e4c798">More...</a><br /></td></tr>
 <tr class="separator:ac3da3ac0adfb6b240b9c984270e4c798"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f858c0ab4382221403059e16f2e5944"><td class="memItemLeft" align="right" valign="top">virtual const VecInt &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a2f858c0ab4382221403059e16f2e5944">GetCellIndexes</a> () const =0</td></tr>
+<tr class="memdesc:a2f858c0ab4382221403059e16f2e5944"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets cell indexes associated with the extract location points.  <a href="#a2f858c0ab4382221403059e16f2e5944">More...</a><br /></td></tr>
+<tr class="separator:a2f858c0ab4382221403059e16f2e5944"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a863cc47e4ca65953ccfc560a39e2c473"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html#a863cc47e4ca65953ccfc560a39e2c473">GetUseIdwForPointData</a> () const =0</td></tr>
 <tr class="memdesc:a863cc47e4ca65953ccfc560a39e2c473"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the option for using IDW for point data.  <a href="#a863cc47e4ca65953ccfc560a39e2c473">More...</a><br /></td></tr>
 <tr class="separator:a863cc47e4ca65953ccfc560a39e2c473"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -177,7 +180,7 @@ Protected Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Provides ability to interpolate and extract the scalar values points and along arcs for an unstructured grid. </p>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8h_source.html#l00042">42</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8h_source.html">XmUGrid2dDataExtractor.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8h_source.html#l00043">43</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8h_source.html">XmUGrid2dDataExtractor.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a56b86773f747a14bff08e78a75f97b17"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a56b86773f747a14bff08e78a75f97b17">&#9670;&nbsp;</a></span>BuildTriangles()</h2>
@@ -285,6 +288,36 @@ Protected Member Functions</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html#abef62849982116cc63b0c35f9f6b007e">xms::XmUGrid2dDataExtractorImpl</a>.</p>
+
+</div>
+</div>
+<a id="a2f858c0ab4382221403059e16f2e5944"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f858c0ab4382221403059e16f2e5944">&#9670;&nbsp;</a></span>GetCellIndexes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const VecInt&amp; xms::XmUGrid2dDataExtractor::GetCellIndexes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets cell indexes associated with the extract location points. </p>
+<dl class="section return"><dt>Returns</dt><dd>The cell indexes. </dd></dl>
+
+<p>Implemented in <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor_impl.html#a32c4b6447d001d7b41d9d159934b9ca1">xms::XmUGrid2dDataExtractorImpl</a>.</p>
 
 </div>
 </div>
@@ -501,9 +534,9 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the new <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html" title="Provides ability to interpolate and extract the scalar values points and along arcs for an unstructur...">XmUGrid2dDataExtractor</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00513">513</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00524">524</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00771">XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00849">XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivityIdw()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00925">XmUGrid2dDataExtractorUnitTests::testCellScalarPointActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00739">XmUGrid2dDataExtractorUnitTests::testCellScalarsOnly()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00987">XmUGrid2dDataExtractorUnitTests::testChangingScalarsAndActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l01087">XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00958">XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00699">XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00596">XmUGrid2dDataExtractorUnitTests::testPointScalarCellActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00625">XmUGrid2dDataExtractorUnitTests::testPointScalarPointActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00567">XmUGrid2dDataExtractorUnitTests::testPointScalarsOnly()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l01119">XmUGrid2dDataExtractorUnitTests::testTutorial()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00782">XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00860">XmUGrid2dDataExtractorUnitTests::testCellScalarCellActivityIdw()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00936">XmUGrid2dDataExtractorUnitTests::testCellScalarPointActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00750">XmUGrid2dDataExtractorUnitTests::testCellScalarsOnly()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00998">XmUGrid2dDataExtractorUnitTests::testChangingScalarsAndActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l01098">XmUGrid2dDataExtractorUnitTests::testCopiedExtractor()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00969">XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00710">XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00607">XmUGrid2dDataExtractorUnitTests::testPointScalarCellActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00636">XmUGrid2dDataExtractorUnitTests::testPointScalarPointActivity()</a>, <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00578">XmUGrid2dDataExtractorUnitTests::testPointScalarsOnly()</a>, and <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l01130">XmUGrid2dDataExtractorUnitTests::testTutorial()</a>.</p>
 
 </div>
 </div>
@@ -540,7 +573,7 @@ Protected Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the new <a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html" title="Provides ability to interpolate and extract the scalar values points and along arcs for an unstructur...">XmUGrid2dDataExtractor</a>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00524">524</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html#l00535">535</a> of file <a class="el" href="_xm_u_grid2d_data_extractor_8cpp_source.html">XmUGrid2dDataExtractor.cpp</a>.</p>
 
 </div>
 </div>
@@ -770,7 +803,7 @@ Protected Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespacexms.html">xms</a></li><li class="navelem"><a class="el" href="classxms_1_1_xm_u_grid2d_data_extractor.html">XmUGrid2dDataExtractor</a></li>
-    <li class="footer">Generated on Thu Mar 26 2020 20:56:40 for xmsextractor by
+    <li class="footer">Generated on Thu Sep 17 2020 10:20:15 for xmsextractor by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

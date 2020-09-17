@@ -6,6 +6,7 @@
     <filename>_xm_u_grid2d_data_extractor_8cpp</filename>
     <includes id="_xm_u_grid2d_data_extractor_8h" name="XmUGrid2dDataExtractor.h" local="no" imported="no">xmsextractor/extractor/XmUGrid2dDataExtractor.h</includes>
     <includes id="_xm_u_grid_triangles2d_8h" name="XmUGridTriangles2d.h" local="no" imported="no">xmsextractor/ugrid/XmUGridTriangles2d.h</includes>
+    <includes id="_xm_u_grid2d_polyline_data_extractor_8h" name="XmUGrid2dPolylineDataExtractor.h" local="no" imported="no">xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.h</includes>
     <includes id="_xm_u_grid2d_data_extractor_8t_8h" name="XmUGrid2dDataExtractor.t.h" local="no" imported="no">xmsextractor/extractor/XmUGrid2dDataExtractor.t.h</includes>
     <class kind="class">xms::XmUGrid2dDataExtractorImpl</class>
     <namespace>xms</namespace>
@@ -39,20 +40,6 @@
     <includes id="_xm_u_grid_triangles2d_8h" name="XmUGridTriangles2d.h" local="no" imported="no">xmsextractor/ugrid/XmUGridTriangles2d.h</includes>
     <includes id="_xm_u_grid2d_polyline_data_extractor_8t_8h" name="XmUGrid2dPolylineDataExtractor.t.h" local="no" imported="no">xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.t.h</includes>
     <namespace>xms</namespace>
-    <member kind="variable" protection="private">
-      <type>DataLocationEnum</type>
-      <name>m_scalarLocation</name>
-      <anchorfile>_xm_u_grid2d_polyline_data_extractor_8cpp.html</anchorfile>
-      <anchor>acb571a3216c99b36e9098e25b23c7bb0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" protection="private">
-      <type>std::shared_ptr&lt; XmUGrid &gt;</type>
-      <name>m_ugrid</name>
-      <anchorfile>_xm_u_grid2d_polyline_data_extractor_8cpp.html</anchorfile>
-      <anchor>a5a0ccb20c019644900690c23cca3842d</anchor>
-      <arglist></arglist>
-    </member>
     <member kind="variable" protection="private">
       <type>BSHP&lt; XmUGrid2dDataExtractor &gt;</type>
       <name>m_extractor</name>
@@ -233,6 +220,13 @@
       <arglist>() const =0</arglist>
     </member>
     <member kind="function" virtualness="pure">
+      <type>virtual const VecInt &amp;</type>
+      <name>GetCellIndexes</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
+      <anchor>a2f858c0ab4382221403059e16f2e5944</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
       <type>virtual bool</type>
       <name>GetUseIdwForPointData</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor.html</anchorfile>
@@ -371,6 +365,13 @@
       <arglist>() const override</arglist>
     </member>
     <member kind="function" virtualness="virtual">
+      <type>virtual const VecInt &amp;</type>
+      <name>GetCellIndexes</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
+      <anchor>a32c4b6447d001d7b41d9d159934b9ca1</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
       <type>virtual bool</type>
       <name>GetUseIdwForPointData</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
@@ -466,6 +467,13 @@
       <name>m_pointScalars</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
       <anchor>a8129ddcb859d261355155d6a6b8b42d1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable" protection="private">
+      <type>VecInt</type>
+      <name>m_cellIdxs</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_data_extractor_impl.html</anchorfile>
+      <anchor>a5b044258750bc25c57cbb97add368927</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable" protection="private">
@@ -582,6 +590,13 @@
       <arglist>()</arglist>
     </member>
     <member kind="function" virtualness="pure">
+      <type>virtual BSHP&lt; XmUGrid2dDataExtractor &gt;</type>
+      <name>GetDataExtractor</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
+      <anchor>a9afea04e7f04bfcf6c1b4f2ec1b91719</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
       <type>virtual void</type>
       <name>SetGridScalars</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
@@ -642,6 +657,13 @@
       <name>GetExtractLocations</name>
       <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
       <anchor>a256c988ba68dae464f665c6887558e0b</anchor>
+      <arglist>() const =0</arglist>
+    </member>
+    <member kind="function" virtualness="pure">
+      <type>virtual const VecInt &amp;</type>
+      <name>GetCellIndexes</name>
+      <anchorfile>classxms_1_1_xm_u_grid2d_polyline_data_extractor.html</anchorfile>
+      <anchor>a6727daeb05faef7322a287d3f4fc93cc</anchor>
       <arglist>() const =0</arglist>
     </member>
     <member kind="function" virtualness="pure">
