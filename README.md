@@ -7,9 +7,9 @@ Extractor library for XMS products
 Master Branch Status
 --------------------
 
-[![Build Status](https://travis-ci.org/Aquaveo/xmsextractor.svg?branch=master)](https://travis-ci.org/Aquaveo/xmsextractor)
-
-[![Build status](https://ci.appveyor.com/api/projects/status/tkgmhrs31cc4l3ph?svg=true)](https://ci.appveyor.com/project/Aquaveo/xmsextractor)
+![Linux-CI](https://github.com/Aquaveo/xmsextractor/workflows/Linux-CI/badge.svg)
+![Mac-CI](https://github.com/Aquaveo/xmsextractor/workflows/Mac-CI/badge.svg)
+![Windows-CI](https://github.com/Aquaveo/xmsextractor/workflows/Windows-CI/badge.svg)
 
 XMSExtractor
 ========
