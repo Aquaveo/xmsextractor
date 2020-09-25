@@ -1,17 +1,9 @@
-"""
-********************************************************************************
-* Name: interp_anisotropic.py
-* Author: Gage Larsen, Matt LeBaron
-* Created On: May 2nd, 2019
-* Copyright: (c)
-* License: BSD 2-Clause
-********************************************************************************
-"""
+"""Extract data from a UGrid2d along a polyline."""
 from ._xmsextractor import extractor
 
 
 class UGrid2dPolylineDataExtractor(object):
-
+    """Class for extracting data from a UGrid2d along a polyline."""
     data_locations = {
         'points': extractor.data_location_enum.LOC_POINTS,
         'cells': extractor.data_location_enum.LOC_CELLS,
@@ -19,6 +11,13 @@ class UGrid2dPolylineDataExtractor(object):
     }
 
     def __init__(self, ugrid=None, scalar_location=None, **kwargs):
+        """Constructor.
+
+        Args:
+            ugrid (UGrid2d): The ugrid to extract data from
+            scalar_location (str): Location of the data to extract. One of: 'points', 'cells', 'unknown'
+            **kwargs (dict): Generic keyword arguments
+        """
         if 'instance' in kwargs:
             self._instance = kwargs['instance']
         else:
@@ -31,6 +30,11 @@ class UGrid2dPolylineDataExtractor(object):
             self._instance = extractor.UGrid2dPolylineDataExtractor(ugrid._instance, data_location)
 
     def _check_data_locations(self, location_str):
+        """Raise an exception if the specified location string is invalid.
+
+        Args:
+            location_str: Location of the data to extract. One of: 'points', 'cells', 'unknown'
+        """
         if location_str not in self.data_locations.keys():
             raise ValueError('location must be one of {}, not {}.'.format(
                 ", ".join(self.data_locations.keys()), location_str
@@ -48,8 +52,7 @@ class UGrid2dPolylineDataExtractor(object):
         return rval
 
     def set_grid_scalars(self, scalars, activity, scalar_location):
-        """
-        Setup cell scalars to be used to extract interpolated data.
+        """Setup cell scalars to be used to extract interpolated data.
 
         Args:
             scalars (iterable): The cell scalars.
@@ -62,9 +65,9 @@ class UGrid2dPolylineDataExtractor(object):
         self._instance.SetGridScalars(scalars, activity, data_location)
 
     def set_polyline(self, polyline):
-        """
-        Set the polyline along which to extract the scalar data. Locations
-        crossing cell boundaries are computed along the polyline.
+        """Set the polyline along which to extract the scalar data.
+
+        Locations crossing cell boundaries are computed along the polyline.
 
         Args:
             polyline (iterable): The polyline.
@@ -72,8 +75,7 @@ class UGrid2dPolylineDataExtractor(object):
         self._instance.SetPolyline(polyline)
 
     def extract_data(self):
-        """
-        Extract interpolated data for the previously set locations.
+        """Extract interpolated data for the previously set locations.
 
         Returns:
             The interpolated scalars.
@@ -81,8 +83,7 @@ class UGrid2dPolylineDataExtractor(object):
         return self._instance.ExtractData()
 
     def compute_locations_and_extract_data(self, polyline):
-        """
-        Extract data for given polyline.
+        """Extract data for given polyline.
 
         Args:
             polyline (iterable): The polyline.
@@ -109,6 +110,7 @@ class UGrid2dPolylineDataExtractor(object):
 
     @use_idw_for_point_data.setter
     def use_idw_for_point_data(self, value):
+        """Set whether to use IDW to calculate point scalar values from cell scalars."""
         self._instance.SetUseIdwForPointData(value)
 
     @property
@@ -118,4 +120,5 @@ class UGrid2dPolylineDataExtractor(object):
 
     @no_data_value.setter
     def no_data_value(self, value):
+        """Set value to use when extracted value is in inactive cell or doesn't intersect with the grid."""
         self._instance.SetNoDataValue(value)

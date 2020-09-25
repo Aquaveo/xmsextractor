@@ -1,11 +1,15 @@
-"""Test UGrid2dPolylineDataExtractor.cpp"""
+"""Test UGrid2dPolylineDataExtractor.cpp."""
 import unittest
-from xms.grid.ugrid import UGrid
-from xms.extractor import UGrid2dPolylineDataExtractor
+
 import numpy as np
 
+from xms.grid.ugrid import UGrid
+
+from xms.extractor import UGrid2dPolylineDataExtractor
+
+
 class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
-    """UGrid2dPolylineDataExtractor tests"""
+    """UGrid2dPolylineDataExtractor tests."""
 
     def test_one_cell_one_segment(self):
         """Test extractor with point scalars only."""
@@ -35,7 +39,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         expected_locations = [(-1, 0.5, 0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (2, 0.5, 0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testSegmentAllInCell(self):
+    def test_segment_all_in_cell(self):
         """Test extractor with single segment all inside of cell."""
         # clang-format off
         # (1)  3--------2  (3)
@@ -63,7 +67,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         expected_locations = [(0.25, 0.5, 0.0), (0.5, 0.5, 0.0), (0.75, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testSegmentAlongEdge(self):
+    def test_segment_along_edge(self):
         """Test extractor with single segment along an edge."""
         # clang-format off
         #  0===3========2===1
@@ -91,7 +95,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         expected_locations = [(-0.5, 1.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0), (1.55, 1.0, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testSegmentAllOutside(self):
+    def test_segment_all_outside(self):
         """Test extractor with single segment all outside of cell."""
         # clang-format off
         #      3========2
@@ -116,10 +120,10 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
 
         expected_data = [float('nan'), float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
-        expected_locations =  [(-0.5, 0.5, 0.0), (-0.25, 0.5, 0.0)]
+        expected_locations = [(-0.5, 0.5, 0.0), (-0.25, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testSegmentOutToTouch(self):
+    def test_segment_out_to_touch(self):
         """Test extractor with single segment with endpoint touching cell."""
         # clang-format off
         #      3========2
@@ -144,10 +148,10 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
 
         expected_data = [float('nan'), 0.5]
         np.testing.assert_array_equal(expected_data, extracted_data)
-        expected_locations =  [(-0.5, 0.5, 0.0), (0.0, 0.5, 0.0)]
+        expected_locations = [(-0.5, 0.5, 0.0), (0.0, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testSegmentTouchToOut(self):
+    def test_segment_touch_to_out(self):
         """Test extractor with single segment with first point touching edge."""
         # clang-format off
         #      3========2
@@ -172,10 +176,10 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
 
         expected_data = [2.5, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
-        expected_locations =  [(1.0, 0.5, 0.0), (1.5, 0.5, 0.0)]
+        expected_locations = [(1.0, 0.5, 0.0), (1.5, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testSegmentCrossCellPoint(self):
+    def test_segment_cross_cell_point(self):
         """Test extractor with single segment touching cell point."""
         # clang-format off
         #        1
@@ -202,10 +206,10 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
 
         expected_data = [float('nan'), 1.0, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
-        expected_locations =  [(-0.5, 0.5, 0.0), (0.0, 1.0, 0.0), (0.5, 1.5, 0.0)]
+        expected_locations = [(-0.5, 0.5, 0.0), (0.0, 1.0, 0.0), (0.5, 1.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testSegmentAcrossCellIntoSecond(self):
+    def test_segment_across_cell_into_second(self):
         """Test extractor with single segment crossing first cell into second."""
         # clang-format off
         #      3========2========5
@@ -230,11 +234,11 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
 
         expected_data = [float('nan'), 0.5, 1.5, 2.5, 3.5]
         np.testing.assert_array_equal(expected_data, extracted_data)
-        expected_locations =  [(-0.5, 0.5, 0.0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0),
-            (1.0, 0.5, 0.0), (1.5, 0.5, 0.0)]
+        expected_locations = [(-0.5, 0.5, 0.0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0),
+                              (1.0, 0.5, 0.0), (1.5, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testSegmentAcrossSplitCells(self):
+    def test_segment_across_split_cells(self):
         """Test extractor with single segment going across unconnected cells."""
         # clang-format off
         #       3-------2       7-------6
@@ -245,7 +249,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # clang-format on
 
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0),
-                            (2, 0, 0), (3, 0, 0), (3, 1, 0), (2, 1, 0)]
+                  (2, 0, 0), (3, 0, 0), (3, 1, 0), (2, 1, 0)]
         cells = [UGrid.cell_type_enum.QUAD, 4, 0, 1, 2, 3, UGrid.cell_type_enum.QUAD, 4, 4, 5, 6, 7]
         ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, 'points')
@@ -261,11 +265,11 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         expected_data = [float('nan'), 0.5, 1.5, 2.5, float('nan'), 4.5, 5.5]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [(-1.0, 0.5, 0.0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0),
-                                       (1.0, 0.5, 0.0), (1.5, 0.5, 0.0), (2.0, 0.5, 0.0),
-                                       (2.5, 0.5, 0.0)]
+                              (1.0, 0.5, 0.0), (1.5, 0.5, 0.0), (2.0, 0.5, 0.0),
+                              (2.5, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testTwoSegmentsAcrossOneCell(self):
+    def test_two_segments_across_one_cell(self):
         """Test extractor with two segments going across a single cell."""
         # clang-format off
         #      3--------2
@@ -291,10 +295,11 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         expected_data = [float('nan'), 0.5, 1.5, 2.5, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [
-            (-1.0, 0.5, 0.0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (2.0, 0.5, 0.0)]
+            (-1.0, 0.5, 0.0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (2.0, 0.5, 0.0)
+        ]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testTwoSegmentsAllOutside(self):
+    def test_two_segments_all_outside(self):
         """Test extractor with two segments all outside of cell."""
         # clang-format off
         #      3--------2
@@ -322,7 +327,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         expected_locations = [(2.0, 0.5, 0), (3.0, 0.5, 0.0), (4.0, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testTwoSegmentsFirstExiting(self):
+    def test_two_segments_first_exiting(self):
         """Test extractor with two segments: first in to outside, second outside."""
         # clang-format off
         #      3--------2
@@ -350,7 +355,7 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         expected_locations = [(0.5, 0.5, 0), (1.0, 0.5, 0), (3.0, 0.5, 0.0), (4.0, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testTwoSegmentsJoinInCell(self):
+    def test_two_segments_join_in_cell(self):
         """Test extractor with  two segments joining in a cell."""
         # clang-format off
         #      3========2========5
@@ -375,11 +380,11 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
 
         expected_data = [1.5, 2.5, 3.5, 4.5, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
-        expected_locations =  [(0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (1.5, 0.5, 0.0),
-            (2.0, 0.5, 0.0), (2.5, 0.5, 0.0)]
+        expected_locations = [(0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (1.5, 0.5, 0.0),
+                              (2.0, 0.5, 0.0), (2.5, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testTwoSegmentsJoinOnBoundary(self):
+    def test_two_segments_join_on_boundary(self):
         """Test extractor with two segments joining on two cell boundary."""
         # clang-format off
         #      3========2========5
@@ -404,11 +409,11 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
 
         expected_data = [1.5, 2.5, 3.5, 4.5, float('nan')]
         np.testing.assert_array_equal(expected_data, extracted_data)
-        expected_locations =  [(0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (1.5, 0.5, 0.0),
-            (2.0, 0.5, 0.0), (2.5, 0.5, 0.0)]
+        expected_locations = [(0.5, 0.5, 0.0), (1.0, 0.5, 0.0), (1.5, 0.5, 0.0),
+                              (2.0, 0.5, 0.0), (2.5, 0.5, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testThreeSegmentsCrossOnBoundary(self):
+    def test_three_segments_cross_on_boundary(self):
         """Test extractor with three segments two crossing at boundary."""
         # clang-format off
         #      3----3---2
@@ -434,10 +439,10 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         expected_data = [1.5, 2.5, float('nan'), float('nan'), 2.5, 2.25, 2.0]
         np.testing.assert_array_equal(expected_data, extracted_data)
         expected_locations = [(0.5, 0.5, 0), (1.0, 0.5, 0), (1.5, 0.5, 0.0),
-            (1.5, 0.0, 0.0), (1.0, 0.5, 0), (0.75, 0.75, 0.0), (0.5, 1.0, 0.0)]
+                              (1.5, 0.0, 0.0), (1.0, 0.5, 0), (0.75, 0.75, 0.0), (0.5, 1.0, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testCellScalars(self):
+    def test_cell_scalars(self):
         """Test extractor with cell scalars."""
         # clang-format off
         #      3========2========5
@@ -452,8 +457,8 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         ugrid = UGrid(points, cells)
         extractor = UGrid2dPolylineDataExtractor(ugrid, "cells")
 
-        cellScalars = [1, 2]
-        extractor.set_grid_scalars(cellScalars, [], "cells")
+        cell_scalars = [1, 2]
+        extractor.set_grid_scalars(cell_scalars, [], "cells")
 
         polyline = [(-0.5, 0.75, 0.0), (1.5, 0.75, 0.0)]
         extractor.set_polyline(polyline)
@@ -462,11 +467,11 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
 
         expected_data = [float('nan'), 1.0, 1.0, 1.25, 1.5, 1.75, 1.875]
         np.testing.assert_array_equal(expected_data, extracted_data)
-        expected_locations =  [(-0.5, 0.75, 0.0), (0.0, 0.75, 0.0), (0.25, 0.75, 0.0),
-            (0.75, 0.75, 0.0), (1., 0.75, 0.0), (1.25, 0.75, 0.0), (1.5, 0.75, 0.0)]
+        expected_locations = [(-0.5, 0.75, 0.0), (0.0, 0.75, 0.0), (0.25, 0.75, 0.0),
+                              (0.75, 0.75, 0.0), (1., 0.75, 0.0), (1.25, 0.75, 0.0), (1.5, 0.75, 0.0)]
         np.testing.assert_array_equal(expected_locations, extracted_locations)
 
-    def testTransientTutorial(self):
+    def test_transient_tutorial(self):
         """Test UGrid2dPolylineDataExtractor for tutorial with transient data."""
         # build 2x3 grid
         points = [
@@ -526,16 +531,16 @@ class TestUGrid2dPolylineDataExtractor(unittest.TestCase):
         # Step 6. Extract the data.
         extracted_data = extractor.extract_data()
         expected_data = [-999.0, 144.5, 299.4, 485.9, 681.8,
-                                 975.7, -999.0, -999.0, 862.8, 780.9,
-                                 882.3, 811.0, 504.4]
+                         975.7, -999.0, -999.0, 862.8, 780.9,
+                         882.3, 811.0, 504.4]
         np.testing.assert_allclose(expected_data, extracted_data, atol=0.2)
 
         # time step 2
         # Step 7. Continue using steps 5 and 6 for remaining time steps.
         point_scalars = [-999.0, 1220.5, 1057.1, 613.2, 380.1, 625.6, 722.2, 449.9, 51.0, 240.9,
-                          609.0, 294.9]
+                         609.0, 294.9]
         extractor.set_grid_scalars(point_scalars, [], "cells")
         extracted_data = extractor.extract_data()
         expected_data = [-999.0, 137.4, 314.8, 498.1, -196.9, 124.7, -999.0, -999.0, 855.5,
-            780.9, 598.1, 527.1, 465.4]
+                         780.9, 598.1, 527.1, 465.4]
         np.testing.assert_allclose(expected_data, extracted_data, atol=0.2)
