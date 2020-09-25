@@ -1,15 +1,9 @@
-"""
-********************************************************************************
-* Name: setup.py
-* Author: Gage Larsen, Andrew Clark
-* Created On: April 18th, 2019
-* Copyright: (c)
-* License: BSD 2-Clause
-********************************************************************************
-"""
+"""Install the xmsextractor package."""
 import os
-from xms.extractor import __version__
+
 from setuptools import setup
+
+from xms.extractor import __version__
 
 
 # allow setup.py to be run from any path

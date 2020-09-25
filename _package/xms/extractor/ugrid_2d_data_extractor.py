@@ -1,17 +1,9 @@
-"""
-********************************************************************************
-* Name: interp_anisotropic.py
-* Author: Gage Larsen, Matt LeBaron
-* Created On: May 2nd, 2019
-* Copyright: (c)
-* License: BSD 2-Clause
-********************************************************************************
-"""
+"""Extract data from a UGrid2d at specified locations."""
 from ._xmsextractor import extractor
 
 
 class UGrid2dDataExtractor(object):
-
+    """Class for extracting data from a UGrid2d at specified locations."""
     data_locations = {
         'points': extractor.data_location_enum.LOC_POINTS,
         'cells': extractor.data_location_enum.LOC_CELLS,
@@ -19,6 +11,12 @@ class UGrid2dDataExtractor(object):
     }
 
     def __init__(self, ugrid=None, **kwargs):
+        """Constructor.
+
+        Args:
+            ugrid (UGrid2d): The ugrid to extract data from
+            **kwargs (dict): Generic keyword arguments
+        """
         if 'instance' in kwargs:
             self._instance = kwargs['instance']
         else:
@@ -27,14 +25,18 @@ class UGrid2dDataExtractor(object):
             self._instance = extractor.UGrid2dDataExtractor(ugrid._instance)
 
     def _check_data_locations(self, location_str):
+        """Raise an exception if the specified location string is invalid.
+
+        Args:
+            location_str: Location of the data to extract. One of: 'points', 'cells', 'unknown'
+        """
         if location_str not in self.data_locations.keys():
             raise ValueError('location must be one of {}, not {}.'.format(
                 ", ".join(self.data_locations.keys()), location_str
             ))
 
     def set_grid_point_scalars(self, point_scalars, activity, activity_type):
-        """
-        Setup point scalars to be used to extract interpolated data.
+        """Setup point scalars to be used to extract interpolated data.
 
         Args:
             point_scalars (iterable): The point scalars.
@@ -47,8 +49,7 @@ class UGrid2dDataExtractor(object):
         self._instance.SetGridPointScalars(point_scalars, activity, data_location)
 
     def set_grid_cell_scalars(self, cell_scalars, activity, activity_type):
-        """
-        Setup cell scalars to be used to extract interpolated data.
+        """Setup cell scalars to be used to extract interpolated data.
 
         Args:
             cell_scalars (iterable): The cell scalars.
@@ -61,8 +62,7 @@ class UGrid2dDataExtractor(object):
         self._instance.SetGridCellScalars(cell_scalars, activity, data_location)
 
     def extract_data(self):
-        """
-        Extract interpolated data for the previously set locations.
+        """Extract interpolated data for the previously set locations.
 
         Returns:
             The interpolated scalars.
@@ -70,8 +70,7 @@ class UGrid2dDataExtractor(object):
         return self._instance.ExtractData()
 
     def extract_at_location(self, location):
-        """
-        Extract interpolated data for the previously set locations.
+        """Extract interpolated data for the previously set locations.
 
         Args:
             location: The location to get the interpolated scalar.
@@ -88,6 +87,7 @@ class UGrid2dDataExtractor(object):
 
     @extract_locations.setter
     def extract_locations(self, value):
+        """Set locations of points to extract interpolated scalar data from."""
         self._instance.SetExtractLocations(value)
 
     @property
@@ -102,6 +102,7 @@ class UGrid2dDataExtractor(object):
 
     @use_idw_for_point_data.setter
     def use_idw_for_point_data(self, value):
+        """Set whether to use IDW to calculate point scalar values from cell scalars."""
         self._instance.SetUseIdwForPointData(value)
 
     @property
@@ -111,6 +112,5 @@ class UGrid2dDataExtractor(object):
 
     @no_data_value.setter
     def no_data_value(self, value):
+        """Set value to use when extracted value is in inactive cell or doesn't intersect with the grid."""
         self._instance.SetNoDataValue(value)
-
-
