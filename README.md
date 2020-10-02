@@ -7,9 +7,7 @@ Extractor library for XMS products
 Master Branch Status
 --------------------
 
-![Linux-CI](https://github.com/Aquaveo/xmsextractor/workflows/Linux-CI/badge.svg)
-![Mac-CI](https://github.com/Aquaveo/xmsextractor/workflows/Mac-CI/badge.svg)
-![Windows-CI](https://github.com/Aquaveo/xmsextractor/workflows/Windows-CI/badge.svg)
+![XmsExtractor-CI](https://github.com/Aquaveo/xmsextractor/workflows/XmsExtractor-5.0/badge.svg)
 
 XMSExtractor
 ========
