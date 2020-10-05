@@ -210,6 +210,6 @@ class XmsextractorConan(ConanFile):
         if self.options.pybind:
             self.requires("pybind11/2.5.0@aquaveo/testing")
 
-        self.requires("xmscore/4.0.0-rc1@aquaveo/testing")
-        self.requires("xmsgrid/5.0.0-rc1@aquaveo/testing")
+        self.requires("xmscore/4.0.0-rc14@aquaveo/testing")
+        self.requires("xmsgrid/5.0.0-rc3@aquaveo/testing")
         self.requires("xmsinterp/4.0.0-rc1@aquaveo/testing")
