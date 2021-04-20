@@ -340,6 +340,8 @@ void XmUGridTriangles2dImpl::BuildTriangles(const XmUGrid& a_ugrid, bool a_addTr
   VecInt cellPoints;
   for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
   {
+    if (a_ugrid.GetCellDimension(cellIdx) != 2)
+      continue;
     a_ugrid.GetCellPoints(cellIdx, cellPoints);
     bool builtTriangles = false;
     if (a_addTriangleCenters)
@@ -360,6 +362,8 @@ void XmUGridTriangles2dImpl::BuildEarcutTriangles(const XmUGrid& a_ugrid)
   VecInt cellPoints;
   for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
   {
+    if (a_ugrid.GetCellDimension(cellIdx) != 2)
+      continue;
     a_ugrid.GetCellPoints(cellIdx, cellPoints);
     iBuildEarcutTriangles(*this, cellIdx, cellPoints);
   }
