@@ -27,7 +27,6 @@
 namespace xms
 {
 //----- Forward declarations ---------------------------------------------------
-class GmTriSearch;
 class XmUGrid;
 
 //----- Constants / Enumerations -----------------------------------------------
@@ -65,9 +64,9 @@ public:
   /// \return a vector of indices for the triangles.
   virtual BSHP<VecInt> GetTrianglesPtr() = 0;
 
-  /// \brief Get the centroid of a cell.
+  /// \brief Get the point index for the centroid of a cell.
   /// \param[in] a_cellIdx The cell index.
-  /// \return The index of the cell point.
+  /// \return The point index of the cell centroid.
   virtual int GetCellCentroid(int a_cellIdx) const = 0;
 
   /// \brief Get the cell index and interpolation values intersected by a point.
