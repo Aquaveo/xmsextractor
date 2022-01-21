@@ -8,5 +8,7 @@ compiler.version=14
 build_type=Debug
 [options]
 xmsextractor:xms=False
+xmsextractor:pybind=False
+xmsextractor:testing=True
 [build_requires]
 [env]
