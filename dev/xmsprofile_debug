@@ -9,5 +9,7 @@ build_type=Debug
 cppstd=17
 [options]
 xmsextractor:xms=False
+xmsextractor:pybind=False
+xmsextractor:testing=True
 [build_requires]
 [env]
