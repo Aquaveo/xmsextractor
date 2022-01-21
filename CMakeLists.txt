@@ -94,12 +94,16 @@ set(xmsextractor_sources
   xmsextractor/extractor/XmUGrid2dDataExtractor.cpp
   xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.cpp
   xmsextractor/ugrid/XmUGridTriangles2d.cpp
+  xmsextractor/ugrid/XmUGridTriangulator.cpp
+  xmsextractor/ugrid/XmUGridTriangulatorBase.cpp
 )
 
 set(xmsextractor_headers
   xmsextractor/extractor/XmUGrid2dDataExtractor.h
   xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.h
   xmsextractor/ugrid/XmUGridTriangles2d.h
+  xmsextractor/ugrid/XmUGridTriangulator.h
+  xmsextractor/ugrid/XmUGridTriangulatorBase.h
 )
 
 # Pybind11 sources
@@ -124,6 +128,8 @@ if (BUILD_TESTING)
    xmsextractor/extractor/XmUGrid2dDataExtractor.t.h
    xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.t.h
    xmsextractor/ugrid/XmUGridTriangles2d.t.h
+   xmsextractor/ugrid/XmUGridTriangulator.t.h
+   xmsextractor/ugrid/XmUGridTriangulatorBase.t.h
  )
 
  find_package(CxxTest)
