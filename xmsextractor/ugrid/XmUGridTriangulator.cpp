@@ -198,27 +198,4 @@ XmUGridTriangulator::XmUGridTriangulator()
 XmUGridTriangulator::~XmUGridTriangulator()
 {
 } // XmUGridTriangulator::XmUGridTriangulator
-
 } // namespace xms
-
-#ifdef CXX_TEST
-//------------------------------------------------------------------------------
-// Unit Tests
-//------------------------------------------------------------------------------
-using namespace xms;
-#include <xmsextractor/ugrid/XmUGridTriangulator.t.h>
-
-#include <xmscore/testing/TestTools.h>
-
-////////////////////////////////////////////////////////////////////////////////
-/// \class XmUGridTriangulatorUnitTests
-/// \brief Class to to test XmUGridTriangulator
-////////////////////////////////////////////////////////////////////////////////
-//------------------------------------------------------------------------------
-/// \brief Test.
-//------------------------------------------------------------------------------
-void XmUGridTriangulatorUnitTests::test()
-{
-} // XmUGridTriangulatorUnitTests::test
-
-#endif
