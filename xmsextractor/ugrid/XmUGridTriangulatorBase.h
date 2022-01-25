@@ -42,13 +42,12 @@ public:
                            const int a_pt1,
                            const int a_pt2,
                            const int a_pt3) = 0;
-  void Triangulate(const VecInt& a_pts);
+  virtual const VecPt3d& GetPoints() const = 0;
+  bool GenerateCentroidTriangles(int a_cellIdx, const VecInt& a_cellPointIdxs);
+  void BuildEarcutTriangles(int a_cellIdx, const VecInt& a_cellPointIdxs);
 
-protected:
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGridTriangulatorBase)
-  class impl;
-  BSCP<impl> m_impl;
 };
 
 //----- Function prototypes ----------------------------------------------------
