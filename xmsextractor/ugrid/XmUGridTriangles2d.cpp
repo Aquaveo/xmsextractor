@@ -13,16 +13,10 @@
 #include <xmsextractor/ugrid/XmUGridTriangles2d.h>
 
 // 3. Standard library headers
-#include <sstream>
-#include <cmath>
 
 // 4. External library headers
-#include <boost/container/flat_map.hpp>
 
 // 5. Shared code headers
-#include <xmscore/misc/XmError.h>
-#include <xmscore/misc/XmLog.h>
-#include <xmsgrid/geometry/geoms.h>
 #include <xmsgrid/geometry/GmTriSearch.h>
 #include <xmsgrid/ugrid/XmUGrid.h>
 
@@ -48,12 +42,6 @@ namespace xms
 
 namespace
 {
-typedef std::tuple<int, int, int> Triangle; ///< three consecutive polygon points for triangle
-typedef boost::container::flat_map<Triangle, double>
-  RatioCache; ///< ratio cache to speed up earcut calculation
-typedef boost::container::flat_map<Triangle, bool>
-  ValidCache; ///< valid cache to speed up earcut calculation
-
 class XmUGridTriangles2dImpl : public XmUGridTriangles2d
 {
 public:
@@ -73,8 +61,6 @@ public:
   virtual int GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights) override;
 
 private:
-  bool GenerateCentroidTriangles(int a_cellIdx, const VecInt& a_polygonIdxs);
-  void BuildEarcutTriangles(int a_cellIdx, const VecInt& a_polygonIdxs);
   void Initialize(const XmUGrid& a_ugrid);
   BSHP<GmTriSearch> GetTriSearch();
 
@@ -82,107 +68,6 @@ private:
   mutable BSHP<GmTriSearch> m_triSearch;    ///< Triangle searcher for triangles
 };
 
-//------------------------------------------------------------------------------
-/// \brief Calculate the magnitude of a vector.
-/// \param[in] a_vec: the vector
-//------------------------------------------------------------------------------
-double iMagnitude(const Pt3d& a_vec)
-{
-  double magnitude = sqrt(a_vec.x * a_vec.x + a_vec.y * a_vec.y + a_vec.z * a_vec.z);
-  return magnitude;
-} // iMagnitude
-//------------------------------------------------------------------------------
-/// \brief Calculate a quality ratio to use to determine which triangles to cut
-///        using earcut triangulation. Better triangles have a lower ratio.
-/// \param[in] a_points: the array the points come from
-/// \param[in] a_idx1: first point of first edge
-/// \param[in] a_idx2: second point of first edge, first point of second edge
-/// \param[in] a_idx2: second point of second edge
-/// \
-/// \return The ratio, -1.0 for an inverted triangle, or -2.0 for a zero area
-///         triangle
-//------------------------------------------------------------------------------
-double iGetEarcutTriangleRatio(const VecPt3d& a_points,
-                               int a_idx1,
-                               int a_idx2,
-                               int a_idx3,
-                               RatioCache& a_ratioCache)
-{
-  Triangle triangle(a_idx1, a_idx2, a_idx3);
-  auto ratioIter = a_ratioCache.find(triangle);
-  if (ratioIter != a_ratioCache.end())
-    return ratioIter->second;
-
-  Pt3d pt1 = a_points[a_idx1];
-  Pt3d pt2 = a_points[a_idx2];
-  Pt3d pt3 = a_points[a_idx3];
-  Pt3d v1 = pt1 - pt2;
-  Pt3d v2 = pt3 - pt2;
-  Pt3d v3 = pt3 - pt1;
-
-  // get 2*area
-  Pt3d cross;
-  gmCross3D(v2, v1, &cross);
-  double ratio;
-  if (cross.z <= 0.0)
-  {
-    // inverted
-    ratio = -1.0;
-  }
-  else
-  {
-    double area2 = iMagnitude(cross);
-    if (area2 == 0.0)
-    {
-      // degenerate triangle
-      ratio = -2.0;
-    }
-    else
-    {
-      double perimeter = iMagnitude(v1) + iMagnitude(v2) + iMagnitude(v3);
-      ratio = perimeter * perimeter / area2;
-    }
-  }
-
-  a_ratioCache[triangle] = ratio;
-  return ratio;
-} // iGetEarcutTriangleRatio
-//------------------------------------------------------------------------------
-/// \brief
-//------------------------------------------------------------------------------
-bool iValidTriangle(const VecPt3d& a_points,
-                    const VecInt a_polygon,
-                    int a_idx1,
-                    int a_idx2,
-                    int a_idx3,
-                    ValidCache& a_validCache)
-{
-  Triangle triangle(a_idx1, a_idx2, a_idx3);
-  auto validIter = a_validCache.find(triangle);
-  if (validIter != a_validCache.end())
-    return validIter->second;
-
-  const Pt3d& pt1 = a_points[a_idx1];
-  const Pt3d& pt2 = a_points[a_idx2];
-  const Pt3d& pt3 = a_points[a_idx3];
-  for (size_t pointIdx = 0; pointIdx < a_polygon.size(); ++pointIdx)
-  {
-    int idx = a_polygon[pointIdx];
-    if (idx != a_idx1 && idx != a_idx2 && idx != a_idx3)
-    {
-      const Pt3d& pt = a_points[idx];
-      if (gmTurn(pt1, pt2, pt, 0.0) == TURN_LEFT && gmTurn(pt2, pt3, pt) == TURN_LEFT &&
-          gmTurn(pt3, pt1, pt, 0.0) == TURN_LEFT)
-      {
-        a_validCache[triangle] = false;
-        return false;
-      }
-    }
-  }
-
-  a_validCache[triangle] = true;
-  return true;
-} // iValidTriangle
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGridTriangles2dImpl
 /// \brief Class to store XmUGrid triangles. Tracks where midpoints and
@@ -196,126 +81,6 @@ XmUGridTriangles2dImpl::XmUGridTriangles2dImpl()
 , m_triSearch()
 {
 } // XmUGridTriangles2dImpl::XmUGridTriangles2dImpl
-//------------------------------------------------------------------------------
-/// \brief Generate triangles using ear cut algorithm for plan view 2D cells.
-/// \param[in] a_ugridTris The triangles to add to.
-/// \param[in] a_cellIdx The cell index.
-/// \param[in] a_polygonIdxs The indices for the cell polygon.
-//------------------------------------------------------------------------------
-void XmUGridTriangles2dImpl::BuildEarcutTriangles(int a_cellIdx, const VecInt& a_polygonIdxs)
-{
-  VecInt polygonIdxs = a_polygonIdxs;
-  const VecPt3d& points = GetPoints();
-
-  // continually find best triangle on adjacent edges and cut it off polygon
-  RatioCache ratioCache;
-  ValidCache validCache;
-  while (polygonIdxs.size() >= 4)
-  {
-    int bestIdx = -1;
-    int secondBestIdx = -1;
-
-    int numPoints = (int)polygonIdxs.size();
-    double bestRatio = std::numeric_limits<double>::max();
-    double secondBestRatio = std::numeric_limits<double>::max();
-    for (int pointIdx = 0; pointIdx < numPoints; ++pointIdx)
-    {
-      int idx1 = polygonIdxs[(pointIdx + numPoints - 1) % numPoints];
-      int idx2 = polygonIdxs[pointIdx];
-      int idx3 = polygonIdxs[(pointIdx + 1) % numPoints];
-
-      // make sure triangle is valid (not inverted and doesn't have other points in it)
-      double ratio = iGetEarcutTriangleRatio(points, idx1, idx2, idx3, ratioCache);
-      if (ratio > 0.0)
-      {
-        if (iValidTriangle(points, polygonIdxs, idx1, idx2, idx3, validCache))
-        {
-          if (ratio < bestRatio)
-          {
-            secondBestRatio = bestRatio;
-            bestRatio = ratio;
-            secondBestIdx = bestIdx;
-            bestIdx = pointIdx;
-          }
-          else if (ratio < secondBestRatio)
-          {
-            secondBestRatio = ratio;
-            secondBestIdx = pointIdx;
-          }
-        }
-      }
-    }
-
-    if (bestIdx >= 0)
-    {
-      if (numPoints == 4 && secondBestIdx >= 0)
-        bestIdx = secondBestIdx;
-
-      // cut off the ear triangle
-      int polygonIdx1 = (bestIdx + numPoints - 1) % numPoints;
-      int polygonIdx2 = bestIdx;
-      int polygonIdx3 = (bestIdx + 1) % numPoints;
-      int idx1 = polygonIdxs[polygonIdx1];
-      int idx2 = polygonIdxs[polygonIdx2];
-      int idx3 = polygonIdxs[polygonIdx3];
-      m_triangulator->AddTriangle(a_cellIdx, idx1, idx2, idx3);
-      polygonIdxs.erase(polygonIdxs.begin() + polygonIdx2);
-    }
-    else
-    {
-      std::ostringstream ss;
-      ss << "Unable to split cell number " << a_cellIdx + 1 << " into triangles.";
-      XM_LOG(xmlog::error, ss.str());
-      return;
-    }
-  }
-
-  // push on remaining triangle
-  m_triangulator->AddTriangle(a_cellIdx, polygonIdxs[0], polygonIdxs[1], polygonIdxs[2]);
-} // XmUGridTriangles2dImpl::BuildEarcutTriangles
-//------------------------------------------------------------------------------
-/// \brief Attempt to generate triangles for a cell by adding a point at the
-///        centroid.
-/// \param[in] a_ugridTris The triangles to add to.
-/// \param[in] a_cellIdx The cell index.
-/// \param[in] a_polygonIdxs The indices for the cell polygon.
-/// \return true on success (can fail for concave cell)
-//------------------------------------------------------------------------------
-bool XmUGridTriangles2dImpl::GenerateCentroidTriangles(int a_cellIdx, const VecInt& a_polygonIdxs)
-{
-  const VecPt3d& points = GetPoints();
-  size_t numPoints = a_polygonIdxs.size();
-
-  VecPt3d polygon;
-  for (size_t pointIdx = 0; pointIdx < numPoints; ++pointIdx)
-    polygon.push_back(points[a_polygonIdxs[pointIdx]]);
-
-  Pt3d centroid = gmComputeCentroid(polygon);
-
-  // make sure the centroid is located inside the cell
-  for (size_t pointIdx = 0; pointIdx < polygon.size(); ++pointIdx)
-  {
-    const Pt3d& pt1 = polygon[pointIdx];
-    const Pt3d& pt2 = polygon[(pointIdx + 1) % numPoints];
-
-    // centroid should be to the left of each edge
-    if (gmTurn(pt1, pt2, centroid, 0.0) != TURN_LEFT)
-      return false;
-  }
-
-  // add centroid to list of points
-  int centroidIdx = m_triangulator->AddCentroidPoint(a_cellIdx, centroid);
-
-  // add triangles
-  for (size_t pointIdx = 0; pointIdx < polygon.size(); ++pointIdx)
-  {
-    int idx1 = a_polygonIdxs[pointIdx];
-    int idx2 = a_polygonIdxs[(pointIdx + 1) % numPoints];
-    m_triangulator->AddTriangle(a_cellIdx, idx1, idx2, centroidIdx);
-  }
-
-  return true;
-} // XmUGridTriangles2dImpl::GenerateCentroidTriangles
 //------------------------------------------------------------------------------
 /// \brief Generate triangles for the UGrid.
 /// \param[in] a_ugrid The UGrid for which triangles are generated.
@@ -334,9 +99,9 @@ void XmUGridTriangles2dImpl::BuildTriangles(const XmUGrid& a_ugrid, bool a_addTr
     a_ugrid.GetCellPoints(cellIdx, cellPoints);
     bool builtTriangles = false;
     if (a_addTriangleCenters)
-      builtTriangles = GenerateCentroidTriangles(cellIdx, cellPoints);
+      builtTriangles = m_triangulator->GenerateCentroidTriangles(cellIdx, cellPoints);
     if (!builtTriangles)
-      BuildEarcutTriangles(cellIdx, cellPoints);
+      m_triangulator->BuildEarcutTriangles(cellIdx, cellPoints);
   }
 } // XmUGridTriangles2dImpl::BuildTriangles
 //------------------------------------------------------------------------------
@@ -354,7 +119,7 @@ void XmUGridTriangles2dImpl::BuildEarcutTriangles(const XmUGrid& a_ugrid)
     if (a_ugrid.GetCellDimension(cellIdx) != 2)
       continue;
     a_ugrid.GetCellPoints(cellIdx, cellPoints);
-    BuildEarcutTriangles(cellIdx, cellPoints);
+    m_triangulator->BuildEarcutTriangles(cellIdx, cellPoints);
   }
 } // XmUGridTriangles2dImpl::BuildEarcutTriangles
 //------------------------------------------------------------------------------
@@ -492,7 +257,6 @@ XmUGridTriangles2d::XmUGridTriangles2d()
 XmUGridTriangles2d::~XmUGridTriangles2d()
 {
 } // XmUGridTriangles2d::XmUGridTriangles2d
-
 } // namespace xms
 
 #ifdef CXX_TEST
