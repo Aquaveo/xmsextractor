@@ -137,8 +137,6 @@ if (BUILD_TESTING)
    xmsextractor/extractor/XmUGrid2dDataExtractor.t.h
    xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.t.h
    xmsextractor/ugrid/XmUGridTriangles2d.t.h
-   xmsextractor/ugrid/XmUGridTriangulator.t.h
-   xmsextractor/ugrid/XmUGridTriangulatorBase.t.h
  )
 
  find_package(CxxTest)
