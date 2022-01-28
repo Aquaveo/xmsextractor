@@ -96,6 +96,9 @@ class XmsextractorConan(ConanFile):
         cmake.definitions["XMS_VERSION"] = '{}'.format(self.version)
         cmake.definitions["PYTHON_TARGET_VERSION"] = self.env.get("PYTHON_TARGET_VERSION", "3.6")
 
+        if self.settings.compiler == 'Visual Studio':
+            cmake.definitions["USE_NATIVE_WCHAR_T"] = (self.options.wchar_t == 'builtin')
+
         cmake.configure(source_folder=".")
         cmake.build()
         cmake.install()
