@@ -53,6 +53,16 @@ class XmsextractorConan(ConanFile):
         s_compiler = self.settings.compiler
         s_compiler_version = self.settings.compiler.version
 
+        if s_compiler == "apple-clang" and s_os == 'Linux':
+            raise ConanException("Clang on Linux is not supported.")
+
+        if s_compiler == "gcc" and float(s_compiler_version.value) < 5.0:
+            raise ConanException("GCC < 5.0 is not supported.")
+
+        if s_compiler == "apple-clang" and s_os == 'Macos' \
+                and float(s_compiler_version.value) < 9.0:
+            raise ConanException("Clang > 9.0 is required for Mac.")
+
         self.options['xmscore'].xms = self.options.xms
         self.options['xmscore'].pybind = self.options.pybind
         self.options['xmscore'].testing = self.options.testing
@@ -64,16 +74,6 @@ class XmsextractorConan(ConanFile):
         self.options['xmsgrid'].xms = self.options.xms
         self.options['xmsgrid'].pybind = self.options.pybind
         self.options['xmsgrid'].testing = self.options.testing
-
-        if s_compiler == "apple-clang" and s_os == 'Linux':
-            raise ConanException("Clang on Linux is not supported.")
-
-        if s_compiler == "gcc" and float(s_compiler_version.value) < 5.0:
-            raise ConanException("GCC < 5.0 is not supported.")
-
-        if s_compiler == "apple-clang" and s_os == 'Macos' \
-                and float(s_compiler_version.value) < 9.0:
-            raise ConanException("Clang > 9.0 is required for Mac.")
 
     def build(self):
         """
