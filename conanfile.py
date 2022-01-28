@@ -27,16 +27,12 @@ class XmsextractorConan(ConanFile):
     exports = "CMakeLists.txt", "LICENSE", "test_files/*"
     exports_sources = "xmsextractor/*", "test_files/*", "_package/*"
 
-    def configure_options(self):
+    def config_options(self):
         """
         Configure the options for the conan class.
         """
-        self.output.info("----- RUNNING CONFIGURE_OPTIONS()")
-        if self.settings.os != "Windows":
-            del self.options.xms
-
-        if self.settings.build_type != "Release":
-            del self.option.pybind
+        if self.settings.compiler != 'Visual Studio':
+            del self.options.wchar_t
 
     def set_name(self):
         """
