@@ -63,6 +63,9 @@ class XmsextractorConan(ConanFile):
                 and float(s_compiler_version.value) < 9.0:
             raise ConanException("Clang > 9.0 is required for Mac.")
 
+        if s_compiler == 'Visual Studio' and self.options.wchar_t == 'typedef' and self.options.pybind:
+            raise ConanException("wchar_t=typedef not supported with pybind=True")
+
         self.options['xmscore'].xms = self.options.xms
         self.options['xmscore'].pybind = self.options.pybind
         self.options['xmscore'].testing = self.options.testing
