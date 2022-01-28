@@ -11,12 +11,12 @@ class XmsextractorConan(ConanFile):
     license = "BSD2"
     settings = "os", "compiler", "build_type", "arch"
     options = {
-        "xms": [True, False],
+        "wchar_t": ['builtin', 'typedef'],
         "pybind": [True, False],
         "testing": [True, False],
     }
     default_options = {
-        'xms': False,
+        'wchar_t': 'builtin',
         'pybind': False,
         'testing': False,
     }
@@ -81,9 +81,6 @@ class XmsextractorConan(ConanFile):
         """
         self.output.info("----- RUNNING BUILD()")
         cmake = CMake(self)
-
-        if self.settings.compiler == 'Visual Studio':
-            cmake.definitions["XMS_BUILD"] = self.options.xms
 
         # CxxTest doesn't play nice with PyBind. Also, it would be nice to not
         # have tests in release code. Thus, if we want to run tests, we will
