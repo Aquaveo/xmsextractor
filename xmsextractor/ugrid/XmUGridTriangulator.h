@@ -50,6 +50,8 @@ public:
   virtual int GetNumTriangles() const = 0;
   virtual int GetCellFromTriangle(const int a_triangleIdx) const = 0;
   virtual int GetCellCentroid(int a_cellIdx) const = 0;
+  virtual void InitMidpoints() = 0;
+  virtual int AddMidPoint(const int a_cellIdx, const int a_ptIdx0, const int a_ptIdx1) = 0;
 
 protected:
   XmUGridTriangulator();
