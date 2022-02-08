@@ -19,7 +19,9 @@
 #include <boost/container/flat_map.hpp>
 
 // 5. Shared code headers
-#include <xmscore/misc/XmLog.h>     // XM_LOG
+#include <xmscore/misc/XmLog.h>   // XM_LOG
+#include <xmscore/misc/XmError.h> // XM_ASSERT
+
 #include <xmsgrid/geometry/geoms.h> // gmTurn, gmComputeCentroid
 
 // 6. Non-shared code headers
@@ -152,6 +154,35 @@ bool iValidTriangle(const VecPt3d& a_points,
 } // iValidTriangle
 } // namespace
 
+class XmUGridTriangulatorBase::impl
+{
+public:
+  impl();
+  virtual ~impl();
+  BSHP<FlatMapEdgeMidpointInfo> m_midPoints;
+
+private:
+  XM_DISALLOW_COPY_AND_ASSIGN(XmUGridTriangulatorBase::impl);
+};
+
+////////////////////////////////////////////////////////////////////////////////
+/// \class XmUGridTriangulatorImpl
+/// \brief Class to store XmUGrid triangles. Tracks where midpoints and
+///        triangles came from.
+////////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------------
+/// \brief Constructor
+//------------------------------------------------------------------------------
+XmUGridTriangulatorBase::impl::impl()
+: m_midPoints(nullptr)
+{
+} // XmUGridTriangulatorBase::impl::impl
+//------------------------------------------------------------------------------
+/// \brief Destructor
+//------------------------------------------------------------------------------
+XmUGridTriangulatorBase::impl::~impl()
+{
+} // XmUGridTriangulatorBase::impl::~impl
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGridTriangulatorBase
 /// \brief Class to triangulate.
@@ -160,6 +191,7 @@ bool iValidTriangle(const VecPt3d& a_points,
 /// \brief Default contructor.
 //------------------------------------------------------------------------------
 XmUGridTriangulatorBase::XmUGridTriangulatorBase()
+: m_impl(new XmUGridTriangulatorBase::impl())
 {
 } // XmUGridTriangulatorBase::XmUGridTriangulatorBase
 //------------------------------------------------------------------------------
@@ -168,6 +200,28 @@ XmUGridTriangulatorBase::XmUGridTriangulatorBase()
 XmUGridTriangulatorBase::~XmUGridTriangulatorBase()
 {
 } // XmUGridTriangulatorBase::XmUGridTriangulatorBase
+//------------------------------------------------------------------------------
+/// \brief Sets the midpoints.
+//------------------------------------------------------------------------------
+void XmUGridTriangulatorBase::SetMidpoints(BSHP<FlatMapEdgeMidpointInfo> a_midPoints)
+{
+  m_impl->m_midPoints = a_midPoints;
+} // XmUGridTriangulatorBase::SetMidpoints
+//------------------------------------------------------------------------------
+/// \brief Returns the midpoint info from the element edge.
+//------------------------------------------------------------------------------
+XmElementMidpointInfo& XmUGridTriangulatorBase::FindMidPoint(const XmElementEdge& a_edge)
+{
+  auto it = m_impl->m_midPoints->find(a_edge);
+  if (it == m_impl->m_midPoints->end())
+  {
+    XM_ASSERT(0);
+    XmElementMidpointInfo info = {-1, -1};
+    it = m_impl->m_midPoints->insert(std::pair<XmElementEdge, XmElementMidpointInfo>(a_edge, info))
+           .first;
+  }
+  return it->second;
+} // XmUGridTriangulatorBase::FindMidPoint
 //------------------------------------------------------------------------------
 /// \brief Generate triangles using ear cut algorithm for plan view 2D cells.
 /// \param[in] a_ugridTris The triangles to add to.
@@ -280,7 +334,7 @@ bool XmUGridTriangulatorBase::GenerateCentroidTriangles(int a_cellIdx,
   int centroidIdx = AddCentroidPoint(a_cellIdx, centroid);
 
   // add triangles
-  for (size_t pointIdx = 0; pointIdx < polygon.size(); ++pointIdx)
+  for (size_t pointIdx = 0; pointIdx < numPoints; ++pointIdx)
   {
     int idx1 = a_cellPointIdxs[pointIdx];
     int idx2 = a_cellPointIdxs[(pointIdx + 1) % numPoints];
