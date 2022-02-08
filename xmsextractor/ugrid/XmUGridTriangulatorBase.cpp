@@ -160,9 +160,6 @@ public:
   impl();
   virtual ~impl();
   BSHP<FlatMapEdgeMidpointInfo> m_midPoints;
-
-private:
-  XM_DISALLOW_COPY_AND_ASSIGN(XmUGridTriangulatorBase::impl);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
