@@ -42,8 +42,10 @@ public:
 
   /// \brief Generate triangles for the UGrid.
   /// \param[in] a_ugrid The UGrid for which triangles are generated.
-  /// \param[in] a_addTriangleCenters Whether or not triangle cells get a centroid added.
-  virtual void BuildTriangles(const XmUGrid& a_ugrid, bool a_addTriangleCenters) = 0;
+  /// \param[in] a_pointOption Whether to add no points, add centroids only, or add centroids and
+  /// midpoints.
+  enum PointOptionEnum : int { PO_NO_POINTS, PO_CENTROIDS_ONLY, PO_CENTROIDS_AND_MIDPOINTS };
+  virtual void BuildTriangles(const XmUGrid& a_ugrid, PointOptionEnum a_pointOption) = 0;
   /// \brief Generate triangles for the UGrid using earcut algorithm.
   /// \param[in] a_ugrid The UGrid for which triangles are generated.
   virtual void BuildEarcutTriangles(const XmUGrid& a_ugrid) = 0;

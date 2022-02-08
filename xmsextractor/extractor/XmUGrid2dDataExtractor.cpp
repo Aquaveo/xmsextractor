@@ -497,8 +497,10 @@ void XmUGrid2dDataExtractorImpl::BuildTriangles(DataLocationEnum a_location)
 {
   if (m_triangleType != a_location)
   {
-    bool triangleCentroids = a_location == LOC_CELLS;
-    m_triangles->BuildTriangles(*m_ugrid, triangleCentroids);
+    XmUGridTriangles2d::PointOptionEnum option = a_location == LOC_CELLS
+                                                   ? XmUGridTriangles2d::PO_CENTROIDS_ONLY
+                                                   : XmUGridTriangles2d::PO_NO_POINTS;
+    m_triangles->BuildTriangles(*m_ugrid, option);
     m_triangleType = a_location;
   }
 } // XmUGrid2dDataExtractorImpl::BuildTriangles
