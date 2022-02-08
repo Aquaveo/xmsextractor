@@ -19,7 +19,7 @@ pause
 echo on
 pushd .
 cd ..\build_py
-cmake .. -G"Visual Studio 14 2015 Win64" -DIS_PYTHON_BUILD=True -DBUILD_TESTING=False -DPYTHON_TARGET_VERSION=3.5
+cmake .. -G"Visual Studio 16 2019 Win64" -DIS_PYTHON_BUILD=True -DBUILD_TESTING=False -DPYTHON_TARGET_VERSION=3.10
 popd
 echo off
 
