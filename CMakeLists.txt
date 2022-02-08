@@ -102,6 +102,7 @@ link_directories(${EXT_LIB_DIRS})
 set(xmsextractor_sources
   xmsextractor/extractor/XmUGrid2dDataExtractor.cpp
   xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.cpp
+  xmsextractor/ugrid/XmElementEdge.cpp
   xmsextractor/ugrid/XmUGridTriangles2d.cpp
   xmsextractor/ugrid/XmUGridTriangulator.cpp
   xmsextractor/ugrid/XmUGridTriangulatorBase.cpp
@@ -110,6 +111,8 @@ set(xmsextractor_sources
 set(xmsextractor_headers
   xmsextractor/extractor/XmUGrid2dDataExtractor.h
   xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.h
+  xmsextractor/ugrid/XmElementEdge.h
+  xmsextractor/ugrid/XmElementMidpointInfo.h
   xmsextractor/ugrid/XmUGridTriangles2d.h
   xmsextractor/ugrid/XmUGridTriangulator.h
   xmsextractor/ugrid/XmUGridTriangulatorBase.h
