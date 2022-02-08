@@ -104,7 +104,7 @@ void XmUGridTriangles2dImpl::BuildTriangles(const XmUGrid& a_ugrid, PointOptionE
     {
       int nPts = (int)cellPoints.size();
       int i = 0;
-      for (auto& it = cellPoints.begin(); it != cellPoints.end(); ++it)
+      for (auto it = cellPoints.begin(); it != cellPoints.end(); ++it)
       {
         int ip1 = (i + 1) % nPts;
         int id0 = cellPoints[i];
