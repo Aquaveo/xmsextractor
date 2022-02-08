@@ -110,8 +110,9 @@ void XmUGridTriangles2dImpl::BuildTriangles(const XmUGrid& a_ugrid, PointOptionE
         int id0 = cellPoints[i];
         int id1 = cellPoints[ip1];
         int idMid = m_triangulator->AddMidPoint(cellIdx, id0, id1);
-        it = cellPoints.insert(it, idMid);
-        ++i;
+        it = cellPoints.insert(it + 1, idMid);
+        i += 2;
+        nPts = (int)cellPoints.size();
       }
     }
     bool builtTriangles = false;
@@ -300,27 +301,61 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
   TS_REQUIRE_NOT_NULL(ugrid);
   XmUGridTriangles2dImpl triangles;
 
-  // test building cetroid in triangle cell
-  triangles.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_ONLY);
+  // test building both cetroid and midpoints in triangle cell
+  triangles.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_AND_MIDPOINTS);
 
   VecPt3d triPointsOut = triangles.GetPoints();
-  VecPt3d triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {0.5, 1, 0}, {0.5, 1 / 3.0, 0}};
+  VecPt3d triPointsExpected = {{0, 0, 0},      {1, 0, 0},      {0.5, 1, 0},      {0.5, 0, 0},
+                               {0.75, 0.5, 0}, {0.25, 0.5, 0}, {0.5, 1 / 3.0, 0}};
   TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
 
   VecInt trianglesOut = triangles.GetTriangles();
-  VecInt trianglesExpected = {0, 1, 3, 1, 2, 3, 2, 0, 3};
+  VecInt trianglesExpected = {0, 3, 6, 3, 1, 6, 1, 4, 6, 4, 2, 6, 2, 5, 6, 5, 0, 6};
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
 
-  TS_ASSERT_EQUALS(3, triangles.GetCellCentroid(0));
+  TS_ASSERT_EQUALS(6, triangles.GetCellCentroid(0));
 
   VecInt idxs;
   VecDbl weights;
   // point intersecting last triangle
   int cellIdx = triangles.GetIntersectedCell(Pt3d(0.25, 0.25, 0), idxs, weights);
   TS_ASSERT_EQUALS(0, cellIdx);
-  VecInt idxsExpected = {2, 0, 3};
+  VecInt idxsExpected = {5, 0, 6};
   TS_ASSERT_EQUALS(idxsExpected, idxs);
-  VecDbl weightsExpected = {0.125, 0.5, 0.375};
+  VecDbl weightsExpected = {0.25, 0.375, 0.375};
+  TS_ASSERT_EQUALS(weightsExpected, weights);
+  cellIdx = triangles.GetIntersectedCell(Pt3d(0.5, 0.5, 0), idxs, weights);
+  TS_ASSERT_EQUALS(0, cellIdx);
+  idxsExpected = {4, 2, 6};
+  TS_ASSERT_EQUALS(idxsExpected, idxs);
+  weightsExpected = {0.0, 0.25, 0.75};
+  TS_ASSERT_EQUALS(weightsExpected, weights);
+  cellIdx = triangles.GetIntersectedCell(Pt3d(0.5, 0.25, 0), idxs, weights);
+  TS_ASSERT_EQUALS(0, cellIdx);
+  idxsExpected = {0, 3, 6};
+  TS_ASSERT_EQUALS(idxsExpected, idxs);
+  weightsExpected = {0.0, 0.25, 0.75};
+  TS_ASSERT_EQUALS(weightsExpected, weights);
+
+  // test building cetroid in triangle cell
+  triangles.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_ONLY);
+
+  triPointsOut = triangles.GetPoints();
+  triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {0.5, 1, 0}, {0.5, 1 / 3.0, 0}};
+  TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
+
+  trianglesOut = triangles.GetTriangles();
+  trianglesExpected = {0, 1, 3, 1, 2, 3, 2, 0, 3};
+  TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
+
+  TS_ASSERT_EQUALS(3, triangles.GetCellCentroid(0));
+
+  // point intersecting last triangle
+  cellIdx = triangles.GetIntersectedCell(Pt3d(0.25, 0.25, 0), idxs, weights);
+  TS_ASSERT_EQUALS(0, cellIdx);
+  idxsExpected = {2, 0, 3};
+  TS_ASSERT_EQUALS(idxsExpected, idxs);
+  weightsExpected = {0.125, 0.5, 0.375};
   TS_ASSERT_EQUALS(weightsExpected, weights);
   cellIdx = triangles.GetIntersectedCell(Pt3d(0.75, 0.25, 0), idxs, weights);
   TS_ASSERT_EQUALS(0, cellIdx);
