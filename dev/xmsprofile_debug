@@ -7,7 +7,7 @@ compiler=Visual Studio
 compiler.version=14
 build_type=Debug
 [options]
-xmsextractor:xms=False
+xmsextractor:wchar_t=typedef
 xmsextractor:pybind=False
 xmsextractor:testing=True
 [build_requires]
