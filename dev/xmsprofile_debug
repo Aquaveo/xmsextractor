@@ -8,7 +8,7 @@ compiler.version=16
 build_type=Debug
 cppstd=17
 [options]
-xmsextractor:wchar_t=typedef
+xmsextractor:xms=False
 xmsextractor:pybind=False
 xmsextractor:testing=True
 [build_requires]
