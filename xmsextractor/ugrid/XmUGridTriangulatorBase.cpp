@@ -317,14 +317,9 @@ bool XmUGridTriangulatorBase::GenerateCentroidTriangles(int a_cellIdx,
   Pt3d centroid = gmComputeCentroid(polygon);
 
   // make sure the centroid is located inside the cell
-  for (size_t pointIdx = 0; pointIdx < polygon.size(); ++pointIdx)
+  if (gmPointInPolygon2D(polygon, centroid) != 1)
   {
-    const Pt3d& pt1 = polygon[pointIdx];
-    const Pt3d& pt2 = polygon[(pointIdx + 1) % numPoints];
-
-    // centroid should be to the left of each edge
-    if (gmTurn(pt1, pt2, centroid, 0.0) != TURN_LEFT)
-      return false;
+    return false;
   }
 
   // add centroid to list of points
