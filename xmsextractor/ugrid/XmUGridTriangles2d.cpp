@@ -303,11 +303,11 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
 
   // test building both cetroid and midpoints in triangle cell
   triangles.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_AND_MIDPOINTS);
-
+  double delta = 1.0e-6;
   VecPt3d triPointsOut = triangles.GetPoints();
   VecPt3d triPointsExpected = {{0, 0, 0},      {1, 0, 0},      {0.5, 1, 0},      {0.5, 0, 0},
                                {0.75, 0.5, 0}, {0.25, 0.5, 0}, {0.5, 1 / 3.0, 0}};
-  TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
+  TS_ASSERT_DELTA_VECPT3D(triPointsExpected, triPointsOut, delta);
 
   VecInt trianglesOut = triangles.GetTriangles();
   VecInt trianglesExpected = {0, 3, 6, 3, 1, 6, 1, 4, 6, 4, 2, 6, 2, 5, 6, 5, 0, 6};
@@ -329,20 +329,20 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
   idxsExpected = {4, 2, 6};
   TS_ASSERT_EQUALS(idxsExpected, idxs);
   weightsExpected = {0.0, 0.25, 0.75};
-  TS_ASSERT_EQUALS(weightsExpected, weights);
+  TS_ASSERT_DELTA_VEC(weightsExpected, weights, delta);
   cellIdx = triangles.GetIntersectedCell(Pt3d(0.5, 0.25, 0), idxs, weights);
   TS_ASSERT_EQUALS(0, cellIdx);
   idxsExpected = {0, 3, 6};
   TS_ASSERT_EQUALS(idxsExpected, idxs);
   weightsExpected = {0.0, 0.25, 0.75};
-  TS_ASSERT_EQUALS(weightsExpected, weights);
+  TS_ASSERT_DELTA_VEC(weightsExpected, weights, delta);
 
   // test building cetroid in triangle cell
   triangles.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_ONLY);
 
   triPointsOut = triangles.GetPoints();
   triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {0.5, 1, 0}, {0.5, 1 / 3.0, 0}};
-  TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
+  TS_ASSERT_DELTA_VECPT3D(triPointsExpected, triPointsOut, delta);
 
   trianglesOut = triangles.GetTriangles();
   trianglesExpected = {0, 1, 3, 1, 2, 3, 2, 0, 3};
@@ -356,19 +356,19 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
   idxsExpected = {2, 0, 3};
   TS_ASSERT_EQUALS(idxsExpected, idxs);
   weightsExpected = {0.125, 0.5, 0.375};
-  TS_ASSERT_EQUALS(weightsExpected, weights);
+  TS_ASSERT_DELTA_VEC(weightsExpected, weights, delta);
   cellIdx = triangles.GetIntersectedCell(Pt3d(0.75, 0.25, 0), idxs, weights);
   TS_ASSERT_EQUALS(0, cellIdx);
   idxsExpected = {1, 2, 3};
   TS_ASSERT_EQUALS(idxsExpected, idxs);
   weightsExpected = {0.5, 0.125, 0.375};
-  TS_ASSERT_EQUALS(weightsExpected, weights);
+  TS_ASSERT_DELTA_VEC(weightsExpected, weights, delta);
   cellIdx = triangles.GetIntersectedCell(Pt3d(0.5, 0.25, 0), idxs, weights);
   TS_ASSERT_EQUALS(0, cellIdx);
   idxsExpected = {0, 1, 3};
   TS_ASSERT_EQUALS(idxsExpected, idxs);
   weightsExpected = {0.125, 0.125, 0.75};
-  TS_ASSERT_EQUALS(weightsExpected, weights);
+  TS_ASSERT_DELTA_VEC(weightsExpected, weights, delta);
 
   // test without building centroid in triangle cell
   triangles.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_NO_POINTS);
@@ -387,7 +387,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
   idxsExpected = {0, 1, 2};
   TS_ASSERT_EQUALS(idxsExpected, idxs);
   weightsExpected = {0.375, 0.375, 0.25};
-  TS_ASSERT_EQUALS(weightsExpected, weights);
+  TS_ASSERT_DELTA_VEC(weightsExpected, weights, delta);
 
 } // XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle
 //------------------------------------------------------------------------------
@@ -468,10 +468,11 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTriangles2dCellTypes()
     {5.0, 5.0, 0.0},                               // 14 - quad centroid
     {15.0, 5.0, 0.0},                              // 15 - pixel centroid
     {23.333333333333332, 3.3333333333333335, 0.0}, // 16 - triangle centroid
-    {33.333333333333336, 10.0, 0.0}                // 17 - polygon centroid
+    {32.222222222222221, 10.0, 0.0}                // 17 - polygon centroid
   };
   // clang-format on
-  TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
+  double delta = 1.0e-6;
+  TS_ASSERT_DELTA_VECPT3D(triPointsExpected, triPointsOut, delta);
 
   VecInt trianglesOut = triangles.GetTriangles();
   // clang-format off
