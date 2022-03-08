@@ -322,6 +322,13 @@ bool XmUGridTriangulatorBase::GenerateCentroidTriangles(int a_cellIdx,
     return false;
   }
 
+  // Compute the centroid Z value from the polygon points
+  double z = 0.0;
+  for (auto &&pt : polygon)
+    z += pt.z;
+  z /= polygon.size();
+  centroid.z = z;
+
   // add centroid to list of points
   int centroidIdx = AddCentroidPoint(a_cellIdx, centroid);
 
