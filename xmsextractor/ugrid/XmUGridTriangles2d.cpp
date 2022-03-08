@@ -286,6 +286,49 @@ using namespace xms;
 
 #include <xmscore/testing/TestTools.h>
 
+#include <xmsgrid/geometry/geoms.h>
+
+namespace
+{
+//------------------------------------------------------------------------------
+/// \brief Assert two points are equal.
+/// \brief Template function returning true or false to help debug tests.
+/// \param a_file: file.
+/// \param a_line: line.
+/// \param a_pts1: First vector of points.
+/// \param a_pts2: Second vector of points.
+/// \param a_delta: Tolerance.
+//------------------------------------------------------------------------------
+template <class Pt1, class Pt2>
+void iAssertDeltaVecPt3d(const char* a_file,
+                         int a_line,
+                         const Pt1& a_pts1,
+                         const Pt2& a_pts2,
+                         double a_delta)
+{
+  if (a_pts1.size() != a_pts2.size())
+  {
+    std::stringstream msg;
+    msg << "Incorrect size Expecting size: " << a_pts1.size() << " Found size: " << a_pts2.size();
+    _TS_FAIL(a_file, a_line, msg.str().c_str());
+  }
+  else
+  {
+    for (size_t i = 0; i < a_pts1.size(); ++i)
+    {
+      if (!xms::gmEqualPointsXYZ(a_pts1.at(i).x, a_pts1.at(i).y, a_pts1.at(i).z, a_pts2.at(i).x,
+                                 a_pts2.at(i).y, a_pts2.at(i).z, a_delta))
+      {
+        std::stringstream msg;
+        msg << "Incorrect value at position : " << i << " Expecting: " << a_pts1.at(i)
+            << " Found: " << a_pts2.at(i);
+        _TS_FAIL(a_file, a_line, msg.str().c_str());
+      }
+    }
+  }
+} // iAssertDeltaVecPt3d
+} // namespace
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGridTriangles2dUnitTests
 /// \brief Class to to test XmUGridTriangles2d
@@ -307,7 +350,8 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
   VecPt3d triPointsOut = triangles.GetPoints();
   VecPt3d triPointsExpected = {{0, 0, 0},      {1, 0, 0},      {0.5, 1, 0},      {0.5, 0, 0},
                                {0.75, 0.5, 0}, {0.25, 0.5, 0}, {0.5, 1 / 3.0, 0}};
-  TS_ASSERT_DELTA_VECPT3D(triPointsExpected, triPointsOut, delta);
+
+  iAssertDeltaVecPt3d(__FILE__, __LINE__, triPointsExpected, triPointsOut, delta);
 
   VecInt trianglesOut = triangles.GetTriangles();
   VecInt trianglesExpected = {0, 3, 6, 3, 1, 6, 1, 4, 6, 4, 2, 6, 2, 5, 6, 5, 0, 6};
@@ -342,7 +386,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
 
   triPointsOut = triangles.GetPoints();
   triPointsExpected = {{0, 0, 0}, {1, 0, 0}, {0.5, 1, 0}, {0.5, 1 / 3.0, 0}};
-  TS_ASSERT_DELTA_VECPT3D(triPointsExpected, triPointsOut, delta);
+  iAssertDeltaVecPt3d(__FILE__, __LINE__, triPointsExpected, triPointsOut, delta);
 
   trianglesOut = triangles.GetTriangles();
   trianglesExpected = {0, 1, 3, 1, 2, 3, 2, 0, 3};
@@ -472,7 +516,7 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTriangles2dCellTypes()
   };
   // clang-format on
   double delta = 1.0e-6;
-  TS_ASSERT_DELTA_VECPT3D(triPointsExpected, triPointsOut, delta);
+  iAssertDeltaVecPt3d(__FILE__, __LINE__, triPointsExpected, triPointsOut, delta);
 
   VecInt trianglesOut = triangles.GetTriangles();
   // clang-format off
