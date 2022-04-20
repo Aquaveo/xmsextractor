@@ -238,8 +238,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         # expected results with point 4 inactive
         expected_interp_values = [
-            float('nan'), 4.0000, float('nan'), 8.2500,  # row 1 cells
-            float('nan'), 6.0000, float('nan'), 9.750   # row 2 cells
+            float('nan'), 4.5000, float('nan'), 8.2500,  # row 1 cells
+            float('nan'), 6.0000, float('nan'), 8.750   # row 2 cells
         ]
 
         ugrid = UGrid(points, cells)
@@ -309,8 +309,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         # expected results with point 4 inactive
         expected_interp_values = [
-            2.0, 3.4444, float('nan'), 6.75,  # row 1 cells
-            3.5, 5.7303, 5.4652, 8.25     # row 2 cells
+            2.0, 4.1274, float('nan'), 11.11,  # row 1 cells
+            4.166, 5.977, 3.622, 3.85     # row 2 cells
         ]
 
         ugrid = UGrid(points, cells)
