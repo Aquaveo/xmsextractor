@@ -80,6 +80,9 @@ public:
   ///        intersect with the grid.
   /// \param[in] a_noDataValue The no data value
   virtual void SetNoDataValue(float a_noDataValue) = 0;
+  /// \brief Set to force triangles to be split at cell center with cell data
+  /// \param[in] a_splitTrisWithCellData
+  virtual void SetSplitTrisWithCellData(bool a_splitTrisWithCellData) = 0;
 
   /// \brief Build triangles for UGrid for either point or cell scalars.
   /// \param[in] a_location Location to build on (points or cells).
@@ -106,6 +109,9 @@ public:
   /// \brief Gets the no data value
   /// \return The no data value.
   virtual float GetNoDataValue() const = 0;
+  /// \brief Gets the option for splitting triangles with cell data
+  /// \return The option.
+  virtual bool GetSplitTrisWithCellData() const = 0;
 
 private:
   XM_DISALLOW_COPY_AND_ASSIGN(XmUGrid2dDataExtractor)
