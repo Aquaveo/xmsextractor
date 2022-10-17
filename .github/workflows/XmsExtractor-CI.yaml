@@ -1,4 +1,4 @@
-name: XmsExtractor-9.0
+name: XmsExtractor-9
 
 on: [push, pull_request]
 
