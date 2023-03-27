@@ -47,9 +47,9 @@ namespace
 {
 typedef std::tuple<int, int, int> Triangle; ///< three consecutive polygon points for triangle
 typedef boost::container::flat_map<Triangle, double>
-  RatioCache; ///< ratio cache to speed up earcut calculation
+  TriDoubleCache; ///< ratio cache to speed up earcut calculation
 typedef boost::container::flat_map<Triangle, bool>
-  ValidCache; ///< valid cache to speed up earcut calculation
+  TriBoolCache; ///< valid cache to speed up earcut calculation
 
 //------------------------------------------------------------------------------
 /// \brief Calculate the magnitude of a vector.
@@ -61,13 +61,33 @@ double iMagnitude(const Pt3d& a_vec)
   return magnitude;
 } // iMagnitude
 //------------------------------------------------------------------------------
+/// \brief Find the area of two vectors times 2.
+/// \param v1 Vector 1.
+/// \param v2 Vector 2.
+/// \param area2 The returned area.
+/// \param crossZ The returned cross product Z value.
+//------------------------------------------------------------------------------
+void iFindArea2(const Pt3d& v1,
+                const Pt3d& v2,
+                double& area2,
+                double& crossZ)
+{
+  Pt3d cross;
+  gmCross3D(v2, v1, &cross);
+  crossZ = cross.z;
+  area2 = iMagnitude(cross);
+} // iFindArea2
+//------------------------------------------------------------------------------
 /// \brief Calculate a quality ratio to use to determine which triangles to cut
 ///        using earcut triangulation. Better triangles have a lower ratio.
 /// \param[in] a_points: the array the points come from
 /// \param[in] a_idx1: first point of first edge
 /// \param[in] a_idx2: second point of first edge, first point of second edge
 /// \param[in] a_idx2: second point of second edge
-/// \
+/// \param[in] a_topFace: is this a top face or a bottom face
+/// \param[out] a_areaCache: The ratio cache
+/// \param[out] a_crossZCache: The ratio cache
+/// \param[out] a_ratioCache: The ratio cache
 /// \return The ratio, -1.0 for an inverted triangle, or -2.0 for a zero area
 ///         triangle
 //------------------------------------------------------------------------------
@@ -75,32 +95,47 @@ double iGetEarcutTriangleRatio(const VecPt3d& a_points,
                                int a_idx1,
                                int a_idx2,
                                int a_idx3,
-                               RatioCache& a_ratioCache)
+                               bool a_topFace,
+                               TriDoubleCache& a_areaCache,
+                               TriDoubleCache& a_crossZCache,
+                               TriDoubleCache& a_ratioCache)
 {
   Triangle triangle(a_idx1, a_idx2, a_idx3);
-  auto ratioIter = a_ratioCache.find(triangle);
-  if (ratioIter != a_ratioCache.end())
-    return ratioIter->second;
+  auto foundRatio = a_ratioCache.find(triangle);
+  if (foundRatio != a_ratioCache.end())
+    return foundRatio->second;
 
-  Pt3d pt1 = a_points[a_idx1];
-  Pt3d pt2 = a_points[a_idx2];
-  Pt3d pt3 = a_points[a_idx3];
+  const Pt3d& pt1 = a_points[a_idx1];
+  const Pt3d& pt2 = a_points[a_idx2];
+  const Pt3d& pt3 = a_points[a_idx3];
   Pt3d v1 = pt1 - pt2;
   Pt3d v2 = pt3 - pt2;
   Pt3d v3 = pt3 - pt1;
+  double area2;
+  double crossZ;
 
-  // get 2*area
-  Pt3d cross;
-  gmCross3D(v2, v1, &cross);
+  auto foundArea = a_areaCache.find(triangle);
+  auto foundCrossZ = a_crossZCache.find(triangle);
+  if (foundArea == a_areaCache.end() || foundCrossZ == a_crossZCache.end())
+  {
+    iFindArea2(v1, v2, area2, crossZ);
+    a_areaCache[triangle] = area2;
+    a_crossZCache[triangle] = crossZ;
+  }
+  else
+  {
+    area2 = foundArea->second;
+    crossZ = foundCrossZ->second;
+  }
+
   double ratio;
-  if (cross.z <= 0.0)
+  if ((a_topFace && crossZ <= 0.0) || (!a_topFace && crossZ >= 0.0))
   {
     // inverted
     ratio = -1.0;
   }
   else
   {
-    double area2 = iMagnitude(cross);
     if (area2 == 0.0)
     {
       // degenerate triangle
@@ -117,14 +152,23 @@ double iGetEarcutTriangleRatio(const VecPt3d& a_points,
   return ratio;
 } // iGetEarcutTriangleRatio
 //------------------------------------------------------------------------------
-/// \brief
+/// \brief Is this a valid triangle?
+/// \param a_points The points
+/// \param a_polygon The triangle polygon
+/// \param a_idx1 First triangle point
+/// \param a_idx2 Second triangle point
+/// \param a_idx3 Third triangle point
+/// \param[in] a_topFace Is this a top face or a bottom face
+/// \param a_validCache Cache of valid triangles
+/// \return
 //------------------------------------------------------------------------------
 bool iValidTriangle(const VecPt3d& a_points,
-                    const VecInt a_polygon,
+                    const VecInt& a_polygon,
                     int a_idx1,
                     int a_idx2,
                     int a_idx3,
-                    ValidCache& a_validCache)
+                    bool a_topFace,
+                    TriBoolCache& a_validCache)
 {
   Triangle triangle(a_idx1, a_idx2, a_idx3);
   auto validIter = a_validCache.find(triangle);
@@ -134,14 +178,24 @@ bool iValidTriangle(const VecPt3d& a_points,
   const Pt3d& pt1 = a_points[a_idx1];
   const Pt3d& pt2 = a_points[a_idx2];
   const Pt3d& pt3 = a_points[a_idx3];
-  for (size_t pointIdx = 0; pointIdx < a_polygon.size(); ++pointIdx)
+  for (int pointIndex : a_polygon)
   {
-    int idx = a_polygon[pointIdx];
-    if (idx != a_idx1 && idx != a_idx2 && idx != a_idx3)
+    if (pointIndex != a_idx1 && pointIndex != a_idx2 && pointIndex != a_idx3)
     {
-      const Pt3d& pt = a_points[idx];
-      if (gmTurn(pt1, pt2, pt, 0.0) == TURN_LEFT && gmTurn(pt2, pt3, pt) == TURN_LEFT &&
-          gmTurn(pt3, pt1, pt, 0.0) == TURN_LEFT)
+      const Pt3d& pt = a_points[pointIndex];
+      if (a_topFace)
+      {
+        if (gmTurn(pt1, pt2, pt, 0.0) == TURN_LEFT &&
+            gmTurn(pt2, pt3, pt) == TURN_LEFT &&
+            gmTurn(pt3, pt1, pt, 0.0) == TURN_LEFT)
+        {
+          a_validCache[triangle] = false;
+          return false;
+        }
+      }
+      else if (gmTurn(pt1, pt2, pt, 0.0) == TURN_RIGHT &&
+               gmTurn(pt2, pt3, pt) == TURN_RIGHT &&
+               gmTurn(pt3, pt1, pt, 0.0) == TURN_RIGHT)
       {
         a_validCache[triangle] = false;
         return false;
@@ -152,13 +206,51 @@ bool iValidTriangle(const VecPt3d& a_points,
   a_validCache[triangle] = true;
   return true;
 } // iValidTriangle
+//------------------------------------------------------------------------------
+/// \brief Determine if cell polygon is for a top or bottom face.
+/// \param polygonIdxs The cell point indices
+/// \param points The points
+/// \param areaCache The area cache
+/// \param crossZCache The cross Z cache
+/// \return True if the cell points are counter-clock-wise.
+//------------------------------------------------------------------------------
+bool iIsTopFace(const VecInt& polygonIdxs,
+                const VecPt3d& points,
+                TriDoubleCache& areaCache,
+                TriDoubleCache& crossZCache)
+{
+  double area2Sum = 0.0;
+  int numPoints = (int)polygonIdxs.size();
+  for (int pointIdx = 0; pointIdx < numPoints; ++pointIdx)
+  {
+    int idx1 = polygonIdxs[(pointIdx + numPoints - 1) % numPoints];
+    int idx2 = polygonIdxs[pointIdx];
+    int idx3 = polygonIdxs[(pointIdx + 1) % numPoints];
+    const Pt3d& pt1 = points[idx1];
+    const Pt3d& pt2 = points[idx2];
+    const Pt3d& pt3 = points[idx3];
+    Pt3d v1 = pt1 - pt2;
+    Pt3d v2 = pt3 - pt2;
+    double area2, crossZ;
+    iFindArea2(v1, v2, area2, crossZ);
+    if (crossZ > 0.0)
+      area2Sum += area2;
+    else
+      area2Sum -= area2;
+    Triangle triangle(idx1, idx2, idx3);
+    areaCache[triangle] = area2;
+    crossZCache[triangle] = crossZ;
+  }
+  bool topFace = area2Sum > 0.0;
+  return topFace;
+} // iIsTopFace
 } // namespace
 
 class XmUGridTriangulatorBase::impl
 {
 public:
   impl();
-  virtual ~impl();
+  virtual ~impl() = default;
   BSHP<FlatMapEdgeMidpointInfo> m_midPoints;
 };
 
@@ -174,12 +266,6 @@ XmUGridTriangulatorBase::impl::impl()
 : m_midPoints(nullptr)
 {
 } // XmUGridTriangulatorBase::impl::impl
-//------------------------------------------------------------------------------
-/// \brief Destructor
-//------------------------------------------------------------------------------
-XmUGridTriangulatorBase::impl::~impl()
-{
-} // XmUGridTriangulatorBase::impl::~impl
 ////////////////////////////////////////////////////////////////////////////////
 /// \class XmUGridTriangulatorBase
 /// \brief Class to triangulate.
@@ -230,17 +316,20 @@ void XmUGridTriangulatorBase::BuildEarcutTriangles(int a_cellIdx, const VecInt& 
   VecInt polygonIdxs = a_cellPointIdxs;
   const VecPt3d& points = GetPoints();
 
+  TriDoubleCache areaCache;
+  TriDoubleCache crossZCache;
+  bool topFace = iIsTopFace(polygonIdxs, points, areaCache, crossZCache);
+
   // continually find best triangle on adjacent edges and cut it off polygon
-  RatioCache ratioCache;
-  ValidCache validCache;
+  TriDoubleCache ratioCache;
+  TriBoolCache validCache;
   while (polygonIdxs.size() >= 4)
   {
     int bestIdx = -1;
     int secondBestIdx = -1;
-
-    int numPoints = (int)polygonIdxs.size();
     double bestRatio = std::numeric_limits<double>::max();
     double secondBestRatio = std::numeric_limits<double>::max();
+    int numPoints = (int)polygonIdxs.size();
     for (int pointIdx = 0; pointIdx < numPoints; ++pointIdx)
     {
       int idx1 = polygonIdxs[(pointIdx + numPoints - 1) % numPoints];
@@ -248,10 +337,11 @@ void XmUGridTriangulatorBase::BuildEarcutTriangles(int a_cellIdx, const VecInt& 
       int idx3 = polygonIdxs[(pointIdx + 1) % numPoints];
 
       // make sure triangle is valid (not inverted and doesn't have other points in it)
-      double ratio = iGetEarcutTriangleRatio(points, idx1, idx2, idx3, ratioCache);
+      double ratio = iGetEarcutTriangleRatio(points, idx1, idx2, idx3, topFace,
+                                             areaCache, crossZCache, ratioCache);
       if (ratio > 0.0)
       {
-        if (iValidTriangle(points, polygonIdxs, idx1, idx2, idx3, validCache))
+        if (iValidTriangle(points, polygonIdxs, idx1, idx2, idx3, topFace, validCache))
         {
           if (ratio < bestRatio)
           {
@@ -326,7 +416,7 @@ bool XmUGridTriangulatorBase::GenerateCentroidTriangles(int a_cellIdx,
   double z = 0.0;
   for (auto &&pt : polygon)
     z += pt.z;
-  z /= polygon.size();
+  z /= static_cast<int>(polygon.size());
   centroid.z = z;
 
   // add centroid to list of points
