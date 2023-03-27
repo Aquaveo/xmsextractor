@@ -665,5 +665,62 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidAndEarcutTriangles()
   };
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
 } // XmUGridTriangles2dUnitTests::testBuildCentroidAndEarcutTriangles
+//------------------------------------------------------------------------------
+/// \brief Test creating triangles for centroid and earcut cells for a bottom
+/// face of a 3D cell (clock-wise ordering).
+//------------------------------------------------------------------------------
+void XmUGridTriangles2dUnitTests::testBuildCentroidAndEarcutTrianglesBottomFace()
+{
+  // 7----6---------3----2
+  // |    |         |    |
+  // |    |         |    |
+  // |    |         |    |
+  // |    |   (8)   |    |
+  // |    |         |    |
+  // |    |         |    |
+  // |    |         |    |
+  // |    5---------4    |
+  // |                   |
+  // |                   |
+  // |                   |
+  // 0-------------------1
+  // clang-format off
+  VecPt3d points = {
+    { 0,  0, 0}, // 0
+    {15,  0, 0}, // 1
+    {15, 15, 0}, // 2
+    {10, 15, 0}, // 3
+    {10,  5, 0}, // 4
+    { 5,  5, 0}, // 5
+    { 5, 15, 0}, // 6
+    { 0, 15, 0}  // 7
+  };
+
+  // Cell type (5), number of points (3), point numbers, clock-wise from plan view
+  std::vector<int> cells = {
+    XMU_POLYGON, 8, 7, 6, 5, 4, 3, 2, 1, 0,
+    XMU_QUAD, 4, 4, 5, 6, 3
+  };
+  // clang-format on
+
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  XmUGridTriangles2dImpl ugridTris;
+
+  ugridTris.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_ONLY);
+
+  VecPt3d triPointsOut = ugridTris.GetPoints();
+  VecPt3d triPointsExpected = points;
+  triPointsExpected.push_back({7.5, 10, 0});
+  TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
+
+  VecInt trianglesOut = ugridTris.GetTriangles();
+  VecInt trianglesExpected = {
+    // clang-format off
+    7, 6, 5,   4, 3, 2,   0, 7, 5,   4, 2, 1,   1, 0, 5,   5, 4, 1, // earcut
+    4, 5, 8,   5, 6, 8,   6, 3, 8,   3, 4, 8 // centroid
+    // clang-format off
+  };
+  TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
+} // XmUGridTriangles2dUnitTests::testBuildCentroidAndEarcutTrianglesBottomFace
 
 #endif
