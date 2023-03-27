@@ -29,6 +29,7 @@ public:
   void testBuildCentroidTriangles2dCellTypes();
   void testBuildEarcutTriangles();
   void testBuildCentroidAndEarcutTriangles();
+  void testBuildCentroidAndEarcutTrianglesBottomFace();
 }; // XmUGridTriangles2d
 
 #endif
