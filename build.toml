@@ -1,0 +1,47 @@
+library_name = "xmsextractor"
+description = "Extractor library for XMS products"
+has_test_files = false
+
+xms_dependencies = [
+    { name = "xmscore", version = "6.2.5-9-g8647a0cd" },
+    { name = "xmsgrid", version = "5.5.3-57-ge7f5a01" },
+    { name = "xmsinterp", version = "6.1.1-15-g039287fa"},
+]
+
+python_namespaced_dir = "extractor"
+
+library_sources = [
+    "xmsextractor/extractor/XmUGrid2dDataExtractor.cpp",
+    "xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.cpp",
+    "xmsextractor/ugrid/XmElementEdge.cpp",
+    "xmsextractor/ugrid/XmUGridTriangles2d.cpp",
+    "xmsextractor/ugrid/XmUGridTriangulator.cpp",
+    "xmsextractor/ugrid/XmUGridTriangulatorBase.cpp",
+]
+
+library_headers = [
+    "xmsextractor/extractor/XmUGrid2dDataExtractor.h",
+    "xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.h",
+    "xmsextractor/ugrid/XmElementEdge.h",
+    "xmsextractor/ugrid/XmElementMidpointInfo.h",
+    "xmsextractor/ugrid/XmUGridTriangles2d.h",
+    "xmsextractor/ugrid/XmUGridTriangulator.h",
+    "xmsextractor/ugrid/XmUGridTriangulatorBase.h",
+]
+
+testing_headers = [
+    "xmsextractor/extractor/XmUGrid2dDataExtractor.t.h",
+    "xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.t.h",
+    "xmsextractor/ugrid/XmUGridTriangles2d.t.h",
+]
+
+pybind_sources = [
+    "xmsextractor/python/xmsextractor_py.cpp",
+    "xmsextractor/python/extractor/extractor_py.cpp",
+    "xmsextractor/python/extractor/XmUGrid2dDataExtractor_py.cpp",
+    "xmsextractor/python/extractor/XmUGrid2dPolylineDataExtractor_py.cpp",
+]
+
+pybind_headers = [
+    "xmsextractor/python/extractor/extractor_py.h"
+]
