@@ -1,11 +1,12 @@
 library_name = "xmsextractor"
 description = "Extractor library for XMS products"
+version = "9.0.5"
 has_test_files = false
 
 xms_dependencies = [
-    { name = "xmscore", version = "6.2.5-9-g8647a0cd" },
-    { name = "xmsgrid", version = "5.5.3-57-ge7f5a01" },
-    { name = "xmsinterp", version = "6.1.1-15-g039287fa"},
+    { name = "xmscore", version = "6.2.5" },
+    { name = "xmsgrid", version = "7.8.5" },
+    { name = "xmsinterp", version = "6.1.1"},
 ]
 
 python_namespaced_dir = "extractor"
