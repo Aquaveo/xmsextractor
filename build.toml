@@ -1,7 +1,5 @@
 library_name = "xmsextractor"
 description = "Extractor library for XMS products"
-version = "9.0.5"
-has_test_files = false
 
 xms_dependencies = [
     { name = "xmscore", version = "6.2.5" },
