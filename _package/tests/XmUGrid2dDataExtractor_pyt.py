@@ -246,8 +246,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
-        # set point 4 inactive
-        # should cause all cells connected to point 4 to return nan
+        # Update cell activity.
         cell_activity = [True] * 8
         cell_activity[0] = False
         cell_activity[2] = False
