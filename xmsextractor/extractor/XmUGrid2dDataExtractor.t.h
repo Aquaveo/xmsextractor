@@ -40,6 +40,7 @@ public:
   void testCopiedExtractor();
 
   void testTutorial();
+  void testUninitializedScalars();
 }; // XmUGrid2dDataExtractorUnitTests
 
 #endif
