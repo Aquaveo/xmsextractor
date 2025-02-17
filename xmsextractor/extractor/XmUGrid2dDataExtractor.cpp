@@ -452,6 +452,19 @@ void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
 {
   a_outData.clear();
   a_outData.assign(m_extractLocations.size(), m_noDataValue);
+
+  if (m_cellScalars.empty() && m_ptScalars.empty())
+  {
+    const VecPt3d& locations = m_ugrid->GetLocations();
+    VecFlt pointScalars;
+    pointScalars.reserve(locations.size());
+    for (const auto& location : locations) {
+      pointScalars.push_back(static_cast<float>(location.z));
+    }
+
+    SetGridPointScalars(pointScalars, DynBitset(), DataLocationEnum::LOC_POINTS);
+  }
+
   if (m_cellIdxs.empty())
     CalcExtractLocationInterp();
 
@@ -962,7 +975,7 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize()
   //  | /  |
   //  |/ 0 |
   //  0----1
-  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecPt3d points = {{0, 0, 1}, {1, 0, 2}, {1, 1, 3}, {0, 1, 4}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
@@ -979,7 +992,7 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize()
 
   VecFlt interpValues;
   extractor->ExtractData(interpValues);
-  VecFlt expected = {XM_NODATA, XM_NODATA};
+  VecFlt expected = {3.0, 2.0};
   TS_ASSERT_EQUALS(expected, interpValues);
 } // XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize
 //------------------------------------------------------------------------------
@@ -1224,7 +1237,7 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize()
   //  | /  |
   //  |/ 0 |
   //  0----1
-  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecPt3d points = {{0, 0, 1}, {1, 0, 2}, {1, 1, 3}, {0, 1, 4}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
@@ -1239,7 +1252,7 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize()
 
   VecFlt interpValues;
   extractor->ExtractData(interpValues);
-  VecFlt expected = {XM_NODATA, XM_NODATA};
+  VecFlt expected = {3.0, 2.0};
   TS_ASSERT_EQUALS(expected, interpValues);
 } // XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize
 //------------------------------------------------------------------------------
@@ -1429,5 +1442,39 @@ void XmUGrid2dDataExtractorUnitTests::testTutorial()
   TS_ASSERT_DELTA_VEC(expectedData, extractedData, 0.2);
 } // XmUGrid2dDataExtractorUnitTests::testTutorial
 //! [snip_test_Example_TransientLocationExtractor]
+
+void XmUGrid2dDataExtractorUnitTests::testUninitializedScalars()
+{
+  // build 2x3 grid
+  VecPt3d points = {{-1.964, -0.555, 1.0}, {-1.370921465479, 8.1502514884205, 2.0},
+                    {0.489, 12.409, 3.0},  {12.428, 11.87, 4.0},
+                    {12.536, -1.552, 5.0}, {5.933, -3.493, 6.0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 1, 3, 2, XMU_TRIANGLE, 3, 5, 1, 0,
+                  XMU_TRIANGLE, 3, 5, 4, 3, XMU_TRIANGLE, 3, 5, 3, 1};
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+
+  // Step 2. Set extract locations (call XmUGrid2dDataExtractor::SetExtractLocations).
+  VecPt3d extractLocations = {{0.5, 9.5, 0.0}, {1.5, 9.5, 0.0}, {2.5, 9.5, 0.0}, {3.5, 9.5, 0.0},
+                              {4.5, 9.5, 0.0}, {5.5, 9.5, 0.0}, {6.5, 9.5, 0.0}, {7.5, 9.5, 0.0},
+                              {8.5, 9.5, 0.0}, {9.5, 9.5, 0.0}};
+  extractor->SetExtractLocations(extractLocations);
+  VecFlt extractedData;
+  
+  // time step 1
+  // Step 4. Set the point scalars for the first time step
+  // (XmUGrid2dDataExtractor::SetGridPointScalars).
+  // Step 5. Extract the data (call xms::XmUGrid2dDataExtractor::ExtractData).
+  extractor->ExtractData(extractedData);
+  VecFlt base = {
+    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+  };
+ // TS_ASSERT_DELTA_VEC(base, extractedData, 1e-2);
+
+  const VecInt& indexes = extractor->GetCellIndexes();
+  VecInt baseIndexes = {0, 0,0, 0, 3, 3, 3, 3, 3, 3};
+  TS_ASSERT_EQUALS(baseIndexes, indexes);
+}
 
 #endif

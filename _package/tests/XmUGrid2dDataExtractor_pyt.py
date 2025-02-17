@@ -146,14 +146,10 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         point_scalars = [1, 2, 3]
         activity = [True, False]
-        extractor.set_grid_point_scalars(point_scalars, activity, 'points')
+        with self.assertRaises(ValueError) as context:
+            extractor.set_grid_point_scalars(point_scalars, activity, 'points')
 
-        extract_locations = [(0.25, 0.75, 100.0), (0.75, 0.25, 0.0)]
-        extractor.extract_locations = extract_locations
-
-        interp_values = extractor.extract_data()
-        expected = [float('nan'), float('nan')]
-        np.testing.assert_array_equal(expected, interp_values)
+        self.assertIn('Number of scalars must match number of grid points', str(context.exception))
 
     def test_cell_scalars_only(self):
         """Test extractor with cell scalars only."""
@@ -246,8 +242,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         extractor = UGrid2dDataExtractor(ugrid)
         self.assertIsInstance(extractor, UGrid2dDataExtractor)
 
-        # set point 4 inactive
-        # should cause all cells connected to point 4 to return nan
+        # Update cell activity.
         cell_activity = [True] * 8
         cell_activity[0] = False
         cell_activity[2] = False
@@ -374,13 +369,10 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         cell_scalars = [1]
         activity = [False]
-        extractor.set_grid_cell_scalars(cell_scalars, activity, 'cells')
-        extract_locations = [(0.25, 0.75, 100.0), (0.75, 0.25, 0.0)]
-        extractor.extract_locations = extract_locations
+        with self.assertRaises(ValueError) as context:
+            extractor.set_grid_cell_scalars(cell_scalars, activity, 'cells')
 
-        interp_values = extractor.extract_data()
-        expected = [float('nan'), float('nan')]
-        np.testing.assert_array_equal(expected, interp_values)
+        self.assertIn('Number of scalars must match number of grid cells', str(context.exception))
 
     def test_changing_scalars_and_activity(self):
         """Test extractor going through time steps with cell and point scalars."""

@@ -1,4 +1,6 @@
 """Extract data from a UGrid2d at specified locations."""
+from xms.grid.ugrid import UGrid
+
 from ._xmsextractor import extractor
 
 
@@ -10,8 +12,15 @@ class UGrid2dDataExtractor(object):
         'unknown': extractor.data_location_enum.LOC_UNKNOWN,
     }
 
-    def __init__(self, ugrid=None, **kwargs):
-        """Constructor.
+    def __init__(self, ugrid: UGrid = None, **kwargs):
+        """
+        Constructor.
+
+        Typical use is to set the points you want data for with self.extract_locations, set the scalar values for
+        the grid with self.set_grid_point_scalars or self.set_grid_cell_scalars, then call self.extract data to get the
+        extracted data.
+
+        If scalar values are not set, then the grid's elevation data will be used by default.
 
         Args:
             ugrid (UGrid2d): The ugrid to extract data from
@@ -23,6 +32,7 @@ class UGrid2dDataExtractor(object):
             if ugrid is None:
                 raise ValueError("ugrid is a required argument")
             self._instance = extractor.UGrid2dDataExtractor(ugrid._instance)
+            self._ugrid = ugrid
 
     def _check_data_locations(self, location_str):
         """Raise an exception if the specified location string is invalid.
@@ -38,12 +48,17 @@ class UGrid2dDataExtractor(object):
     def set_grid_point_scalars(self, point_scalars, activity, activity_type):
         """Setup point scalars to be used to extract interpolated data.
 
+        There must be as many scalars as the grid has points.
+
         Args:
             point_scalars (iterable): The point scalars.
             activity (iterable): The activity of the cells.
             activity_type (string): The location at which the data is currently stored. One of 'points', 'cells',
                 or 'unknown'
         """
+        if len(point_scalars) != self._ugrid.point_count:
+            raise ValueError('Number of scalars must match number of grid points')
+
         self._check_data_locations(activity_type)
         data_location = self.data_locations[activity_type]
         self._instance.SetGridPointScalars(point_scalars, activity, data_location)
@@ -51,12 +66,17 @@ class UGrid2dDataExtractor(object):
     def set_grid_cell_scalars(self, cell_scalars, activity, activity_type):
         """Setup cell scalars to be used to extract interpolated data.
 
+        There must be as many scalars as the grid has cells.
+
         Args:
             cell_scalars (iterable): The cell scalars.
             activity (iterable): The activity of the cells.
             activity_type (string): The location at which the data is currently stored. One of 'points', 'cells',
                 or 'unknown'
         """
+        if len(cell_scalars) != self._ugrid.cell_count:
+            raise ValueError('Number of scalars must match number of grid cells')
+
         self._check_data_locations(activity_type)
         data_location = self.data_locations[activity_type]
         self._instance.SetGridCellScalars(cell_scalars, activity, data_location)
@@ -70,7 +90,7 @@ class UGrid2dDataExtractor(object):
         return self._instance.ExtractData()
 
     def extract_at_location(self, location):
-        """Extract interpolated data for the previously set locations.
+        """Extract interpolated data for a single location.
 
         Args:
             location: The location to get the interpolated scalar.
@@ -92,7 +112,11 @@ class UGrid2dDataExtractor(object):
 
     @property
     def cell_indexes(self):
-        """Cell indexes for the extract location."""
+        """
+        Cell indexes for the extract location.
+
+        This is initialized by self.extract_data.
+        """
         return self._instance.GetCellIndexes()
 
     @property
