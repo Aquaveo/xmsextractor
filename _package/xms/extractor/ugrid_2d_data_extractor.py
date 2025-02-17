@@ -12,7 +12,7 @@ class UGrid2dDataExtractor(object):
         'unknown': extractor.data_location_enum.LOC_UNKNOWN,
     }
 
-    def __init__(self, ugrid: UGrid=None, **kwargs):
+    def __init__(self, ugrid: UGrid = None, **kwargs):
         """
         Constructor.
 
