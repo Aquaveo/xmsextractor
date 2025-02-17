@@ -169,6 +169,7 @@ void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalar
   if (a_pointScalars.size() != m_ugrid->GetPointCount())
   {
     XM_LOG(xmlog::debug, "Invalid point scalar size in 2D data extractor.");
+    return;
   }
 
   BuildTriangles(LOC_POINTS);
@@ -193,6 +194,7 @@ void XmUGrid2dDataExtractorImpl::SetGridCellScalars(const VecFlt& a_cellScalars,
   if ((int)a_cellScalars.size() != m_ugrid->GetCellCount())
   {
     XM_LOG(xmlog::debug, "Invalid cell scalar size in 2D data extractor.");
+    return;
   }
 
   BuildTriangles(LOC_CELLS);
@@ -221,7 +223,7 @@ void XmUGrid2dDataExtractorImpl::ExtractData(VecFlt& a_outData)
   a_outData.reserve(m_extractLocations.size());
   m_cellIdxs.assign(m_extractLocations.size(), -1);
 
-  if (m_cellScalars.empty() && m_ptScalars.empty())
+  if (m_pointScalars.empty())
   {
     const VecPt3d& locations = m_ugrid->GetLocations();
     VecFlt pointScalars;
