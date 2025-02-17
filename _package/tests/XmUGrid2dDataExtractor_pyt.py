@@ -150,7 +150,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             extractor.set_grid_point_scalars(point_scalars, activity, 'points')
 
-        self.assertIn('Number of scalars must match number of grid points', str(context))
+        self.assertIn('Number of scalars must match number of grid points', str(context.exception))
 
     def test_cell_scalars_only(self):
         """Test extractor with cell scalars only."""
@@ -373,7 +373,7 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             extractor.set_grid_cell_scalars(cell_scalars, activity, 'cells')
 
-        self.assertIn('Number of scalars must match number of grid cells', str(context))
+        self.assertIn('Number of scalars must match number of grid cells', str(context.exception))
 
     def test_changing_scalars_and_activity(self):
         """Test extractor going through time steps with cell and point scalars."""
