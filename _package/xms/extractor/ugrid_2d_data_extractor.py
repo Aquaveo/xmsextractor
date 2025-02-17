@@ -75,7 +75,7 @@ class UGrid2dDataExtractor(object):
                 or 'unknown'
         """
         if len(cell_scalars) != self._ugrid.cell_count:
-            raise ValueError('Number of scalars must match number of grid points')
+            raise ValueError('Number of scalars must match number of grid cells')
 
         self._check_data_locations(activity_type)
         data_location = self.data_locations[activity_type]
