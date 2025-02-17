@@ -2,6 +2,7 @@
 import unittest
 
 import numpy as np
+import pytest
 
 from xms.grid.ugrid import UGrid
 
@@ -146,14 +147,9 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         point_scalars = [1, 2, 3]
         activity = [True, False]
-        extractor.set_grid_point_scalars(point_scalars, activity, 'points')
 
-        extract_locations = [(0.25, 0.75, 100.0), (0.75, 0.25, 0.0)]
-        extractor.extract_locations = extract_locations
-
-        interp_values = extractor.extract_data()
-        expected = [1.0, float('nan')]
-        np.testing.assert_array_equal(expected, interp_values)
+        with pytest.raises(ValueError):
+            extractor.set_grid_point_scalars(point_scalars, activity, 'points')
 
     def test_cell_scalars_only(self):
         """Test extractor with cell scalars only."""
@@ -373,13 +369,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         cell_scalars = [1]
         activity = [False]
-        extractor.set_grid_cell_scalars(cell_scalars, activity, 'cells')
-        extract_locations = [(0.25, 0.75, 100.0), (0.75, 0.25, 0.0)]
-        extractor.extract_locations = extract_locations
-
-        interp_values = extractor.extract_data()
-        expected = [0.0, float('nan')]
-        np.testing.assert_array_equal(expected, interp_values)
+        with pytest.raises(ValueError):
+            extractor.set_grid_cell_scalars(cell_scalars, activity, 'cells')
 
     def test_changing_scalars_and_activity(self):
         """Test extractor going through time steps with cell and point scalars."""
