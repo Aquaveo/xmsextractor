@@ -30,6 +30,7 @@ public:
   void testBuildEarcutTriangles();
   void testBuildCentroidAndEarcutTriangles();
   void testBuildCentroidAndEarcutTrianglesBottomFace();
+  void testBuildCentroidsAndMidpointsNotOnTris();
 }; // XmUGridTriangles2d
 
 #endif
