@@ -10,15 +10,6 @@
 
 #include <xmsextractor/python/ugrid/ugrid_py.h>
 
-#include <sstream>
-
-#include <xmscore/misc/StringUtil.h>
-#include <xmscore/python/misc/PyUtils.h>
-
-#include <xmsextractor/python/extractor/extractor_py.h>
-#include <xmsextractor/extractor/XmUGrid2dDataExtractor.h>
-#include <xmsextractor/extractor/XmUGrid2dPolylineDataExtractor.h>
-
 //----- Namespace declaration --------------------------------------------------
 namespace py = pybind11;
 

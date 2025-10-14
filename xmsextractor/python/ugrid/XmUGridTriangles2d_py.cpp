@@ -7,19 +7,11 @@
 
 //----- Included files ---------------------------------------------------------
 #include <pybind11/pybind11.h>
-#include <pybind11/numpy.h>
 
 #include <boost/shared_ptr.hpp>
 
-#include <xmscore/python/misc/PyUtils.h>
-#include <xmscore/misc/DynBitset.h>
-#include <xmscore/stl/vector.h>
 #include <xmsgrid/ugrid/XmUGrid.h>
 
-#include <xmsextractor/extractor/XmUGrid2dDataExtractor.h>
-#include <xmsextractor/python/extractor/extractor_py.h>
-#include <xmsextractor/ugrid/XmUGridTriangles2d.h>
-#include <xmsgrid/ugrid/XmUGrid.h>
 #include <xmsextractor/ugrid/XmUGridTriangles2d.h>
 
 //----- Namespace declaration --------------------------------------------------
