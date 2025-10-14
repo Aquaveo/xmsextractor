@@ -117,10 +117,14 @@ set(xmsextractor_py
   xmsextractor/python/extractor/extractor_py.cpp
   xmsextractor/python/extractor/XmUGrid2dDataExtractor_py.cpp
   xmsextractor/python/extractor/XmUGrid2dPolylineDataExtractor_py.cpp
+  # ugrid
+  xmsextractor/python/ugrid/ugrid_py.cpp
+  xmsextractor/python/ugrid/XmUGridTriangles2d_py.cpp
 )
 
 set(xmsextractor_py_headers
   xmsextractor/python/extractor/extractor_py.h
+  xmsextractor/python/ugrid/ugrid_py.h
 )
 
 # Tests
