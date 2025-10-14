@@ -3,9 +3,6 @@
 __copyright__ = "(C) Copyright Aquaveo 2025"
 __license__ = "All rights reserved"
 
-from xms.constraint import read_grid_from_file, UGridBuilder
-
-from xms.extractor.ugrid_triangles import triangulate_ugrid
 
 # 1. Standard Python modules
 
@@ -13,20 +10,14 @@ from xms.extractor.ugrid_triangles import triangulate_ugrid
 import numpy as np
 
 # 3. Aquaveo modules
+from xms.grid.ugrid import UGrid
 
 # 4. Local modules
-from xms.grid.ugrid import ugrid, UGrid
-
-
-def save_grid(grid: UGrid, where):
-    builder = UGridBuilder()
-    builder.set_ugrid(grid)
-    new_grid = builder.build_grid()
-    new_grid.write_to_file(where, binary_arrays=False)
+from xms.extractor.ugrid_triangles import triangulate_ugrid
 
 
 def test_triangulator():
-    """
+    r"""
     Test triangulating a grid.
 
     6    7----8
@@ -36,7 +27,7 @@ def test_triangulator():
     |    |    |
     |    |    |
     0----1----2
-  """
+    """
     points = [
         (0.0, 0.0, 0.0),
         (1.0, 0.0, 0.0),
@@ -75,10 +66,7 @@ def test_triangulator():
         6,
     ]
     grid = UGrid(points, cells)
-    save_grid(grid, 'c:/temp/original.xmc')
     triangulated_grid = triangulate_ugrid(grid)
-
-    save_grid(triangulated_grid, 'c:/temp/triangulated.xmc')
 
     expected_points = [
         (0.0, 0.0, 0.0),

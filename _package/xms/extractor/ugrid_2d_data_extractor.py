@@ -1,4 +1,12 @@
 """Extract data from a UGrid2d at specified locations."""
+
+# 1. Standard Python modules
+
+# 2. Third party modules
+
+# 3. Aquaveo modules
+
+# 4. Local modules
 from ._xmsextractor import extractor
 
 

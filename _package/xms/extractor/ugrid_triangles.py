@@ -1,26 +1,35 @@
-""""""
+"""Module for UGrid triangulation."""
 
 __copyright__ = "(C) Copyright Aquaveo 2025"
 __license__ = "All rights reserved"
 __all__ = ['triangulate_ugrid']
 
-from xms.grid.ugrid import UGrid
-from xms.constraint.ugrid_2d import UGrid2d as CoGrid
 
 # 1. Standard Python modules
 
 # 2. Third party modules
 
 # 3. Aquaveo modules
+from xms.constraint.ugrid_2d import UGrid2d as CoGrid
+from xms.grid.ugrid import UGrid
 
 # 4. Local modules
 from ._xmsextractor.extractor import triangulate_ugrid as internal_triangulate_ugrid
 
-from xms.grid.ugrid.ugrid import XmUGrid
-
 
 def triangulate_ugrid(ugrid: UGrid | CoGrid) -> UGrid:
+    """
+    Triangulate a UGrid.
 
+    Triangulation inserts cell centroids and side centers into all non-triangle cells, then splits those cells into
+    triangles. Cells which are already triangles are left unchanged.
+
+    Args:
+        ugrid: The UGrid to triangulate.
+
+    Returns:
+        A triangulated UGrid.
+    """
     if isinstance(ugrid, CoGrid):
         ugrid = ugrid.ugrid
 
