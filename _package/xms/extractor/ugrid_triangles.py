@@ -18,6 +18,7 @@ from ._xmsextractor.extractor import triangulate_ugrid as internal_triangulate_u
 
 from xms.grid.ugrid.ugrid import XmUGrid
 
+
 def triangulate_ugrid(ugrid: UGrid | CoGrid) -> UGrid:
 
     if isinstance(ugrid, CoGrid):

@@ -7,7 +7,6 @@ from xms.constraint import read_grid_from_file, UGridBuilder
 
 from xms.extractor.ugrid_triangles import triangulate_ugrid
 
-
 # 1. Standard Python modules
 
 # 2. Third party modules
@@ -39,23 +38,25 @@ def test_triangulator():
     0----1----2
   """
     points = [
-       (0.0, 0.0, 0.0),
-       (1.0, 0.0, 0.0),
-       (2.0, 0.0, 0.0),
-       (0.0, 1.0, 0.0),
-       (1.0, 1.0, 0.0),
-       (2.0, 1.0, 0.0),
-       (0.0, 2.0, 0.0),
-       (1.0, 2.0, 0.0),
-       (2.0, 2.0, 0.0),
+        (0.0, 0.0, 0.0),
+        (1.0, 0.0, 0.0),
+        (2.0, 0.0, 0.0),
+        (0.0, 1.0, 0.0),
+        (1.0, 1.0, 0.0),
+        (2.0, 1.0, 0.0),
+        (0.0, 2.0, 0.0),
+        (1.0, 2.0, 0.0),
+        (2.0, 2.0, 0.0),
     ]
 
+    # yapf: disable
     cells = [
         UGrid.cell_type_enum.QUAD, 4, 0, 1, 4, 3,
         UGrid.cell_type_enum.QUAD, 4, 1, 2, 5, 4,
         UGrid.cell_type_enum.QUAD, 4, 4, 5, 8, 7,
         UGrid.cell_type_enum.TRIANGLE, 3, 3, 4, 6,
     ]
+    # yapf: enable
     grid = UGrid(points, cells)
     save_grid(grid, 'c:/temp/original.xmc')
     triangulated_grid = triangulate_ugrid(grid)
@@ -63,14 +64,32 @@ def test_triangulator():
     save_grid(triangulated_grid, 'c:/temp/triangulated.xmc')
 
     expected_points = [
-    (0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (2.0, 0.0, 0.0), (0.0, 1.0, 0.0), (1.0, 1.0, 0.0),
-    (2.0, 1.0, 0.0), (0.0, 2.0, 0.0), (1.0, 2.0, 0.0), (2.0, 2.0, 0.0), (0.5, 0.0, 0.0),
-    (1.0, 0.5, 0.0), (0.5, 1.0, 0.0), (0.0, 0.5, 0.0), (0.5, 0.5, 0.0), (1.5, 0.0, 0.0),
-    (2.0, 0.5, 0.0), (1.5, 1.0, 0.0), (1.5, 0.5, 0.0), (2.0, 1.5, 0.0), (1.5, 2.0, 0.0),
-    (1.0, 1.5, 0.0), (1.5, 1.5, 0.0),
+        (0.0, 0.0, 0.0),
+        (1.0, 0.0, 0.0),
+        (2.0, 0.0, 0.0),
+        (0.0, 1.0, 0.0),
+        (1.0, 1.0, 0.0),
+        (2.0, 1.0, 0.0),
+        (0.0, 2.0, 0.0),
+        (1.0, 2.0, 0.0),
+        (2.0, 2.0, 0.0),
+        (0.5, 0.0, 0.0),
+        (1.0, 0.5, 0.0),
+        (0.5, 1.0, 0.0),
+        (0.0, 0.5, 0.0),
+        (0.5, 0.5, 0.0),
+        (1.5, 0.0, 0.0),
+        (2.0, 0.5, 0.0),
+        (1.5, 1.0, 0.0),
+        (1.5, 0.5, 0.0),
+        (2.0, 1.5, 0.0),
+        (1.5, 2.0, 0.0),
+        (1.0, 1.5, 0.0),
+        (1.5, 1.5, 0.0),
     ]
-    assert np.array_equal(triangulated_grid.locations , expected_points)
+    assert np.array_equal(triangulated_grid.locations, expected_points)
 
+    # yapf: disable
     expected_cells = [
         UGrid.cell_type_enum.TRIANGLE, 3, 0, 9, 13,
         UGrid.cell_type_enum.TRIANGLE, 3, 9, 1, 13,
@@ -98,5 +117,6 @@ def test_triangulator():
         UGrid.cell_type_enum.TRIANGLE, 3, 20, 4, 21,
         UGrid.cell_type_enum.TRIANGLE, 3, 3, 4, 6
     ]
+    # yapf: enable
     expected_cells = [int(cell) for cell in expected_cells]
     assert np.array_equal(triangulated_grid.cellstream, expected_cells)
