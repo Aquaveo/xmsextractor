@@ -52,9 +52,6 @@ public:
   /// \brief Set triangle activity based on each triangles cell.
   /// \param[in] a_cellActivity The cell activity to set on the triangles.
   virtual void SetCellActivity(const DynBitset& a_cellActivity) = 0;
-  /// \brief Set to force triangles to be split at cell center with cell data
-  /// \param[in] a_splitTrisWithCellData
-  virtual void SetSplitTrisWithCellData(bool a_splitTrisWithCellData) = 0;
 
   /// \brief Get the generated triangle points.
   /// \return The triangle points
