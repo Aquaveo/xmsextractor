@@ -31,6 +31,9 @@ public:
   void testBuildCentroidAndEarcutTriangles();
   void testBuildCentroidAndEarcutTrianglesBottomFace();
   void testBuildCentroidsAndMidpointsNotOnTris();
+  
+  // This one is a free-standing function.
+  void testTriangulateUGrid();
 }; // XmUGridTriangles2d
 
 #endif

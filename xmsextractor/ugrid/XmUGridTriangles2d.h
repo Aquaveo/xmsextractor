@@ -96,5 +96,6 @@ private:
 };
 
 //----- Function prototypes ----------------------------------------------------
+std::shared_ptr<XmUGrid> XmTriangulateUGrid(std::shared_ptr<XmUGrid> a_ugrid);
 
 } // namespace xms

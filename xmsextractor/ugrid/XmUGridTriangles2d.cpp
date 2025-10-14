@@ -276,6 +276,37 @@ XmUGridTriangles2d::XmUGridTriangles2d()
 XmUGridTriangles2d::~XmUGridTriangles2d()
 {
 } // XmUGridTriangles2d::XmUGridTriangles2d
+
+//------------------------------------------------------------------------------
+/// \brief Triangulate all the non-triangular cells in a UGrid.
+/// 
+///        Any cells that are not triangular will have centroids and side
+///        centers added, then be filled in with triangles.
+/// \args: a_ugrid: The UGrid to triangulate cells in.
+//------------------------------------------------------------------------------
+std::shared_ptr<XmUGrid> XmTriangulateUGrid(std::shared_ptr<XmUGrid> a_ugrid)
+{
+  BSHP<xms::XmUGridTriangles2d> triangulator = xms::XmUGridTriangles2d::New();
+  triangulator->BuildTriangles(*a_ugrid,
+                               xms::XmUGridTriangles2d::PO_CENTROIDS_AND_MIDPOINTS_SKIP_TRIS);
+
+  const BSHP<xms::VecPt3d> points = triangulator->GetPointsPtr();
+  const BSHP<xms::VecInt> tris = triangulator->GetTrianglesPtr();
+
+  xms::VecInt cells;
+  for (size_t i = 0; i + 2 < tris->size(); i += 3)
+  {
+    cells.push_back(xms::XMU_TRIANGLE);
+    cells.push_back(3);
+    cells.push_back((*tris)[i]);
+    cells.push_back((*tris)[i + 1]);
+    cells.push_back((*tris)[i + 2]);
+  }
+
+  std::shared_ptr<xms::XmUGrid> grid = xms::XmUGrid::New(*points, cells);
+  return grid;
+} // XmTriangulateUGrid
+
 } // namespace xms
 
 #ifdef CXX_TEST
@@ -739,7 +770,6 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidsAndMidpointsNotOnTris()
   // clang-format on
 
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
-  XmWriteUGridToAsciiFile(ugrid, "C:/temp/ugrid.xmc");
   XmUGridTriangles2dImpl ugridTris;
 
   ugridTris.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_AND_MIDPOINTS_SKIP_TRIS);
@@ -763,5 +793,66 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidsAndMidpointsNotOnTris()
                               8,  19, 21, 19, 7,  21, 7,  20, 21, 20, 4,  21, 3,  4,  6};
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
 } // XmUGridTriangles2dUnitTests::testBuildCentroidsAndMidpointsNotOnTris
+
+//------------------------------------------------------------------------------
+/// \brief Test triangulating a UGrid.
+//------------------------------------------------------------------------------
+void XmUGridTriangles2dUnitTests::testTriangulateUGrid()
+{
+  // 6    7----8
+  // |\   |    |
+  // |  \ |    |
+  // 3----4----5
+  // |    |    |
+  // |    |    |
+  // 0----1----2
+  // clang-format off
+  VecPt3d points = {
+    {0.0, 0.0, 0.0}, // 0
+    {1.0, 0.0, 0.0}, // 1
+    {2.0, 0.0, 0.0}, // 2
+    {0.0, 1.0, 0.0}, // 3
+    {1.0, 1.0, 0.0}, // 4
+    {2.0, 1.0, 0.0}, // 5
+    {0.0, 2.0, 0.0}, // 6
+    {1.0, 2.0, 0.0}, // 7
+    {2.0, 2.0, 0.0}, // 8
+  };
+
+  std::vector<int> cells = {
+    XMU_QUAD, 4, 0, 1, 4, 3,
+    XMU_QUAD, 4, 1, 2, 5, 4,
+    XMU_QUAD, 4, 4, 5, 8, 7,
+    XMU_TRIANGLE, 3, 3, 4, 6,
+  };
+  // clang-format on
+
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  std::shared_ptr<XmUGrid> triangulated = XmTriangulateUGrid(ugrid);
+
+  const VecPt3d& triangulatedPoints = triangulated->GetLocations();
+  const VecPt3d& expectedTriangulatedPoints = {
+    {0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {2.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {1.0, 1.0, 0.0},
+    {2.0, 1.0, 0.0}, {0.0, 2.0, 0.0}, {1.0, 2.0, 0.0}, {2.0, 2.0, 0.0}, {0.5, 0.0, 0.0},
+    {1.0, 0.5, 0.0}, {0.5, 1.0, 0.0}, {0.0, 0.5, 0.0}, {0.5, 0.5, 0.0}, {1.5, 0.0, 0.0},
+    {2.0, 0.5, 0.0}, {1.5, 1.0, 0.0}, {1.5, 0.5, 0.0}, {2.0, 1.5, 0.0}, {1.5, 2.0, 0.0},
+    {1.0, 1.5, 0.0}, {1.5, 1.5, 0.0},
+  };
+  TS_ASSERT_EQUALS(triangulatedPoints, expectedTriangulatedPoints);
+
+  const VecInt& triangulatedStream = triangulated->GetCellstream();
+  const VecInt& expectedTriangulatedStream = {
+    XMU_TRIANGLE, 3, 0,  9,  13, XMU_TRIANGLE, 3, 9,  1,  13, XMU_TRIANGLE, 3, 1,  10, 13,
+    XMU_TRIANGLE, 3, 10, 4,  13, XMU_TRIANGLE, 3, 4,  11, 13, XMU_TRIANGLE, 3, 11, 3,  13,
+    XMU_TRIANGLE, 3, 3,  12, 13, XMU_TRIANGLE, 3, 12, 0,  13, XMU_TRIANGLE, 3, 1,  14, 17,
+    XMU_TRIANGLE, 3, 14, 2,  17, XMU_TRIANGLE, 3, 2,  15, 17, XMU_TRIANGLE, 3, 15, 5,  17,
+    XMU_TRIANGLE, 3, 5,  16, 17, XMU_TRIANGLE, 3, 16, 4,  17, XMU_TRIANGLE, 3, 4,  10, 17,
+    XMU_TRIANGLE, 3, 10, 1,  17, XMU_TRIANGLE, 3, 4,  16, 21, XMU_TRIANGLE, 3, 16, 5,  21,
+    XMU_TRIANGLE, 3, 5,  18, 21, XMU_TRIANGLE, 3, 18, 8,  21, XMU_TRIANGLE, 3, 8,  19, 21,
+    XMU_TRIANGLE, 3, 19, 7,  21, XMU_TRIANGLE, 3, 7,  20, 21, XMU_TRIANGLE, 3, 20, 4,  21,
+    XMU_TRIANGLE, 3, 3,  4,  6
+  };
+  TS_ASSERT_EQUALS(triangulatedStream, expectedTriangulatedStream);
+} // XmUGridTriangles2dUnitTests::testTriangulateUGrid
 
 #endif
