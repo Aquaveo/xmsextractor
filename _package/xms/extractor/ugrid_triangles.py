@@ -10,14 +10,13 @@ __all__ = ['triangulate_ugrid']
 # 2. Third party modules
 
 # 3. Aquaveo modules
-from xms.constraint.grid import Grid as CoGrid
 from xms.grid.ugrid import UGrid
 
 # 4. Local modules
 from ._xmsextractor.extractor import triangulate_ugrid as internal_triangulate_ugrid
 
 
-def triangulate_ugrid(ugrid: UGrid | CoGrid) -> UGrid:
+def triangulate_ugrid(ugrid: UGrid) -> UGrid:
     """
     Triangulate a UGrid.
 
@@ -30,9 +29,6 @@ def triangulate_ugrid(ugrid: UGrid | CoGrid) -> UGrid:
     Returns:
         A triangulated UGrid.
     """
-    if isinstance(ugrid, CoGrid):
-        ugrid = ugrid.ugrid
-
     # Would be nice to avoid ._instance, but we can't send the Python grid to C++.
     xm_ugrid = internal_triangulate_ugrid(ugrid._instance)
     # ...and now we have to wrap the C++ instance back up for Python.
