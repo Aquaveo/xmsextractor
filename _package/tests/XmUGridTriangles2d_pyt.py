@@ -17,17 +17,16 @@ from xms.extractor.ugrid_triangles import triangulate_ugrid
 
 
 def test_triangulator():
-    r"""
-    Test triangulating a grid.
-
-    6    7----8
-    |\   |    |
-    |  \ |    |
-    3----4----5
-    |    |    |
-    |    |    |
-    0----1----2
     """
+    Test triangulating a grid.
+    """
+    # 6    7----8
+    # |\   |    |
+    # |  \ |    |
+    # 3----4----5
+    # |    |    |
+    # |    |    |
+    # 0----1----2
     points = [
         (0.0, 0.0, 0.0),
         (1.0, 0.0, 0.0),
