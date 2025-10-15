@@ -92,7 +92,8 @@ void XmUGridTriangles2dImpl::BuildTriangles(const XmUGrid& a_ugrid, PointOptionE
 
   int numCells = a_ugrid.GetCellCount();
   VecInt cellPoints;
-  bool createMidpoints = a_pointOption == PO_CENTROIDS_AND_MIDPOINTS;
+  bool createMidpoints = (a_pointOption == PO_CENTROIDS_AND_MIDPOINTS || a_pointOption == PO_CENTROIDS_AND_MIDPOINTS_SKIP_TRIS);
+  bool createAllMidpoints = (a_pointOption == PO_CENTROIDS_AND_MIDPOINTS);
   if (createMidpoints)
     m_triangulator->InitMidpoints();
   for (int cellIdx = 0; cellIdx < numCells; ++cellIdx)
@@ -100,7 +101,7 @@ void XmUGridTriangles2dImpl::BuildTriangles(const XmUGrid& a_ugrid, PointOptionE
     if (a_ugrid.GetCellDimension(cellIdx) != 2)
       continue;
     a_ugrid.GetCellPoints(cellIdx, cellPoints);
-    if (createMidpoints)
+    if (createMidpoints && (createAllMidpoints || cellPoints.size() != 3))
     {
       int nPts = (int)cellPoints.size();
       int i = 0;
@@ -703,5 +704,64 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidAndEarcutTrianglesBottomFace(
   };
   TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
 } // XmUGridTriangles2dUnitTests::testBuildCentroidAndEarcutTrianglesBottomFace
+
+//------------------------------------------------------------------------------
+/// \brief Test creating centroids and midpoints, but only for non-tri cells.
+//------------------------------------------------------------------------------
+void XmUGridTriangles2dUnitTests::testBuildCentroidsAndMidpointsNotOnTris()
+{
+  // 6    7----8
+  // |\   |    |
+  // |  \ |    |
+  // 3----4----5
+  // |    |    |
+  // |    |    |
+  // 0----1----2
+  // clang-format off
+  VecPt3d points = {
+    {0.0, 0.0, 0.0}, // 0
+    {1.0, 0.0, 0.0}, // 1
+    {2.0, 0.0, 0.0}, // 2
+    {0.0, 1.0, 0.0}, // 3
+    {1.0, 1.0, 0.0}, // 4
+    {2.0, 1.0, 0.0}, // 5
+    {0.0, 2.0, 0.0}, // 6
+    {1.0, 2.0, 0.0}, // 7
+    {2.0, 2.0, 0.0}, // 8
+  };
+
+  std::vector<int> cells = {
+    XMU_QUAD, 4, 0, 1, 4, 3,
+    XMU_QUAD, 4, 1, 2, 5, 4,
+    XMU_QUAD, 4, 4, 5, 8, 7,
+    XMU_TRIANGLE, 3, 3, 4, 6,
+  };
+  // clang-format on
+
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  XmWriteUGridToAsciiFile(ugrid, "C:/temp/ugrid.xmc");
+  XmUGridTriangles2dImpl ugridTris;
+
+  ugridTris.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_AND_MIDPOINTS_SKIP_TRIS);
+
+  VecPt3d triPointsOut = ugridTris.GetPoints();
+  VecPt3d triPointsExpected = {
+    {0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, {2.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {1.0, 1.0, 0.0},
+    {2.0, 1.0, 0.0}, {0.0, 2.0, 0.0}, {1.0, 2.0, 0.0}, {2.0, 2.0, 0.0}, {0.5, 0.0, 0.0},
+    {1.0, 0.5, 0.0}, {0.5, 1.0, 0.0}, {0.0, 0.5, 0.0}, {0.5, 0.5, 0.0}, {1.5, 0.0, 0.0},
+    {2.0, 0.5, 0.0}, {1.5, 1.0, 0.0}, {1.5, 0.5, 0.0}, {2.0, 1.5, 0.0}, {1.5, 2.0, 0.0},
+    {1.0, 1.5, 0.0}, {1.5, 1.5, 0.0},
+  };
+  
+  TS_ASSERT_EQUALS(triPointsExpected, triPointsOut);
+
+  VecInt trianglesOut = ugridTris.GetTriangles();
+  VecInt trianglesExpected = {0,  9,  13, 9,  1,  13, 1,  10, 13, 10, 4,  13, 4,  11, 13,
+                              11, 3,  13, 3,  12, 13, 12, 0,  13, 1,  14, 17, 14, 2,  17,
+                              2,  15, 17, 15, 5,  17, 5,  16, 17, 16, 4,  17, 4,  10, 17,
+                              10, 1,  17, 4,  16, 21, 16, 5,  21, 5,  18, 21, 18, 8,  21,
+                              8,  19, 21, 19, 7,  21, 7,  20, 21, 20, 4,  21, 3,  4,  6};
+  TS_ASSERT_EQUALS(trianglesExpected, trianglesOut);
+} // XmUGridTriangles2dUnitTests::testBuildCentroidsAndMidpointsNotOnTris
 
 #endif

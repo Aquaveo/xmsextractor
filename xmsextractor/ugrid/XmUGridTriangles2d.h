@@ -44,7 +44,17 @@ public:
   /// \param[in] a_ugrid The UGrid for which triangles are generated.
   /// \param[in] a_pointOption Whether to add no points, add centroids only, or add centroids and
   /// midpoints.
-  enum PointOptionEnum : int { PO_NO_POINTS, PO_CENTROIDS_ONLY, PO_CENTROIDS_AND_MIDPOINTS };
+  /// \param[in] a_pointOption Which extra points to add during triangulation.
+  ///     If extra points are added to a cell, then the cell is triangulated
+  ///     afterward.
+  ///     - PO_NO_POINTS: No extra points are added.
+  ///     - PO_CENTROIDS_ONLY: Centroids are added to every cell.
+  ///     - PO_CENTROIDS_AND_MIDPOINTS: Centroids are added to every cell and
+  ///       midpoints are added to every edge.
+  ///     - PO_CENTROIDS_AND_MIDPOINTS_SKIP_TRIS: Same as
+  ///       PO_CENTROIDS_AND_MIDPOINTS, except cells that are already triangles
+  ///       are left unmodified.
+  enum PointOptionEnum : int { PO_NO_POINTS, PO_CENTROIDS_ONLY, PO_CENTROIDS_AND_MIDPOINTS, PO_CENTROIDS_AND_MIDPOINTS_SKIP_TRIS };
   virtual void BuildTriangles(const XmUGrid& a_ugrid, PointOptionEnum a_pointOption) = 0;
   /// \brief Generate triangles for the UGrid using earcut algorithm.
   /// \param[in] a_ugrid The UGrid for which triangles are generated.
