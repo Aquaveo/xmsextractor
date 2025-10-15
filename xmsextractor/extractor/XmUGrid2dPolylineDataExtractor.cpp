@@ -83,7 +83,7 @@ public:
   virtual const VecPt3d& GetExtractLocations() const override;
   /// \brief Gets cell indexes associated with the extract location points.
   /// \return The cell indexes.
-  virtual const VecInt& GetCellIndexes() const override { return m_extractor->GetCellIndexes(); }
+  virtual const VecInt& GetCellIndexes() const { return m_extractor->GetCellIndexes(); }
   /// \brief Gets the option for using IDW for point data
   /// \return The option.
   virtual bool GetUseIdwForPointData() const override
