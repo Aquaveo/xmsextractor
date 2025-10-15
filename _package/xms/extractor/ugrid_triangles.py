@@ -10,7 +10,7 @@ __all__ = ['triangulate_ugrid']
 # 2. Third party modules
 
 # 3. Aquaveo modules
-from xms.constraint.ugrid_2d import UGrid2d as CoGrid
+from xms.constraint.grid import Grid as CoGrid
 from xms.grid.ugrid import UGrid
 
 # 4. Local modules
