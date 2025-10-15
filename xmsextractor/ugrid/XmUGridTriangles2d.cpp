@@ -59,18 +59,11 @@ public:
   virtual int GetCellCentroid(int a_cellIdx) const override;
 
   virtual int GetIntersectedCell(const Pt3d& a_point, VecInt& a_idxs, VecDbl& a_weights) override;
-  /// \brief Set to force triangles to be split at cell center with cell data
-  /// \param[in] a_splitTrisWithCellData
-  virtual void SetSplitTrisWithCellData(bool a_splitTrisWithCellData) override
-  {
-    m_splitTrisWithCellData = a_splitTrisWithCellData;
-  }
 
 private:
   void Initialize(const XmUGrid& a_ugrid);
   BSHP<GmTriSearch> GetTriSearch();
 
-  bool m_splitTrisWithCellData;             ///< split triangles with cell data
   BSHP<XmUGridTriangulator> m_triangulator; ///< Triangulator
   mutable BSHP<GmTriSearch> m_triSearch;    ///< Triangle searcher for triangles
 };
@@ -86,7 +79,6 @@ private:
 XmUGridTriangles2dImpl::XmUGridTriangles2dImpl()
 : m_triangulator()
 , m_triSearch()
-, m_splitTrisWithCellData(false)
 {
 } // XmUGridTriangles2dImpl::XmUGridTriangles2dImpl
 //------------------------------------------------------------------------------
@@ -123,13 +115,9 @@ void XmUGridTriangles2dImpl::BuildTriangles(const XmUGrid& a_ugrid, PointOptionE
         nPts = (int)cellPoints.size();
       }
     }
-
     bool builtTriangles = false;
     if (a_pointOption != PO_NO_POINTS)
-    {
-      if (3 != cellPoints.size() || m_splitTrisWithCellData)
-        builtTriangles = m_triangulator->GenerateCentroidTriangles(cellIdx, cellPoints);
-    }
+      builtTriangles = m_triangulator->GenerateCentroidTriangles(cellIdx, cellPoints);
     if (!builtTriangles)
       m_triangulator->BuildEarcutTriangles(cellIdx, cellPoints);
   }
@@ -234,11 +222,6 @@ int XmUGridTriangles2dImpl::GetIntersectedCell(const Pt3d& a_point,
   {
     int triangleIdx = triangleLocation / 3;
     cellIdx = m_triangulator->GetCellFromTriangle(triangleIdx);
-  }
-  for (size_t i = 0; i < a_weights.size(); ++i)
-  {
-    if (a_weights[i] < 0)
-      a_weights[i] = 0.0;
   }
   return cellIdx;
 } // XmUGridTriangles2dImpl::GetIntersectedCell
@@ -399,7 +382,6 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTrianglesOnTriangle()
   TS_ASSERT_DELTA_VEC(weightsExpected, weights, delta);
 
   // test building cetroid in triangle cell
-  triangles.SetSplitTrisWithCellData(true);
   triangles.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_ONLY);
 
   triPointsOut = triangles.GetPoints();
@@ -506,7 +488,6 @@ void XmUGridTriangles2dUnitTests::testBuildCentroidTriangles2dCellTypes()
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   TS_REQUIRE_NOT_NULL(ugrid);
   XmUGridTriangles2dImpl triangles;
-  triangles.SetSplitTrisWithCellData(true);
   triangles.BuildTriangles(*ugrid, XmUGridTriangles2d::PO_CENTROIDS_ONLY);
 
   VecPt3d triPointsOut = triangles.GetPoints();
