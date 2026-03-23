@@ -986,8 +986,16 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize()
   VecFlt cellScalars = {1};
   DynBitset activity;
   activity.push_back(false);
-  TS_ASSERT_THROWS(extractor->SetGridCellScalars(cellScalars, activity, LOC_CELLS),
-                   std::invalid_argument);
+  bool threw = false;
+  try
+  {
+    extractor->SetGridCellScalars(cellScalars, activity, LOC_CELLS);
+  }
+  catch (const std::invalid_argument&)
+  {
+    threw = true;
+  }
+  TS_ASSERT(threw);
 } // XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize
 //------------------------------------------------------------------------------
 /// \brief Test extractor going through time steps with cell and point scalars.
