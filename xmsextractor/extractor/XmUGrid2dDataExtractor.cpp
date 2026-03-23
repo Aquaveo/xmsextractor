@@ -14,6 +14,7 @@
 
 // 3. Standard library headers
 #include <sstream>
+#include <stdexcept>
 
 // 4. External library headers
 
@@ -168,7 +169,7 @@ void XmUGrid2dDataExtractorImpl::SetGridPointScalars(const VecFlt& a_pointScalar
 {
   if (a_pointScalars.size() != m_ugrid->GetPointCount())
   {
-    XM_LOG(xmlog::debug, "Invalid point scalar size in 2D data extractor.");
+    throw std::invalid_argument("Invalid point scalar size in 2D data extractor.");
   }
 
   BuildTriangles(LOC_POINTS);
@@ -192,7 +193,7 @@ void XmUGrid2dDataExtractorImpl::SetGridCellScalars(const VecFlt& a_cellScalars,
 {
   if ((int)a_cellScalars.size() != m_ugrid->GetCellCount())
   {
-    XM_LOG(xmlog::debug, "Invalid cell scalar size in 2D data extractor.");
+    throw std::invalid_argument("Invalid cell scalar size in 2D data extractor.");
   }
 
   BuildTriangles(LOC_CELLS);
@@ -316,7 +317,7 @@ void XmUGrid2dDataExtractorImpl::SetGridPointActivity(const DynBitset& a_pointAc
 {
   if (a_pointActivity.size() != m_ugrid->GetPointCount() && !a_pointActivity.empty())
   {
-    XM_LOG(xmlog::debug, "Invalid point activity size in 2D data extractor.");
+    throw std::invalid_argument("Invalid point activity size in 2D data extractor.");
   }
 
   if (a_pointActivity.empty())
@@ -351,7 +352,7 @@ void XmUGrid2dDataExtractorImpl::SetGridCellActivity(const DynBitset& a_cellActi
 {
   if (a_cellActivity.size() != m_ugrid->GetCellCount() && !a_cellActivity.empty())
   {
-    XM_LOG(xmlog::debug, "Invalid cell activity size in 2D data extractor.");
+    throw std::invalid_argument("Invalid cell activity size in 2D data extractor.");
   }
   m_triangles->SetCellActivity(a_cellActivity);
 } // XmUGrid2dDataExtractorImpl::SetGridCellActivity
@@ -985,14 +986,8 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize()
   VecFlt cellScalars = {1};
   DynBitset activity;
   activity.push_back(false);
-  extractor->SetGridCellScalars(cellScalars, activity, LOC_CELLS);
-  VecPt3d extractLocations = {{0.25, 0.75, 100.0}, {0.75, 0.25, 0.0}};
-  extractor->SetExtractLocations(extractLocations);
-
-  VecFlt interpValues;
-  extractor->ExtractData(interpValues);
-  VecFlt expected = {0.0, XM_NODATA};
-  TS_ASSERT_EQUALS(expected, interpValues);
+  TS_ASSERT_THROWS(extractor->SetGridCellScalars(cellScalars, activity, LOC_CELLS),
+                   std::invalid_argument);
 } // XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize
 //------------------------------------------------------------------------------
 /// \brief Test extractor going through time steps with cell and point scalars.

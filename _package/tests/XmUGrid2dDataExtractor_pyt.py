@@ -374,13 +374,8 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
 
         cell_scalars = [1]
         activity = [False]
-        extractor.set_grid_cell_scalars(cell_scalars, activity, 'cells')
-        extract_locations = [(0.25, 0.75, 100.0), (0.75, 0.25, 0.0)]
-        extractor.extract_locations = extract_locations
-
-        interp_values = extractor.extract_data()
-        expected = [0.0, float('nan')]
-        np.testing.assert_array_equal(expected, interp_values)
+        with self.assertRaises(ValueError):
+            extractor.set_grid_cell_scalars(cell_scalars, activity, 'cells')
 
     def test_changing_scalars_and_activity(self):
         """Test extractor going through time steps with cell and point scalars."""
