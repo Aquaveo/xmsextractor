@@ -728,15 +728,16 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize()
   DynBitset activity;
   activity.push_back(true);
   activity.push_back(false);
-  extractor->SetGridPointScalars(pointScalars, activity, LOC_POINTS);
-
-  VecPt3d extractLocations = {{0.25, 0.75, 100.0}, {0.75, 0.25, 0.0}};
-  extractor->SetExtractLocations(extractLocations);
-
-  VecFlt interpValues;
-  extractor->ExtractData(interpValues);
-  VecFlt expected = {1.0, XM_NODATA};
-  TS_ASSERT_EQUALS(expected, interpValues);
+  bool threw = false;
+  try
+  {
+    extractor->SetGridPointScalars(pointScalars, activity, LOC_POINTS);
+  }
+  catch (const std::invalid_argument&)
+  {
+    threw = true;
+  }
+  TS_ASSERT(threw);
 } // XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize
 //------------------------------------------------------------------------------
 /// \brief Test extractor with cell scalars only.
