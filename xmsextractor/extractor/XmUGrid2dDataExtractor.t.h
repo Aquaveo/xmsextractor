@@ -27,13 +27,19 @@ public:
   void testPointScalarsOnly();
   void testPointScalarCellActivity();
   void testPointScalarPointActivity();
-  void testInvalidPointScalarsAndActivitySize();
+  void testUndersizedPointScalars();
+  void testOversizedPointScalars();
+  void testUndersizedPointActivity();
+  void testOversizedPointActivity();
 
   void testCellScalarsOnly();
   void testCellScalarCellActivity();
   void testCellScalarCellActivityIdw();
   void testCellScalarPointActivity();
-  void testInvalidCellScalarsAndActivitySize();
+  void testUndersizedCellScalars();
+  void testOversizedCellScalars();
+  void testUndersizedCellActivity();
+  void testOversizedCellActivity();
 
   void testChangingScalarsAndActivity();
 

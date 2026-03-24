@@ -708,26 +708,64 @@ void XmUGrid2dDataExtractorUnitTests::testPointScalarPointActivity()
   TS_ASSERT_EQUALS(expectedPerCell, interpValues);
 } // XmUGrid2dDataExtractorUnitTests::testPointScalarPointActivity
 //------------------------------------------------------------------------------
-/// \brief Test when scalar and activity arrays are sized incorrectly.
+/// \brief Test that undersized point scalars throw.
 //------------------------------------------------------------------------------
-void XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize()
+void XmUGrid2dDataExtractorUnitTests::testUndersizedPointScalars()
 {
-  //  3----2
-  //  | 1 /|
-  //  |  / |
-  //  | /  |
-  //  |/ 0 |
-  //  0----1
+  // 4 points, 2 triangles
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
-  TS_ASSERT(extractor);
 
-  VecFlt pointScalars = {1, 2, 3};
+  VecFlt pointScalars = {1, 2, 3}; // 3 scalars for 4 points
+  bool threw = false;
+  try
+  {
+    extractor->SetGridPointScalars(pointScalars, DynBitset(), LOC_POINTS);
+  }
+  catch (const std::invalid_argument&)
+  {
+    threw = true;
+  }
+  TS_ASSERT(threw);
+} // XmUGrid2dDataExtractorUnitTests::testUndersizedPointScalars
+//------------------------------------------------------------------------------
+/// \brief Test that oversized point scalars throw.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testOversizedPointScalars()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+
+  VecFlt pointScalars = {1, 2, 3, 4, 5}; // 5 scalars for 4 points
+  bool threw = false;
+  try
+  {
+    extractor->SetGridPointScalars(pointScalars, DynBitset(), LOC_POINTS);
+  }
+  catch (const std::invalid_argument&)
+  {
+    threw = true;
+  }
+  TS_ASSERT(threw);
+} // XmUGrid2dDataExtractorUnitTests::testOversizedPointScalars
+//------------------------------------------------------------------------------
+/// \brief Test that undersized point activity throws.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testUndersizedPointActivity()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+
+  VecFlt pointScalars = {1, 2, 3, 4};
   DynBitset activity;
   activity.push_back(true);
-  activity.push_back(false);
+  activity.push_back(false); // 2 entries for 4 points
   bool threw = false;
   try
   {
@@ -738,7 +776,31 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize()
     threw = true;
   }
   TS_ASSERT(threw);
-} // XmUGrid2dDataExtractorUnitTests::testInvalidPointScalarsAndActivitySize
+} // XmUGrid2dDataExtractorUnitTests::testUndersizedPointActivity
+//------------------------------------------------------------------------------
+/// \brief Test that oversized point activity throws.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testOversizedPointActivity()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+
+  VecFlt pointScalars = {1, 2, 3, 4};
+  DynBitset activity;
+  activity.resize(5, true); // 5 entries for 4 points
+  bool threw = false;
+  try
+  {
+    extractor->SetGridPointScalars(pointScalars, activity, LOC_POINTS);
+  }
+  catch (const std::invalid_argument&)
+  {
+    threw = true;
+  }
+  TS_ASSERT(threw);
+} // XmUGrid2dDataExtractorUnitTests::testOversizedPointActivity
 //------------------------------------------------------------------------------
 /// \brief Test extractor with cell scalars only.
 /// \verbatim
@@ -968,25 +1030,63 @@ void XmUGrid2dDataExtractorUnitTests::testCellScalarPointActivity()
   TS_ASSERT_EQUALS(expected, interpValues);
 } // XmUGrid2dDataExtractorUnitTests::testCellScalarPointActivity
 //------------------------------------------------------------------------------
-/// \brief Test extractor with cell scalars only.
+/// \brief Test that undersized cell scalars throw.
 //------------------------------------------------------------------------------
-void XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize()
+void XmUGrid2dDataExtractorUnitTests::testUndersizedCellScalars()
 {
-  //  3----2
-  //  | 1 /|
-  //  |  / |
-  //  | /  |
-  //  |/ 0 |
-  //  0----1
+  // 4 points, 2 triangles
   VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
   VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
   std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
   BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
-  TS_ASSERT(extractor);
 
-  VecFlt cellScalars = {1};
+  VecFlt cellScalars = {1}; // 1 scalar for 2 cells
+  bool threw = false;
+  try
+  {
+    extractor->SetGridCellScalars(cellScalars, DynBitset(), LOC_CELLS);
+  }
+  catch (const std::invalid_argument&)
+  {
+    threw = true;
+  }
+  TS_ASSERT(threw);
+} // XmUGrid2dDataExtractorUnitTests::testUndersizedCellScalars
+//------------------------------------------------------------------------------
+/// \brief Test that oversized cell scalars throw.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testOversizedCellScalars()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+
+  VecFlt cellScalars = {1, 2, 3}; // 3 scalars for 2 cells
+  bool threw = false;
+  try
+  {
+    extractor->SetGridCellScalars(cellScalars, DynBitset(), LOC_CELLS);
+  }
+  catch (const std::invalid_argument&)
+  {
+    threw = true;
+  }
+  TS_ASSERT(threw);
+} // XmUGrid2dDataExtractorUnitTests::testOversizedCellScalars
+//------------------------------------------------------------------------------
+/// \brief Test that undersized cell activity throws.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testUndersizedCellActivity()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+
+  VecFlt cellScalars = {1, 2};
   DynBitset activity;
-  activity.push_back(false);
+  activity.push_back(false); // 1 entry for 2 cells
   bool threw = false;
   try
   {
@@ -997,7 +1097,31 @@ void XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize()
     threw = true;
   }
   TS_ASSERT(threw);
-} // XmUGrid2dDataExtractorUnitTests::testInvalidCellScalarsAndActivitySize
+} // XmUGrid2dDataExtractorUnitTests::testUndersizedCellActivity
+//------------------------------------------------------------------------------
+/// \brief Test that oversized cell activity throws.
+//------------------------------------------------------------------------------
+void XmUGrid2dDataExtractorUnitTests::testOversizedCellActivity()
+{
+  VecPt3d points = {{0, 0, 0}, {1, 0, 0}, {1, 1, 0}, {0, 1, 0}};
+  VecInt cells = {XMU_TRIANGLE, 3, 0, 1, 2, XMU_TRIANGLE, 3, 2, 3, 0};
+  std::shared_ptr<XmUGrid> ugrid = XmUGrid::New(points, cells);
+  BSHP<XmUGrid2dDataExtractor> extractor = XmUGrid2dDataExtractor::New(ugrid);
+
+  VecFlt cellScalars = {1, 2};
+  DynBitset activity;
+  activity.resize(3, true); // 3 entries for 2 cells
+  bool threw = false;
+  try
+  {
+    extractor->SetGridCellScalars(cellScalars, activity, LOC_CELLS);
+  }
+  catch (const std::invalid_argument&)
+  {
+    threw = true;
+  }
+  TS_ASSERT(threw);
+} // XmUGrid2dDataExtractorUnitTests::testOversizedCellActivity
 //------------------------------------------------------------------------------
 /// \brief Test extractor going through time steps with cell and point scalars.
 //------------------------------------------------------------------------------

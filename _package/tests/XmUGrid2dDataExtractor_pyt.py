@@ -130,24 +130,41 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         interp_values = extractor.extract_data()
         np.testing.assert_array_equal(expected_interp_values, interp_values)
 
-    def test_invalid_point_scalars_and_activity_size(self):
-        """Test when scalar and activity arrays are sized incorrectly."""
-        #  3----2
-        #  | 1 /|
-        #  |  / |
-        #  | /  |
-        #  |/ 0 |
-        #  0----1
+    def test_undersized_point_scalars(self):
+        """Test that undersized point scalars raise ValueError."""
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
         cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
         ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, UGrid2dDataExtractor)
-
-        point_scalars = [1, 2, 3]
-        activity = [True, False]
         with self.assertRaises(ValueError):
-            extractor.set_grid_point_scalars(point_scalars, activity, 'points')
+            extractor.set_grid_point_scalars([1, 2, 3], [], 'points')
+
+    def test_oversized_point_scalars(self):
+        """Test that oversized point scalars raise ValueError."""
+        points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
+        extractor = UGrid2dDataExtractor(ugrid)
+        with self.assertRaises(ValueError):
+            extractor.set_grid_point_scalars([1, 2, 3, 4, 5], [], 'points')
+
+    def test_undersized_point_activity(self):
+        """Test that undersized point activity raises ValueError."""
+        points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
+        extractor = UGrid2dDataExtractor(ugrid)
+        with self.assertRaises(ValueError):
+            extractor.set_grid_point_scalars([1, 2, 3, 4], [True, False], 'points')
+
+    def test_oversized_point_activity(self):
+        """Test that oversized point activity raises ValueError."""
+        points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
+        extractor = UGrid2dDataExtractor(ugrid)
+        with self.assertRaises(ValueError):
+            extractor.set_grid_point_scalars([1, 2, 3, 4], [True] * 5, 'points')
 
     def test_cell_scalars_only(self):
         """Test extractor with cell scalars only."""
@@ -352,24 +369,41 @@ class TestUGrid2dDataExtractor(unittest.TestCase):
         expected = [2.0, 2.0, 2.0, float('nan'), float('nan')]
         np.testing.assert_array_equal(expected, interp_values)
 
-    def test_invalid_cell_scalars_and_activity_size(self):
-        """Test extractor with cell scalars only."""
-        #  3----2
-        #  | 1 /|
-        #  |  / |
-        #  | /  |
-        #  |/ 0 |
-        #  0----1
+    def test_undersized_cell_scalars(self):
+        """Test that undersized cell scalars raise ValueError."""
         points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
         cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
         ugrid = UGrid(points, cells)
         extractor = UGrid2dDataExtractor(ugrid)
-        self.assertIsInstance(extractor, UGrid2dDataExtractor)
-
-        cell_scalars = [1]
-        activity = [False]
         with self.assertRaises(ValueError):
-            extractor.set_grid_cell_scalars(cell_scalars, activity, 'cells')
+            extractor.set_grid_cell_scalars([1], [], 'cells')
+
+    def test_oversized_cell_scalars(self):
+        """Test that oversized cell scalars raise ValueError."""
+        points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
+        extractor = UGrid2dDataExtractor(ugrid)
+        with self.assertRaises(ValueError):
+            extractor.set_grid_cell_scalars([1, 2, 3], [], 'cells')
+
+    def test_undersized_cell_activity(self):
+        """Test that undersized cell activity raises ValueError."""
+        points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
+        extractor = UGrid2dDataExtractor(ugrid)
+        with self.assertRaises(ValueError):
+            extractor.set_grid_cell_scalars([1, 2], [False], 'cells')
+
+    def test_oversized_cell_activity(self):
+        """Test that oversized cell activity raises ValueError."""
+        points = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
+        cells = [UGrid.cell_type_enum.TRIANGLE, 3, 0, 1, 2, UGrid.cell_type_enum.TRIANGLE, 3, 2, 3, 0]
+        ugrid = UGrid(points, cells)
+        extractor = UGrid2dDataExtractor(ugrid)
+        with self.assertRaises(ValueError):
+            extractor.set_grid_cell_scalars([1, 2], [True] * 3, 'cells')
 
     def test_changing_scalars_and_activity(self):
         """Test extractor going through time steps with cell and point scalars."""
