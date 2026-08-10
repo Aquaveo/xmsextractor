@@ -31,7 +31,7 @@ jobs:
     steps:
       # Checkout Sources
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       # Setup Python
       - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -42,10 +42,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8 flake8-docstrings flake8-bugbear flake8-import-order pep8-naming
+          pip install "xmsconan==2.15.4" -i https://public.aquapi.aquaveo.com/aquaveo/dev/+simple
+      # Generate .flake8 so CI lints with the same config developers use locally.
+      # Do not inline the flake8 settings here: that duplicates .flake8.jinja and
+      # the two copies drift apart silently.
+      - name: Generate Build Files
+        run: xmsconan_gen build.toml
       # Flake Code
       - name: Run Flake
-        run: |
-          flake8 --exclude .tox,.git,__pycache__,_package/tests/files/*,pydocs/source/conf.py,build,dist,tests/fixtures/*,*.pyc,*.egg-info,.cache,.eggs --ignore=D200,D212 --max-line-length=120 --docstring-convention google --isolated --import-order-style=appnexus --application-import-names=xms.extractor --application-package-names=xms --count --statistics _package
+        run: flake8 _package
 
   # ----------------------------------------------------------------------------------------------
   # MAC
@@ -82,6 +87,7 @@ jobs:
       # Python Variables
       PYTHON_TARGET_VERSION: ${{ matrix.python-version }}
       RELEASE_PYTHON: 'False'
+      CTEST_PARALLEL_LEVEL: '8'
 
     steps:
       # Get Correct Version of Xcode
@@ -93,18 +99,21 @@ jobs:
           clang --version
       # Checkout Sources
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       # Setup Python
-      - name: Set up Python 3.13
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: ${{ matrix.python-version }}
       # Install Python Dependencies
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install conan devpi-client wheel
-          python -m pip install xmsconan>=2.12.2 -i https://public.aquapi.aquaveo.com/aquaveo/dev/+simple
+          # conan is pinned to a patch series on purpose: a minor bump can change
+          # package_id computation and silently detach builds from the binaries
+          # already published to the remote. Bump this deliberately.
+          pip install "conan~=2.31.0" devpi-client wheel
+          python -m pip install --upgrade "xmsconan==2.15.4" -i https://public.aquapi.aquaveo.com/aquaveo/dev/+simple
       # Setup Conan
       - name: Setup Conan
         run: xmsconan_conan_setup --remote-url ${{ env.CONAN_REMOTE_URL }} --login --remove-conancenter
@@ -138,8 +147,15 @@ jobs:
         run: xmsconan_gen --version ${{ env.XMS_VERSION }} build.toml
       # Build the Conan Package
       - name: Build the Conan Packages
-        run: "python build.py --filter=\"{\\\"build_type\\\": \\\"${{ matrix.build_type }}\\\"}\" --wheel-dir wheelhouse"
+        run: "python build.py --filter=\"{\\\"build_type\\\": \\\"${{ matrix.build_type }}\\\"}\" --wheel-dir wheelhouse --artifacts-dir test_artifacts"
         shell: bash
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ env.MATRIX_NAME }}
+          path: test_artifacts/
+          if-no-files-found: ignore
+        if: always()
       # Repair wheel (Release only)
       - name: Repair wheel
         run: xmsconan_wheel_repair --wheel-dir wheelhouse --platform macos
@@ -221,16 +237,20 @@ jobs:
       # Python Variables
       PYTHON_TARGET_VERSION: '3.13'
       RELEASE_PYTHON: 'False'
+      CTEST_PARALLEL_LEVEL: '8'
 
     steps:
       # Checkout Sources
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       # Install Python Dependencies
       - name: Install Python Dependencies
         run: |
-          pip install conan devpi-client wheel
-          pip install xmsconan>=2.12.2 -i https://public.aquapi.aquaveo.com/aquaveo/dev/+simple
+          # conan is pinned to a patch series on purpose: a minor bump can change
+          # package_id computation and silently detach builds from the binaries
+          # already published to the remote. Bump this deliberately.
+          pip install "conan~=2.31.0" devpi-client wheel
+          pip install --upgrade "xmsconan==2.15.4" -i https://public.aquapi.aquaveo.com/aquaveo/dev/+simple
       # Setup Conan
       - name: Setup Conan
         run: xmsconan_conan_setup --remote-url ${{ env.CONAN_REMOTE_URL }} --login
@@ -264,8 +284,15 @@ jobs:
         run: xmsconan_gen --version ${{ env.XMS_VERSION }} build.toml
       # Build the Conan Package
       - name: Build the Conan Packages
-        run: "python build.py --filter=\"{\\\"build_type\\\": \\\"${{ matrix.build_type }}\\\"}\" --wheel-dir wheelhouse"
+        run: "python build.py --filter=\"{\\\"build_type\\\": \\\"${{ matrix.build_type }}\\\"}\" --wheel-dir wheelhouse --artifacts-dir test_artifacts"
         shell: bash
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ env.MATRIX_NAME }}
+          path: test_artifacts/
+          if-no-files-found: ignore
+        if: always()
       # Repair wheel (Release only)
       - name: Repair wheel
         run: xmsconan_wheel_repair --wheel-dir wheelhouse --platform linux
@@ -347,11 +374,12 @@ jobs:
       # Python Variables
       PYTHON_TARGET_VERSION: ${{ matrix.python-version }}
       RELEASE_PYTHON: 'False'
+      CTEST_PARALLEL_LEVEL: '8'
 
     steps:
       # Checkout Sources
       - name: Checkout Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       # Setup Python
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
@@ -366,8 +394,11 @@ jobs:
       - name: Install Python Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install conan devpi-client wheel
-          python -m pip install xmsconan>=2.12.2 -i https://public.aquapi.aquaveo.com/aquaveo/dev/+simple
+          # conan is pinned to a patch series on purpose: a minor bump can change
+          # package_id computation and silently detach builds from the binaries
+          # already published to the remote. Bump this deliberately.
+          pip install "conan~=2.31.0" devpi-client wheel
+          python -m pip install --upgrade "xmsconan==2.15.4" -i https://public.aquapi.aquaveo.com/aquaveo/dev/+simple
       # Setup Visual Studio
       - name: Setup Visual Studio
         uses: microsoft/setup-msbuild@v2
@@ -404,8 +435,15 @@ jobs:
         run: xmsconan_gen --version ${{ env.XMS_VERSION }} build.toml
       # Build the Conan Package
       - name: Build the Conan Packages
-        run: "python build.py --filter=\"{\\\"build_type\\\": \\\"${{ matrix.build_type }}\\\"}\" --wheel-dir wheelhouse"
+        run: "python build.py --filter=\"{\\\"build_type\\\": \\\"${{ matrix.build_type }}\\\"}\" --wheel-dir wheelhouse --artifacts-dir test_artifacts"
         shell: cmd
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ env.MATRIX_NAME }}
+          path: test_artifacts/
+          if-no-files-found: ignore
+        if: always()
       # Repair wheel (Release only)
       - name: Repair wheel
         run: xmsconan_wheel_repair --wheel-dir wheelhouse --platform windows
